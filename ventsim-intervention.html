@@ -754,6 +754,12 @@ function show(id){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function setProg(pct){var b=document.getElementById("prog-bar");if(b)b.style.width=pct+"%";}
+var consentChecked=false;
+function checkConsent(){ consentChecked=document.getElementById('consent-cb').checked; }
+function goConsent(){
+  if(!consentChecked){var e=document.getElementById('c-err');if(e)e.textContent='Please tick the consent box to continue.';return;}
+  show('login-sc');setProg(12);
+}
 </script>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ═══════════════════════════════════════════
