@@ -771,11 +771,10 @@ function startSession(){
   var pid=document.getElementById('pid').value.trim().toUpperCase();
   if(!pid){document.getElementById('pid-err').textContent='Please enter your participant number.';return;}
   window._testMode=(pid==='TEST'||pid==='DEMO'||pid==='SAMIR');
-  // The real async startSession is defined later in the page
-  // We use a small delay to ensure it's loaded
   setTimeout(function(){
-    if(typeof window._realStartSession==='function'){window._realStartSession();}
-  },50);
+    if(typeof _realStartSession==='function'){_realStartSession();}
+    else{document.getElementById('login-err').textContent='Loading error — please refresh the page.';}
+  },100);
 }
 </script>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -1554,3 +1553,9 @@ async function finish(){
   localStorage.removeItem('ventsim_'+S.pid);
 
   
+  show('thankyou-sc'); setProg(100);
+  loader(false);
+}
+</script>
+</body>
+</html>
