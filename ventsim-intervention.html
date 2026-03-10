@@ -823,16 +823,9 @@ async function _realStartSession(){
   document.getElementById('pid-err').textContent = '';
   err.textContent = '';
   if(!pid){ document.getElementById('pid-err').textContent='Please enter your participant number.'; return; }
-  const saved = checkSaved(pid);
-  if(saved && !S.savedSession){
-    S.savedSession = saved; S.pid = pid;
-    document.getElementById('res-banner').style.display='flex';
-    document.getElementById('res-info').textContent = pid+' — resume from where you left off?';
-    return;
-  }
-  loader(true,'VALIDATING...');
-  // TEST MODE bypass
+  // TEST mode — always start fresh, never resume
   if(window._testMode){
+    localStorage.removeItem('ventsim_'+pid);
     loader(false);
     S.pid=pid; S.group='intervention';
     S.date=document.getElementById('ses-date').value||new Date().toISOString().split('T')[0];
@@ -843,6 +836,14 @@ async function _realStartSession(){
     startAutoSave();
     return;
   }
+  const saved = checkSaved(pid);
+  if(saved && !S.savedSession){
+    S.savedSession = saved; S.pid = pid;
+    document.getElementById('res-banner').style.display='flex';
+    document.getElementById('res-info').textContent = pid+' — resume from where you left off?';
+    return;
+  }
+  loader(true,'VALIDATING...');
   try{
     const r = await fetch(WORKER_URL+'/validate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid})});
     const j = await r.json(); loader(false);
@@ -856,7 +857,6 @@ async function _realStartSession(){
     startAutoSave();
   }catch(e){
     loader(false);
-    // Offline fallback for testing
     S.pid=pid; S.group='intervention';
     S.date=document.getElementById('ses-date').value||new Date().toISOString().split('T')[0];
     S.sessionId=genSid(); S.startTime=Date.now();
