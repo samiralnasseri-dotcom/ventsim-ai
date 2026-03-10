@@ -766,13 +766,11 @@ function startSession(){
   var pid=document.getElementById('pid').value.trim().toUpperCase();
   if(!pid){document.getElementById('pid-err').textContent='Please enter your participant number.';return;}
   window._testMode=(pid==='TEST'||pid==='DEMO'||pid==='SAMIR');
-  if(typeof _realStartSession==='function'){_realStartSession();}
-  else{document.getElementById('login-err').textContent='Loading error — please refresh the page.';}
+  _realStartSession();
 }
-</script>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+
 /* ═══════════════════════════════════════════
-   WORKER URL — replace after Cloudflare setup
+   WORKER URL
 ═══════════════════════════════════════════ */
 const WORKER_URL = 'https://ventsim-worker.samir-alnasseri.workers.dev';
 
