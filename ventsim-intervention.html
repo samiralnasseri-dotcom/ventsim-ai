@@ -946,12 +946,14 @@ function submitPreMCQ(){
   if(answered<20){ document.getElementById('premcq-err').textContent='Please answer all 20 questions ('+(20-answered)+' remaining).'; return; }
   S.data.preMCQScore=scoreMCQ('preMCQ');
   show('precdmns-sc'); setProg(38); saveLocal();
+  buildCDMNS('cdmns-pre-cont','preCDMNS');
 }
 function submitPostMCQ(){
   const answered=Object.keys(S.data.postMCQ).length;
   if(answered<20){ document.getElementById('postmcq-err').textContent='Please answer all 20 questions ('+(20-answered)+' remaining).'; return; }
   S.data.postMCQScore=scoreMCQ('postMCQ');
   show('postcdmns-sc'); setProg(82); saveLocal();
+  buildCDMNS('cdmns-post-cont','postCDMNS');
 }
 
 /* ═══════════════════════════════════════════
@@ -998,6 +1000,7 @@ function submitPreCDMNS(){
 function submitPostCDMNS(){
   if(!cdmnsComplete('postCDMNS')){ document.getElementById('postcdmns-err').textContent='Please rate all 40 items.'; return; }
   show('tam-sc'); setProg(90); saveLocal();
+  buildTAM();
 }
 
 /* ═══════════════════════════════════════════
