@@ -397,12 +397,7 @@ canvas.wc.active{display:block;}
     <div class="card">
       <div class="fg">
         <label class="flbl">Participant Number <span style="color:var(--red)">*</span></label>
-        <input class="finp" id="pid" placeholder="e.g. P001, P046, PP01" maxlength="6" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
-        <div style="margin-top:6px;font-size:.72rem;color:var(--text3);font-family:var(--mono);line-height:1.6;">
-          Control group: <span style="color:var(--cyan)">P001–P045</span> &nbsp;|&nbsp;
-          Intervention: <span style="color:var(--green)">P046–P090</span> &nbsp;|&nbsp;
-          Pilot (HDU): <span style="color:var(--yellow, #ffd700)">PP01–PP20</span>
-        </div>
+        <input class="finp" id="pid" placeholder="Enter your participant number" maxlength="6" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
         <div class="ferr" id="pid-err"></div>
       </div>
       <div class="fg">
@@ -771,10 +766,8 @@ function startSession(){
   var pid=document.getElementById('pid').value.trim().toUpperCase();
   if(!pid){document.getElementById('pid-err').textContent='Please enter your participant number.';return;}
   window._testMode=(pid==='TEST'||pid==='DEMO'||pid==='SAMIR');
-  setTimeout(function(){
-    if(typeof _realStartSession==='function'){_realStartSession();}
-    else{document.getElementById('login-err').textContent='Loading error — please refresh the page.';}
-  },100);
+  if(typeof _realStartSession==='function'){_realStartSession();}
+  else{document.getElementById('login-err').textContent='Loading error — please refresh the page.';}
 }
 </script>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -885,6 +878,7 @@ async function _realStartSession(){
   }
 }
 function resumeSession(){
+window._realStartSession = _realStartSession;
   const saved=S.savedSession;
   if(!saved) return;
   S.pid=saved.pid; S.group=saved.group; S.sessionId=saved.sessionId;
