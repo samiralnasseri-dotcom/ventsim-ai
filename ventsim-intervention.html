@@ -764,9 +764,19 @@ function checkConsent(){ consentChecked=document.getElementById('consent-cb').ch
 function goConsent(){
   if(!consentChecked){var e=document.getElementById('c-err');if(e)e.textContent='Please tick the consent box to continue.';return;}
   show('login-sc');setProg(12);
-  // Auto-fill today's date
   var d=document.getElementById('ses-date');
   if(d&&!d.value){d.value=new Date().toISOString().split('T')[0];}
+}
+function startSession(){
+  var pid=document.getElementById('pid').value.trim().toUpperCase();
+  if(!pid){document.getElementById('pid-err').textContent='Please enter your participant number.';return;}
+  if(pid==='TEST'||pid==='DEMO'||pid==='SAMIR'){
+    window._testMode=true;
+    document.getElementById('pid').value=pid;
+  } else {
+    window._testMode=false;
+  }
+  if(typeof _startSession==='function'){_startSession();}
 }
 </script>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -827,7 +837,7 @@ function goConsent(){
 /* ═══════════════════════════════════════════
    S3 — LOGIN
 ═══════════════════════════════════════════ */
-async function startSession(){
+async function _startSession(){
   const pid = document.getElementById('pid').value.trim().toUpperCase();
   const err = document.getElementById('login-err');
   document.getElementById('pid-err').textContent = '';
@@ -841,6 +851,18 @@ async function startSession(){
     return;
   }
   loader(true,'VALIDATING...');
+  // TEST MODE bypass
+  if(window._testMode){
+    loader(false);
+    S.pid=pid; S.group='intervention';
+    S.date=document.getElementById('ses-date').value||new Date().toISOString().split('T')[0];
+    S.sessionId='TEST-'+Date.now(); S.startTime=Date.now();
+    document.getElementById('hbadge').textContent=pid+' · TEST';
+    document.getElementById('hbadge2').textContent=pid+' · TEST';
+    show('demo-sc'); setProg(15);
+    startAutoSave();
+    return;
+  }
   try{
     const r = await fetch(WORKER_URL+'/validate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid})});
     const j = await r.json(); loader(false);
@@ -1519,10 +1541,15 @@ async function finish(){
   };
 
   let saveOk=false;
-  try{
-    const r=await fetch(WORKER_URL+'/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(record)});
-    const j=await r.json(); saveOk=j.success;
-  }catch(e){}
+  if(window._testMode){
+    console.log('TEST MODE — data not saved to server:',record);
+    saveOk=true;
+  } else {
+    try{
+      const r=await fetch(WORKER_URL+'/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(record)});
+      const j=await r.json(); saveOk=j.success;
+    }catch(e){}
+  }
 
   localStorage.setItem('ventsim_final_'+S.pid,JSON.stringify(record));
   localStorage.removeItem('ventsim_'+S.pid);
