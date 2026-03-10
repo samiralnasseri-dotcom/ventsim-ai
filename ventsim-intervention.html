@@ -789,8 +789,6 @@ const S = {
   chat:{ history:[], scenarioSystem:'' },
   autoSaveTimer:null
 };
-let consentChecked = false;
-
 /* ═══════════════════════════════════════════
    UTILITIES
 ═══════════════════════════════════════════ */
@@ -818,13 +816,6 @@ function checkSaved(pid){
 /* ═══════════════════════════════════════════
    S2 — CONSENT
 ═══════════════════════════════════════════ */
-function checkConsent(){ consentChecked = document.getElementById('consent-cb').checked; }
-function goConsent(){
-  if(!consentChecked){ document.getElementById('c-err').textContent='Please tick the consent box to continue.'; return; }
-  S.consentDone = true;
-  show('login-sc'); setProg(12);
-}
-
 /* ═══════════════════════════════════════════
    S3 — LOGIN
 ═══════════════════════════════════════════ */
