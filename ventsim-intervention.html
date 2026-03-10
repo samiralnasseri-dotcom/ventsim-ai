@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VentSim AI — Intervention Platform | Universiti Malaya 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:       #050d14;
+  --bg2:      #081520;
+  --bg3:      #0c1e2e;
+  --panel:    #0a1a27;
+  --border:   #0e2a3f;
+  --border2:  #1a3a55;
+  --cyan:     #00e5ff;
+  --cyan2:    #00b8d4;
+  --green:    #00e676;
+  --green2:   #00c853;
+  --amber:    #ffd740;
+  --red:      #ff5252;
+  --red2:     #d32f2f;
+  --purple:   #ce93d8;
+  --blue:     #82b1ff;
+  --text:     #e0f2f1;
+  --text2:    #90a4ae;
+  --text3:    #546e7a;
+  --mono:     'JetBrains Mono', monospace;
+  --sans:     'Syne', sans-serif;
+  --body:     'Inter', sans-serif;
+  --r:        8px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;}
+
+/* ── SCANLINE OVERLAY ── */
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,.015) 2px,rgba(0,229,255,.015) 4px);pointer-events:none;z-index:9999;}
+
+/* ── SCREENS ── */
+.sc{display:none;min-height:100vh;width:100%;animation:fadeIn .4s ease;}
+.sc.active{display:flex;flex-direction:column;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ── HEADER ── */
+.hdr{background:rgba(5,13,20,.95);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);}
+.hlogo{font-family:var(--sans);font-size:1rem;font-weight:800;color:var(--cyan);letter-spacing:-.5px;}
+.hlogo span{color:var(--text2);font-weight:400;}
+.hbadge{margin-left:auto;font-family:var(--mono);font-size:.7rem;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);color:var(--cyan);padding:4px 10px;border-radius:4px;}
+.hprog{flex:1;max-width:200px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.hprog-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:2px;transition:width .5s ease;width:0%;}
+
+/* ── WRAP & INNER ── */
+.wrap{flex:1;display:flex;justify-content:center;align-items:flex-start;padding:30px 20px;}
+.inner{width:100%;max-width:760px;}
+.inner-wide{width:100%;max-width:1100px;}
+
+/* ── SECTION TITLES ── */
+.stitle{font-family:var(--sans);font-size:1.6rem;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:6px;}
+.stitle .hl{color:var(--cyan);}
+.ssub{color:var(--text2);font-size:.88rem;line-height:1.6;margin-bottom:24px;}
+.badge{display:inline-block;font-family:var(--mono);font-size:.65rem;font-weight:600;letter-spacing:1.5px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.25);color:var(--cyan);padding:4px 10px;border-radius:3px;margin-bottom:12px;}
+
+/* ── CARDS ── */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:14px;}
+.card-title{font-family:var(--sans);font-size:.8rem;font-weight:700;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--mono);font-size:.78rem;font-weight:600;letter-spacing:.5px;padding:12px 24px;border-radius:6px;border:none;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn-p{background:linear-gradient(135deg,var(--cyan),var(--cyan2));color:#000;}
+.btn-p:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,229,255,.3);}
+.btn-g{background:linear-gradient(135deg,var(--green),var(--green2));color:#000;}
+.btn-g:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,230,118,.3);}
+.btn-o{background:transparent;border:1px solid var(--border2);color:var(--text2);}
+.btn-o:hover{border-color:var(--cyan);color:var(--cyan);}
+.btn-w{width:100%;margin-top:8px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+
+/* ── FORM ELEMENTS ── */
+.fg{margin-bottom:16px;}
+.flbl{display:block;font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:1.2px;color:var(--text2);text-transform:uppercase;margin-bottom:6px;}
+.finp{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;color:var(--text);font-family:var(--mono);font-size:.85rem;outline:none;transition:border-color .2s;}
+.finp:focus{border-color:var(--cyan);}
+select.finp{cursor:pointer;}
+.ferr{color:var(--red);font-size:.75rem;font-family:var(--mono);margin-top:4px;min-height:16px;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:520px){.fgrid{grid-template-columns:1fr;}}
+
+/* ── RADIO OPTIONS ── */
+.ro-group{display:flex;flex-direction:column;gap:6px;}
+.ro{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;cursor:pointer;transition:all .2s;font-size:.83rem;}
+.ro:hover{border-color:var(--cyan2);}
+.ro.sel{border-color:var(--cyan);background:rgba(0,229,255,.06);color:var(--cyan);}
+.ro-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;transition:all .2s;}
+.ro.sel .ro-dot{border-color:var(--cyan);background:var(--cyan);}
+
+/* ── LIKERT ── */
+.lk-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:8px;transition:border-color .2s;}
+.lk-row:hover{border-color:var(--border2);}
+.lk-row.answered{border-color:rgba(0,229,255,.2);}
+.lk-q{font-size:.83rem;line-height:1.5;color:var(--text);}
+.lk-qn{font-family:var(--mono);font-size:.7rem;color:var(--text3);margin-right:6px;}
+.lk-opts{display:flex;gap:4px;flex-shrink:0;}
+.lk-opt{width:32px;height:32px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:var(--mono);font-size:.75rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.lk-opt:hover{border-color:var(--cyan);color:var(--cyan);}
+.lk-opt.sel{background:var(--cyan);border-color:var(--cyan);color:#000;font-weight:700;}
+
+/* ── MCQ ── */
+.mcq-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;transition:border-color .2s;}
+.mcq-item.answered{border-color:rgba(0,229,255,.2);}
+.mcq-q{font-size:.88rem;font-weight:500;margin-bottom:12px;line-height:1.5;color:var(--text);}
+.mcq-qn{font-family:var(--mono);font-size:.7rem;color:var(--cyan);margin-right:8px;}
+.mcq-opts{display:flex;flex-direction:column;gap:6px;}
+.mcq-opt{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-radius:5px;border:1px solid var(--border2);cursor:pointer;transition:all .15s;font-size:.82rem;line-height:1.4;}
+.mcq-opt:hover{border-color:var(--cyan2);background:rgba(0,229,255,.04);}
+.mcq-opt.sel{border-color:var(--cyan);background:rgba(0,229,255,.08);color:var(--cyan);}
+.mcq-letter{font-family:var(--mono);font-size:.72rem;color:var(--text3);flex-shrink:0;margin-top:1px;}
+.mcq-opt.sel .mcq-letter{color:var(--cyan);}
+
+/* ── PROGRESS BAR ── */
+#prog-wrap{position:fixed;top:0;left:0;right:0;height:3px;z-index:200;background:transparent;}
+#prog-bar{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));width:0%;transition:width .5s ease;box-shadow:0 0 8px var(--cyan);}
+
+/* ── LOADER ── */
+#loader{display:none;position:fixed;inset:0;background:rgba(5,13,20,.92);z-index:500;flex-direction:column;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(4px);}
+#loader.on{display:flex;}
+.lring{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ltxt{font-family:var(--mono);font-size:.75rem;color:var(--cyan);letter-spacing:1px;}
+
+/* ── RESUME BANNER ── */
+#res-banner{display:none;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);border-radius:var(--r);padding:12px 16px;margin-bottom:16px;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+#res-banner .rb-txt{font-size:.82rem;color:var(--green);}
+.rb-acts{display:flex;gap:8px;}
+
+/* ── CONSENT ── */
+.consent-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:20px;max-height:320px;overflow-y:auto;font-size:.82rem;line-height:1.8;color:var(--text2);margin-bottom:16px;}
+.consent-box h4{color:var(--text);font-family:var(--sans);margin-bottom:8px;margin-top:16px;font-size:.9rem;}
+.consent-box h4:first-child{margin-top:0;}
+.consent-check{display:flex;align-items:flex-start;gap:10px;padding:12px;background:var(--bg3);border-radius:6px;cursor:pointer;font-size:.83rem;}
+.consent-check input{margin-top:2px;accent-color:var(--cyan);width:16px;height:16px;flex-shrink:0;}
+
+/* ── SIMULATION LAYOUT ── */
+.sim-layout{display:grid;grid-template-columns:1fr 380px;gap:14px;width:100%;max-width:1200px;padding:14px;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}}
+.sim-left{display:flex;flex-direction:column;gap:12px;}
+.sim-right{display:flex;flex-direction:column;gap:12px;}
+
+/* ── PATIENT HEADER ── */
+.pt-hdr{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.pt-name{font-family:var(--sans);font-size:1rem;font-weight:700;color:var(--text);}
+.pt-meta{font-family:var(--mono);font-size:.72rem;color:var(--text2);}
+.pt-dx{font-size:.8rem;color:var(--amber);margin-top:2px;}
+.sc-badge{font-family:var(--mono);font-size:.68rem;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.3);color:var(--cyan);padding:4px 10px;border-radius:3px;}
+.sc-prog{font-family:var(--mono);font-size:.68rem;color:var(--text3);}
+
+/* ── VITALS MONITOR ── */
+.vitals-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+@media(max-width:700px){.vitals-grid{grid-template-columns:repeat(3,1fr);}}
+.vbox{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:8px;text-align:center;}
+.vbox-lbl{font-family:var(--mono);font-size:.58rem;color:var(--text3);letter-spacing:.8px;margin-bottom:4px;}
+.vbox-val{font-family:var(--mono);font-size:1.1rem;font-weight:700;}
+.vbox-unit{font-family:var(--mono);font-size:.58rem;color:var(--text3);}
+.v-spo2{color:#00e5ff;} .v-hr{color:#ff5252;} .v-rr{color:#ffd740;}
+.v-bp{color:#ce93d8;} .v-etco2{color:#a5d6a7;} .v-fio2{color:#82b1ff;}
+.vbox.alert{border-color:var(--red);animation:pulse-border 1s infinite;}
+@keyframes pulse-border{0%,100%{border-color:var(--red)}50%{border-color:transparent}}
+
+/* ── WAVEFORMS ── */
+.wave-wrap{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.wave-hdr{display:flex;gap:6px;padding:8px 12px;background:rgba(0,0,0,.3);border-bottom:1px solid var(--border);}
+.wave-tab{font-family:var(--mono);font-size:.65rem;padding:4px 8px;border-radius:3px;cursor:pointer;border:1px solid transparent;color:var(--text3);transition:all .15s;}
+.wave-tab.active{background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.3);color:var(--cyan);}
+.wave-canvases{position:relative;}
+canvas.wc{display:none;width:100%;height:120px;}
+canvas.wc.active{display:block;}
+
+/* ── VENT SETTINGS ── */
+.vent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+@media(max-width:600px){.vent-grid{grid-template-columns:repeat(2,1fr);}}
+.vset{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:8px;text-align:center;}
+.vset-lbl{font-family:var(--mono);font-size:.58rem;color:var(--text3);letter-spacing:.5px;margin-bottom:3px;}
+.vset-val{font-family:var(--mono);font-size:.95rem;font-weight:600;color:var(--blue);}
+.vset-unit{font-family:var(--mono);font-size:.58rem;color:var(--text3);}
+
+/* ── CLINICAL HISTORY ── */
+.hx-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;font-size:.8rem;line-height:1.7;color:var(--text2);max-height:180px;overflow-y:auto;}
+.hx-box strong{color:var(--text);font-weight:600;}
+
+/* ── DECISIONS ── */
+.dec-wrap{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px;}
+.dec-title{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:1px;color:var(--amber);text-transform:uppercase;margin-bottom:10px;}
+.dec-prompt{font-size:.85rem;font-weight:500;color:var(--text);margin-bottom:12px;line-height:1.5;padding:10px;background:rgba(255,215,64,.05);border-left:2px solid var(--amber);border-radius:0 5px 5px 0;}
+.dec-opts{display:flex;flex-direction:column;gap:6px;}
+.dec-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:6px;border:1px solid var(--border2);cursor:pointer;transition:all .2s;font-size:.83rem;background:var(--bg2);}
+.dec-opt:hover:not(:disabled){border-color:var(--cyan2);background:rgba(0,229,255,.04);transform:translateX(3px);}
+.dec-opt.correct{border-color:var(--green)!important;background:rgba(0,230,118,.08)!important;color:var(--green)!important;}
+.dec-opt.incorrect{border-color:var(--red)!important;background:rgba(255,82,82,.06)!important;color:var(--red)!important;}
+.dec-opt:disabled{cursor:default;}
+.dec-icon{font-size:.9rem;flex-shrink:0;}
+
+/* ── AI CHAT ── */
+.chat-wrap{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;height:100%;min-height:400px;max-height:580px;}
+.chat-hdr{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:rgba(0,229,255,.03);}
+.chat-ai-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:glow .8s ease-in-out infinite alternate;}
+@keyframes glow{from{opacity:.6}to{opacity:1}}
+.chat-ai-name{font-family:var(--mono);font-size:.72rem;color:var(--green);font-weight:600;}
+.chat-ai-role{font-family:var(--mono);font-size:.65rem;color:var(--text3);}
+.chat-hint{font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-left:auto;text-align:right;line-height:1.4;}
+.msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth;}
+.msgs::-webkit-scrollbar{width:4px;}
+.msgs::-webkit-scrollbar-track{background:transparent;}
+.msgs::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.msg{display:flex;gap:8px;max-width:92%;animation:msgIn .25s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.msg.ai{align-self:flex-start;}
+.msg.usr{align-self:flex-end;flex-direction:row-reverse;}
+.msg.sys{align-self:center;max-width:100%;}
+.mav{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.65rem;font-weight:700;flex-shrink:0;}
+.mav.ai{background:rgba(0,230,118,.15);color:var(--green);border:1px solid rgba(0,230,118,.3);}
+.mav.u{background:rgba(0,229,255,.15);color:var(--cyan);border:1px solid rgba(0,229,255,.3);}
+.mb{padding:9px 12px;border-radius:6px;font-size:.8rem;line-height:1.6;}
+.msg.ai .mb{background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);color:var(--text);border-radius:0 6px 6px 6px;}
+.msg.usr .mb{background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);color:var(--cyan);border-radius:6px 0 6px 6px;}
+.msg.sys .mb{background:rgba(255,215,64,.06);border:1px solid rgba(255,215,64,.2);color:var(--amber);font-size:.75rem;font-family:var(--mono);text-align:center;width:100%;}
+.typing{display:flex;gap:4px;align-items:center;padding:10px 14px;}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--green);opacity:.4;animation:tp .8s ease-in-out infinite;}
+.typing span:nth-child(2){animation-delay:.15s;}
+.typing span:nth-child(3){animation-delay:.3s;}
+@keyframes tp{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+.chat-inp-wrap{padding:10px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.chat-inp{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:5px;padding:8px 12px;color:var(--text);font-family:var(--body);font-size:.82rem;outline:none;resize:none;max-height:80px;}
+.chat-inp:focus{border-color:var(--cyan);}
+.chat-send{background:rgba(0,230,118,.15);border:1px solid rgba(0,230,118,.3);color:var(--green);border-radius:5px;padding:8px 12px;cursor:pointer;font-family:var(--mono);font-size:.72rem;transition:all .2s;white-space:nowrap;}
+.chat-send:hover{background:rgba(0,230,118,.25);}
+
+/* ── SCENE DEBRIEF ── */
+.sdeb-wrap{background:var(--panel);border:1px solid var(--border2);border-radius:var(--r);padding:16px;margin-top:10px;}
+.sdeb-score{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+.sdeb-ring{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:1rem;font-weight:700;flex-shrink:0;}
+.sdeb-ring.good{background:rgba(0,230,118,.12);border:2px solid var(--green);color:var(--green);}
+.sdeb-ring.mid{background:rgba(255,215,64,.12);border:2px solid var(--amber);color:var(--amber);}
+.sdeb-ring.poor{background:rgba(255,82,82,.12);border:2px solid var(--red);color:var(--red);}
+.sdeb-fb{font-size:.82rem;color:var(--text2);line-height:1.6;}
+.sdeb-fb strong{color:var(--text);}
+
+/* ── TAM ── */
+.tam-dim{margin-bottom:20px;}
+.tam-dim-title{font-family:var(--sans);font-size:.85rem;font-weight:700;color:var(--cyan);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.tam-dim-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── SCORES ── */
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:520px){.score-grid{grid-template-columns:1fr;}}
+.score-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;}
+.score-val{font-family:var(--mono);font-size:1.8rem;font-weight:700;color:var(--cyan);}
+.score-lbl{font-family:var(--mono);font-size:.65rem;color:var(--text3);letter-spacing:.8px;margin-top:4px;}
+.score-sub{font-size:.75rem;color:var(--text2);margin-top:4px;}
+
+/* ── DEBRIEF ── */
+.deb-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:16px;font-size:.83rem;line-height:1.8;color:var(--text2);margin-bottom:16px;white-space:pre-wrap;}
+
+/* ── THANK YOU ── */
+.ty-box{text-align:center;padding:40px 20px;}
+.ty-icon{font-size:3rem;margin-bottom:16px;}
+.ty-title{font-family:var(--sans);font-size:1.8rem;font-weight:800;color:var(--green);margin-bottom:8px;}
+.ty-sub{color:var(--text2);font-size:.9rem;margin-bottom:24px;line-height:1.6;}
+.ty-info{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:left;margin-bottom:20px;font-family:var(--mono);font-size:.78rem;}
+.ty-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);}
+.ty-row:last-child{border:none;}
+.ty-row-lbl{color:var(--text3);}
+.ty-row-val{color:var(--cyan);}
+.contact-box{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.15);border-radius:var(--r);padding:14px;font-size:.82rem;color:var(--text2);text-align:center;}
+.contact-box a{color:var(--cyan);text-decoration:none;}
+
+/* ── ORIENTATION ── */
+.orient-step{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;}
+.orient-icon{font-size:1.6rem;flex-shrink:0;}
+.orient-title{font-family:var(--sans);font-size:.92rem;font-weight:700;color:var(--cyan);margin-bottom:5px;}
+.orient-desc{font-size:.82rem;color:var(--text2);line-height:1.6;}
+
+/* ── WELCOME ── */
+.welcome-hero{text-align:center;padding:40px 20px 30px;}
+.welcome-logo{font-family:var(--sans);font-size:2.8rem;font-weight:800;color:var(--cyan);letter-spacing:-2px;margin-bottom:4px;}
+.welcome-logo span{color:var(--text2);}
+.welcome-tagline{font-family:var(--mono);font-size:.78rem;color:var(--text3);letter-spacing:2px;margin-bottom:24px;}
+.welcome-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0;}
+@media(max-width:560px){.welcome-grid{grid-template-columns:1fr;}}
+.welcome-feat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;}
+.welcome-feat-icon{font-size:1.4rem;margin-bottom:8px;}
+.welcome-feat-title{font-family:var(--sans);font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:4px;}
+.welcome-feat-desc{font-size:.75rem;color:var(--text3);line-height:1.5;}
+.contact-footer{text-align:center;font-size:.75rem;color:var(--text3);padding:14px;border-top:1px solid var(--border);margin-top:10px;}
+.contact-footer a{color:var(--cyan);text-decoration:none;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<div id="prog-wrap"><div id="prog-bar"></div></div>
+<div id="loader"><div class="lring"></div><div class="ltxt" id="ltxt">LOADING...</div></div>
+
+<!-- ═══════════════════════════════════
+     S1: WELCOME
+═══════════════════════════════════ -->
+<div class="sc active" id="welcome-sc">
+  <div class="wrap" style="align-items:center;">
+    <div class="inner" style="max-width:680px;">
+      <div class="welcome-hero">
+        <div class="welcome-logo">VentSim<span> AI</span></div>
+        <div class="welcome-tagline">GENERATIVE AI · CLINICAL SIMULATION · ICU NURSING</div>
+        <div class="badge">INTERVENTION PLATFORM — UNIVERSITI MALAYA PhD STUDY 2026</div>
+        <p class="ssub" style="margin-top:14px;">A generative AI-driven virtual simulation platform for mechanical ventilation clinical decision-making training in ICU nursing. This platform is part of a PhD research study.</p>
+      </div>
+      <div class="welcome-grid">
+        <div class="welcome-feat"><div class="welcome-feat-icon">🫁</div><div class="welcome-feat-title">4 Clinical Scenarios</div><div class="welcome-feat-desc">Real-world ICU ventilation cases with live waveforms and vitals</div></div>
+        <div class="welcome-feat"><div class="welcome-feat-icon">🤖</div><div class="welcome-feat-title">Socratic AI Mentor</div><div class="welcome-feat-desc">Interactive AI that guides critical thinking through questioning</div></div>
+        <div class="welcome-feat"><div class="welcome-feat-icon">📊</div><div class="welcome-feat-title">Validated Instruments</div><div class="welcome-feat-desc">CDMNS · MCQ · TAM assessment battery</div></div>
+      </div>
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-title">Study Information</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.8rem;color:var(--text2);">
+          <div><span style="color:var(--text3);font-family:var(--mono);font-size:.68rem;">RESEARCHER</span><br>Samir Alnasseri · 24085855</div>
+          <div><span style="color:var(--text3);font-family:var(--mono);font-size:.68rem;">UNIVERSITY</span><br>Universiti Malaya, Malaysia</div>
+          <div><span style="color:var(--text3);font-family:var(--mono);font-size:.68rem;">SUPERVISORS</span><br>Dr. Noor Hanita · Prof. Vimala</div>
+          <div><span style="color:var(--text3);font-family:var(--mono);font-size:.68rem;">ESTIMATED TIME</span><br>~90 minutes</div>
+        </div>
+      </div>
+      <button class="btn btn-p btn-w" onclick="show('consent-sc');setProg(5)">▶ BEGIN STUDY PARTICIPATION</button>
+      <div class="contact-footer">For enquiries: <a href="/cdn-cgi/l/email-protection#5023313d39227e313c3e31232335223910373d31393c7e333f3d"><span class="__cf_email__" data-cfemail="681b0905011a46090406091b1b0d1a01280f05090104460b0705">[email&#160;protected]</span></a> · <a href="tel:+9689944245">+968 9944245</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S2: INFORMED CONSENT
+═══════════════════════════════════ -->
+<div class="sc" id="consent-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:5%"></div></div><div class="hbadge">CONSENT</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 1 OF 8</div>
+    <div class="stitle">Informed <span class="hl">Consent</span></div>
+    <div class="ssub">Please read the following information carefully before deciding to participate.</div>
+    <div class="consent-box">
+      <h4>Study Title</h4>
+      <p>Effect of Generative AI-Driven Standardised Patient Simulation on ICU Nurses' Clinical Decision-Making and Technology Acceptance in Oman: A Quasi-Experimental Study.</p>
+      <h4>Purpose of the Study</h4>
+      <p>This study examines whether AI-guided virtual simulation improves clinical decision-making in mechanical ventilation management among ICU nurses. You are being invited to participate as a member of the intervention group.</p>
+      <h4>What Will Happen</h4>
+      <p>You will complete: (1) a short demographic form, (2) a pre-test knowledge and clinical decision-making assessment, (3) an orientation tutorial, (4) four virtual ICU simulation scenarios with AI guidance (~40 minutes), (5) a post-test, and (6) a technology acceptance questionnaire. The entire session takes approximately 90 minutes.</p>
+      <h4>The AI Chatbot</h4>
+      <p>During simulation, an AI clinical mentor will ask you Socratic questions to guide your thinking. It will never give you direct answers — it is designed to stimulate your reasoning, not replace it.</p>
+      <h4>Risks and Benefits</h4>
+      <p>There are no foreseeable risks to participation. You may benefit from an enhanced learning experience and contribute to evidence-based nursing education in Oman.</p>
+      <h4>Confidentiality</h4>
+      <p>All data is anonymised. Your participant number (not your name) will be used throughout. Data will be stored securely and used for research purposes only.</p>
+      <h4>Voluntary Participation</h4>
+      <p>Participation is entirely voluntary. You may withdraw at any time without consequence. Your decision will not affect your employment or any other aspect of your work.</p>
+      <h4>Ethics Approval</h4>
+      <p>This study has been approved by the Universiti Malaya Research Ethics Committee (UMREC) and the Ministry of Health Oman.</p>
+      <h4>Contact</h4>
+      <p>For questions: Samir Alnasseri — <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2251434f4b500c434e4c43515147504b62454f434b4e0c414d4f">[email&#160;protected]</a></strong> · <strong>+968 9944245</strong></p>
+    </div>
+    <label class="consent-check">
+      <input type="checkbox" id="consent-cb" onchange="checkConsent()">
+      <span>I have read and understood the information above. I voluntarily agree to participate in this study and understand I may withdraw at any time.</span>
+    </label>
+    <div class="ferr" id="c-err"></div>
+    <br>
+    <button class="btn btn-p btn-w" onclick="goConsent()">CONFIRM CONSENT & CONTINUE ▶</button>
+    <div class="contact-footer">Enquiries: <a href="/cdn-cgi/l/email-protection#d4a7b5b9bda6fab5b8bab5a7a7b1a6bd94b3b9b5bdb8fab7bbb9"><span class="__cf_email__" data-cfemail="6310020e0a114d020f0d02101006110a23040e020a0f4d000c0e">[email&#160;protected]</span></a> · <a href="tel:+9689944245">+968 9944245</a></div>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S3: LOGIN
+═══════════════════════════════════ -->
+<div class="sc" id="login-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:12%"></div></div><div class="hbadge">LOGIN</div></div>
+  <div class="wrap"><div class="inner" style="max-width:440px;">
+    <div class="badge">STEP 2 OF 8</div>
+    <div class="stitle">Participant <span class="hl">Login</span></div>
+    <div class="ssub">Enter the participant number assigned to you by the researcher.</div>
+    <div id="res-banner">
+      <span class="rb-txt" id="res-info">Session found — resume?</span>
+      <div class="rb-acts">
+        <button class="btn btn-g" style="padding:7px 14px;font-size:.7rem;" onclick="resumeSession()">RESUME</button>
+        <button class="btn btn-o" style="padding:7px 14px;font-size:.7rem;" onclick="clearSaved()">START FRESH</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="fg">
+        <label class="flbl">Participant Number <span style="color:var(--red)">*</span></label>
+        <input class="finp" id="pid" placeholder="e.g. P046" maxlength="6" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
+        <div class="ferr" id="pid-err"></div>
+      </div>
+      <div class="fg">
+        <label class="flbl">Session Date</label>
+        <input class="finp" id="ses-date" type="date">
+      </div>
+      <div class="fg">
+        <label class="flbl">Study Group</label>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:.8rem;color:var(--text3);font-family:var(--mono);">
+          🔒 Group assigned automatically from participant number
+        </div>
+      </div>
+      <div class="ferr" id="login-err"></div>
+    </div>
+    <button class="btn btn-p btn-w" onclick="startSession()">▶ BEGIN SESSION</button>
+    <div class="contact-footer">Problems? <a href="/cdn-cgi/l/email-protection#b5c6d4d8dcc79bd4d9dbd4c6c6d0c7dcf5d2d8d4dcd99bd6dad8"><span class="__cf_email__" data-cfemail="4231232f2b306c232e2c23313127302b02252f232b2e6c212d2f">[email&#160;protected]</span></a> · <a href="tel:+9689944245">+968 9944245</a></div>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S4: DEMOGRAPHICS
+═══════════════════════════════════ -->
+<div class="sc" id="demo-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" id="demo-prog" style="width:15%"></div></div><div class="hbadge" id="hbadge">P--- · INT</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 3 OF 8</div>
+    <div class="stitle">Participant <span class="hl">Information</span></div>
+    <div class="ssub">Please provide the following information. All responses are anonymous.</div>
+    <div class="card">
+      <div class="card-title">Personal & Professional Background</div>
+      <div class="fgrid">
+        <div class="fg"><label class="flbl">Age Group</label>
+          <select class="finp" id="d1"><option value="">Select...</option><option>20–29 years</option><option>30–39 years</option><option>40–49 years</option><option>50 years or above</option></select></div>
+        <div class="fg"><label class="flbl">Gender</label>
+          <select class="finp" id="d2"><option value="">Select...</option><option>Male</option><option>Female</option><option>Prefer not to say</option></select></div>
+        <div class="fg"><label class="flbl">Nationality</label>
+          <select class="finp" id="d3"><option value="">Select...</option><option>Omani</option><option>Indian</option><option>Filipino</option><option>Other Arab</option><option>Other</option></select></div>
+        <div class="fg"><label class="flbl">Marital Status</label>
+          <select class="finp" id="d4"><option value="">Select...</option><option>Single</option><option>Married</option><option>Divorced/Widowed</option></select></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Education & Qualifications</div>
+      <div class="fgrid">
+        <div class="fg"><label class="flbl">Highest Qualification</label>
+          <select class="finp" id="d5"><option value="">Select...</option><option>Diploma in Nursing</option><option>Bachelor of Nursing</option><option>Postgraduate Diploma</option><option>Master's or above</option></select></div>
+        <div class="fg"><label class="flbl">Critical Care Certification</label>
+          <select class="finp" id="d6"><option value="">Select...</option><option>Yes</option><option>No</option><option>In progress</option></select></div>
+        <div class="fg"><label class="flbl">MV Training (past 2 years)</label>
+          <select class="finp" id="d7"><option value="">Select...</option><option>Yes — formal course</option><option>Yes — in-service only</option><option>No training received</option></select></div>
+        <div class="fg"><label class="flbl">Prior Simulation Experience</label>
+          <select class="finp" id="d8"><option value="">Select...</option><option>None</option><option>Basic (1–2 sessions)</option><option>Moderate (3–5 sessions)</option><option>Extensive (6+ sessions)</option></select></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Clinical Experience</div>
+      <div class="fgrid">
+        <div class="fg"><label class="flbl">Total Nursing Experience</label>
+          <select class="finp" id="d9"><option value="">Select...</option><option>Less than 1 year</option><option>1–3 years</option><option>4–6 years</option><option>7–10 years</option><option>More than 10 years</option></select></div>
+        <div class="fg"><label class="flbl">ICU Experience</label>
+          <select class="finp" id="d10"><option value="">Select...</option><option>Less than 1 year</option><option>1–3 years</option><option>4–6 years</option><option>7–10 years</option><option>More than 10 years</option></select></div>
+        <div class="fg"><label class="flbl">Current Role</label>
+          <select class="finp" id="d11"><option value="">Select...</option><option>Staff Nurse</option><option>Senior Staff Nurse</option><option>Charge Nurse</option><option>ICU Coordinator</option><option>Other</option></select></div>
+        <div class="fg"><label class="flbl">Patients per Shift (avg)</label>
+          <select class="finp" id="d12"><option value="">Select...</option><option>1 patient</option><option>2 patients</option><option>3 patients</option><option>4 or more</option></select></div>
+        <div class="fg"><label class="flbl">Shift Pattern</label>
+          <select class="finp" id="d13"><option value="">Select...</option><option>Day shifts only</option><option>Night shifts only</option><option>Rotating shifts</option></select></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Technology & Ventilator Familiarity</div>
+      <div class="fgrid">
+        <div class="fg"><label class="flbl">Computer/Tablet Comfort</label>
+          <select class="finp" id="d14"><option value="">Select...</option><option>Not comfortable</option><option>Slightly comfortable</option><option>Moderately comfortable</option><option>Very comfortable</option><option>Expert user</option></select></div>
+        <div class="fg"><label class="flbl">Prior AI Tool Use</label>
+          <select class="finp" id="d15"><option value="">Select...</option><option>Never used</option><option>Used once or twice</option><option>Use occasionally</option><option>Use regularly</option></select></div>
+        <div class="fg"><label class="flbl">MV Self-Confidence (1–5)</label>
+          <select class="finp" id="d16"><option value="">Select...</option><option>1 — Not at all confident</option><option>2 — Slightly confident</option><option>3 — Moderately confident</option><option>4 — Confident</option><option>5 — Very confident</option></select></div>
+        <div class="fg"><label class="flbl">MV Emergency in Past 6 Months</label>
+          <select class="finp" id="d17"><option value="">Select...</option><option>None</option><option>1–2 times</option><option>3–5 times</option><option>More than 5 times</option></select></div>
+      </div>
+    </div>
+    <div class="ferr" id="demo-err"></div>
+    <button class="btn btn-p btn-w" onclick="submitDemo()">CONTINUE TO PRE-TEST ▶</button>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S5: PRE-TEST MCQ
+═══════════════════════════════════ -->
+<div class="sc" id="premcq-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:28%"></div></div><div class="hbadge" id="hbadge2">PRE-MCQ</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 4 OF 8 — PRE-TEST</div>
+    <div class="stitle">Knowledge <span class="hl">Assessment</span></div>
+    <div class="ssub">Answer all 20 questions. Select the single best answer. No feedback is given at this stage — this is your baseline assessment.</div>
+    <div id="mcq-pre-cont"></div>
+    <div class="ferr" id="premcq-err"></div>
+    <button class="btn btn-p btn-w" onclick="submitPreMCQ()">CONTINUE TO CDMNS ▶</button>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S6: PRE-TEST CDMNS
+═══════════════════════════════════ -->
+<div class="sc" id="precdmns-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:38%"></div></div><div class="hbadge">PRE-CDMNS</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 4 OF 8 — PRE-TEST (continued)</div>
+    <div class="stitle">Clinical Decision-Making <span class="hl">Scale</span></div>
+    <div class="ssub">Rate how frequently you engage in each behaviour during clinical practice. <strong>1 = Never · 5 = Always</strong>. There are no right or wrong answers — reflect on your actual practice.</div>
+    <div id="cdmns-pre-cont"></div>
+    <div class="ferr" id="precdmns-err"></div>
+    <button class="btn btn-p btn-w" onclick="submitPreCDMNS()">CONTINUE TO ORIENTATION ▶</button>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S7: ORIENTATION
+═══════════════════════════════════ -->
+<div class="sc" id="orient-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:48%"></div></div><div class="hbadge">ORIENTATION</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 5 OF 8</div>
+    <div class="stitle">Platform <span class="hl">Orientation</span></div>
+    <div class="ssub">Before the simulation begins, please familiarise yourself with the interface. This takes approximately 2 minutes.</div>
+    <div class="orient-step"><div class="orient-icon">📺</div><div><div class="orient-title">Ventilator Waveforms</div><div class="orient-desc">You will see live animated waveforms for Flow, Pressure, and Volume. These change in real time based on patient status. Select the waveform tab to switch between views. Abnormal patterns are key clinical cues.</div></div></div>
+    <div class="orient-step"><div class="orient-icon">❤️</div><div><div class="orient-title">Vital Signs Monitor</div><div class="orient-desc">A live vitals panel shows SpO₂, HR, RR, BP, ETCO₂, and FiO₂. Values highlighted in red indicate alarm ranges — assess these first.</div></div></div>
+    <div class="orient-step"><div class="orient-icon">⚡</div><div><div class="orient-title">Clinical Decisions</div><div class="orient-desc">At each decision point you will choose from 3–4 options. Think carefully — your choice affects the patient's condition and your score. You cannot change a decision once made.</div></div></div>
+    <div class="orient-step"><div class="orient-icon">🤖</div><div><div class="orient-title">AI Clinical Mentor</div><div class="orient-desc">The AI will open each scenario with a question to orient your thinking, then remain available throughout. It will ask you questions — not give answers. Type your thoughts freely. The AI uses the Socratic method to guide you toward insight. You are encouraged to engage with it actively.</div></div></div>
+    <div class="orient-step"><div class="orient-icon">📋</div><div><div class="orient-title">Scenario Flow</div><div class="orient-desc">There are 4 scenarios. Each begins with a patient handover, then unfolds over several decision points. A brief debrief appears after each scenario before you proceed to the next.</div></div></div>
+    <div class="orient-step"><div class="orient-icon">💾</div><div><div class="orient-title">Auto-Save</div><div class="orient-desc">Your progress saves automatically every 2 minutes. If you are interrupted, you can resume from where you left off using your participant number.</div></div></div>
+    <div class="card" style="background:rgba(0,229,255,.04);border-color:rgba(0,229,255,.2);">
+      <div style="font-size:.85rem;color:var(--text);line-height:1.7;">
+        ⏱ <strong>Total simulation time: approximately 40 minutes</strong><br>
+        🎯 <strong>Goal:</strong> Make safe, evidence-based clinical decisions for each patient.<br>
+        🤝 <strong>Important:</strong> Work independently. Do not consult others during the session.
+      </div>
+    </div>
+    <button class="btn btn-g btn-w" onclick="startSim()">▶ BEGIN SIMULATION</button>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S8: SIMULATION
+═══════════════════════════════════ -->
+<div class="sc" id="sim-sc">
+  <div class="hdr">
+    <span class="hlogo">VentSim <span>AI</span></span>
+    <div class="hprog"><div class="hprog-fill" style="width:55%"></div></div>
+    <span id="sim-sc-ind" style="font-family:var(--mono);font-size:.7rem;color:var(--text3);">SCENARIO 1/4</span>
+    <div class="hbadge" id="sim-hbadge">SIM</div>
+  </div>
+  <div style="display:flex;justify-content:center;width:100%;">
+    <div class="sim-layout">
+      <!-- LEFT COLUMN -->
+      <div class="sim-left">
+        <!-- Patient header -->
+        <div class="pt-hdr">
+          <div>
+            <div class="pt-name" id="pt-name">Patient Loading...</div>
+            <div class="pt-meta" id="pt-meta"></div>
+            <div class="pt-dx" id="pt-dx"></div>
+          </div>
+          <div style="text-align:right;">
+            <div class="sc-badge" id="sc-badge">SCENARIO 1</div>
+            <div class="sc-prog" id="sc-prog" style="margin-top:4px;"></div>
+          </div>
+        </div>
+        <!-- Vitals -->
+        <div class="card" style="padding:12px;">
+          <div class="card-title">Vital Signs Monitor</div>
+          <div class="vitals-grid">
+            <div class="vbox"><div class="vbox-lbl">SpO₂</div><div class="vbox-val v-spo2" id="v-spo2">--</div><div class="vbox-unit">%</div></div>
+            <div class="vbox"><div class="vbox-lbl">HR</div><div class="vbox-val v-hr" id="v-hr">--</div><div class="vbox-unit">bpm</div></div>
+            <div class="vbox"><div class="vbox-lbl">RR</div><div class="vbox-val v-rr" id="v-rr">--</div><div class="vbox-unit">br/min</div></div>
+            <div class="vbox"><div class="vbox-lbl">BP</div><div class="vbox-val v-bp" id="v-bp">--</div><div class="vbox-unit">mmHg</div></div>
+            <div class="vbox"><div class="vbox-lbl">ETCO₂</div><div class="vbox-val v-etco2" id="v-etco2">--</div><div class="vbox-unit">mmHg</div></div>
+            <div class="vbox"><div class="vbox-lbl">FiO₂</div><div class="vbox-val v-fio2" id="v-fio2">--</div><div class="vbox-unit">%</div></div>
+          </div>
+        </div>
+        <!-- Waveforms -->
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div class="wave-wrap" style="border:none;">
+            <div class="wave-hdr">
+              <div class="wave-tab active" onclick="setWave('flow',this)">FLOW</div>
+              <div class="wave-tab" onclick="setWave('pressure',this)">PRESSURE</div>
+              <div class="wave-tab" onclick="setWave('volume',this)">VOLUME</div>
+              <span style="margin-left:auto;font-family:var(--mono);font-size:.6rem;color:var(--text3);" id="wave-lbl">L/min</span>
+            </div>
+            <div class="wave-canvases">
+              <canvas id="wc-flow" class="wc active" height="120"></canvas>
+              <canvas id="wc-pressure" class="wc" height="120"></canvas>
+              <canvas id="wc-volume" class="wc" height="120"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- Vent settings -->
+        <div class="card" style="padding:12px;">
+          <div class="card-title">Ventilator Settings</div>
+          <div class="vent-grid">
+            <div class="vset"><div class="vset-lbl">MODE</div><div class="vset-val" id="vs-mode" style="font-size:.8rem;">--</div></div>
+            <div class="vset"><div class="vset-lbl">TV</div><div class="vset-val" id="vs-tv">--</div><div class="vset-unit">mL</div></div>
+            <div class="vset"><div class="vset-lbl">RR Set</div><div class="vset-val" id="vs-rr">--</div><div class="vset-unit">/min</div></div>
+            <div class="vset"><div class="vset-lbl">PEEP</div><div class="vset-val" id="vs-peep">--</div><div class="vset-unit">cmH₂O</div></div>
+            <div class="vset"><div class="vset-lbl">PIP</div><div class="vset-val" id="vs-pip">--</div><div class="vset-unit">cmH₂O</div></div>
+            <div class="vset"><div class="vset-lbl">FiO₂</div><div class="vset-val" id="vs-fio2">--</div><div class="vset-unit">%</div></div>
+            <div class="vset"><div class="vset-lbl">I:E</div><div class="vset-val" id="vs-ie" style="font-size:.8rem;">--</div></div>
+            <div class="vset"><div class="vset-lbl">Plateau P</div><div class="vset-val" id="vs-plat">--</div><div class="vset-unit">cmH₂O</div></div>
+          </div>
+        </div>
+        <!-- History -->
+        <div class="card">
+          <div class="card-title">Clinical History & Handover</div>
+          <div class="hx-box" id="hx-box">Loading patient information...</div>
+        </div>
+        <!-- Decisions -->
+        <div class="dec-wrap" id="dec-wrap">
+          <div class="dec-title">⚡ CLINICAL DECISION REQUIRED</div>
+          <div class="dec-prompt" id="dec-prompt">Loading...</div>
+          <div class="dec-opts" id="dec-opts"></div>
+        </div>
+        <!-- Scene debrief (hidden until after decision) -->
+        <div id="sdeb-area" style="display:none;"></div>
+      </div>
+      <!-- RIGHT COLUMN: AI CHAT -->
+      <div class="sim-right">
+        <div class="chat-wrap" id="chat-wrap">
+          <div class="chat-hdr">
+            <div class="chat-ai-dot"></div>
+            <div>
+              <div class="chat-ai-name">VentSim AI Mentor</div>
+              <div class="chat-ai-role">Socratic Clinical Guide</div>
+            </div>
+            <div class="chat-hint">Type your thoughts<br>AI will guide — not answer</div>
+          </div>
+          <div class="msgs" id="msgs"></div>
+          <div class="chat-inp-wrap">
+            <textarea class="chat-inp" id="chat-inp" placeholder="Share your clinical reasoning..." rows="2" onkeydown="chatKey(event)"></textarea>
+            <button class="chat-send" onclick="sendMsg()">SEND ↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S9: POST-TEST MCQ
+═══════════════════════════════════ -->
+<div class="sc" id="postmcq-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:75%"></div></div><div class="hbadge">POST-MCQ</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 6 OF 8 — POST-TEST</div>
+    <div class="stitle">Post-Simulation <span class="hl">Knowledge Assessment</span></div>
+    <div class="ssub">Answer all 20 questions again. Your answers now may reflect what you have learned during the simulation.</div>
+    <div id="mcq-post-cont"></div>
+    <div class="ferr" id="postmcq-err"></div>
+    <button class="btn btn-p btn-w" onclick="submitPostMCQ()">CONTINUE TO POST-CDMNS ▶</button>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S10: POST-TEST CDMNS
+═══════════════════════════════════ -->
+<div class="sc" id="postcdmns-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:82%"></div></div><div class="hbadge">POST-CDMNS</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 7 OF 8 — POST-TEST (continued)</div>
+    <div class="stitle">Post-Simulation <span class="hl">Clinical Decision-Making Scale</span></div>
+    <div class="ssub">Rate the same behaviours again. Answer based on how you feel <em>right now</em>, after completing the simulation.</div>
+    <div id="cdmns-post-cont"></div>
+    <div class="ferr" id="postcdmns-err"></div>
+    <button class="btn btn-p btn-w" onclick="submitPostCDMNS()">CONTINUE TO TAM ▶</button>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S11: TAM
+═══════════════════════════════════ -->
+<div class="sc" id="tam-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:90%"></div></div><div class="hbadge">TAM</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 7 OF 8 — TECHNOLOGY ACCEPTANCE</div>
+    <div class="stitle">Technology <span class="hl">Acceptance</span></div>
+    <div class="ssub">Rate your agreement with each statement about the AI simulation you just experienced. <strong>1 = Strongly Disagree · 5 = Strongly Agree</strong>.</div>
+    <div id="tam-cont"></div>
+    <div class="ferr" id="tam-err"></div>
+    <button class="btn btn-p btn-w" onclick="submitTAM()">CONTINUE TO DEBRIEF ▶</button>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S12: DEBRIEF
+═══════════════════════════════════ -->
+<div class="sc" id="deb-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:96%"></div></div><div class="hbadge">DEBRIEF</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 8 OF 8</div>
+    <div class="stitle">Session <span class="hl">Debrief</span></div>
+    <div class="ssub">Review your performance and personalised feedback below.</div>
+    <div class="score-grid">
+      <div class="score-box"><div class="score-val" id="deb-sim-score">--</div><div class="score-lbl">SIMULATION SCORE</div><div class="score-sub" id="deb-sim-acc">-- accuracy</div></div>
+      <div class="score-box"><div class="score-val" id="deb-mcq-gain" style="color:var(--green)">--</div><div class="score-lbl">MCQ GAIN</div><div class="score-sub" id="deb-mcq-sub">pre → post</div></div>
+      <div class="score-box"><div class="score-val" id="deb-cdmns-gain" style="color:var(--amber)">--</div><div class="score-lbl">CDMNS GAIN</div><div class="score-sub">clinical decision score</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">AI Clinical Feedback</div>
+      <div class="deb-box" id="deb-fb">Generating personalised feedback...</div>
+    </div>
+    <div class="card" style="background:rgba(0,230,118,.03);border-color:rgba(0,230,118,.15);">
+      <div class="card-title" style="color:var(--green);">Evidence Summary</div>
+      <div style="font-size:.82rem;color:var(--text2);line-height:1.8;">
+        <strong style="color:var(--text);">Key Guidelines Applied in Today's Scenarios:</strong><br>
+        🫁 <strong>ARDSNet Protocol:</strong> TV 6 mL/kg IBW · Plateau pressure ≤30 cmH₂O · FiO₂/PEEP titration table<br>
+        🔍 <strong>DOPE Mnemonic:</strong> Displacement · Obstruction · Pneumothorax · Equipment failure<br>
+        ⚖️ <strong>SBT Criteria:</strong> RSBI &lt;105 · Spontaneous breathing trial · Weaning parameters<br>
+        🔄 <strong>Dyssynchrony:</strong> Flow starvation · Double-triggering · Reverse triggering patterns
+      </div>
+    </div>
+    <button class="btn btn-g btn-w" onclick="finish()">✓ COMPLETE STUDY & SAVE DATA</button>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S13: THANK YOU
+═══════════════════════════════════ -->
+<div class="sc" id="ty-sc">
+  <div class="wrap" style="align-items:center;"><div class="inner" style="max-width:560px;">
+    <div class="ty-box">
+      <div class="ty-icon">✅</div>
+      <div class="ty-title">Thank You!</div>
+      <div class="ty-sub">Your session is complete and your data has been saved. Your participation contributes to advancing nursing education in Oman.</div>
+      <div class="ty-info">
+        <div class="ty-row"><span class="ty-row-lbl">PARTICIPANT</span><span class="ty-row-val" id="ty-pid">--</span></div>
+        <div class="ty-row"><span class="ty-row-lbl">GROUP</span><span class="ty-row-val">Intervention Group</span></div>
+        <div class="ty-row"><span class="ty-row-lbl">SESSION ID</span><span class="ty-row-val" id="ty-sid">--</span></div>
+        <div class="ty-row"><span class="ty-row-lbl">STATUS</span><span class="ty-row-val" id="ty-st">Saved ✓</span></div>
+      </div>
+      <div class="contact-box">
+        <div style="margin-bottom:6px;color:var(--text);font-weight:500;">Research Team Contact</div>
+        Samir Alnasseri · PhD Candidate · Universiti Malaya<br>
+        <a href="/cdn-cgi/l/email-protection#1e6d7f73776c307f72707f6d6d7b6c775e79737f7772307d7173"><span class="__cf_email__" data-cfemail="7102101c18035f101d1f10020214031831161c10181d5f121e1c">[email&#160;protected]</span></a> · <a href="tel:+9689944245">+968 9944245</a>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ═══════════════════════════════════════════
+   WORKER URL — replace after Cloudflare setup
+═══════════════════════════════════════════ */
+const WORKER_URL = 'https://ventsim-worker.samir-alnasseri.workers.dev';
+
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+const S = {
+  pid:'', group:'intervention', date:'', sessionId:'', startTime:0,
+  consentDone:false, savedSession:null,
+  data:{ demo:{}, preMCQ:{}, postMCQ:{}, preCDMNS:{}, postCDMNS:{}, tam:{},
+         preMCQScore:0, postMCQScore:0 },
+  sim:{ scenario:0, step:0, decisions:[], correct:0, total:0,
+        startTime:0, scores:[] },
+  chat:{ history:[], scenarioSystem:'' },
+  autoSaveTimer:null
+};
+let consentChecked = false;
+
+/* ═══════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════ */
+function show(id){
+  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function setProg(pct){ document.getElementById('prog-bar').style.width=pct+'%'; }
+function loader(on,txt='PROCESSING...'){
+  document.getElementById('loader').classList.toggle('on',on);
+  document.getElementById('ltxt').textContent=txt;
+}
+function genSid(){ return 'VS-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase(); }
+function saveLocal(){
+  const snap={pid:S.pid,group:S.group,ts:Date.now(),sessionId:S.sessionId,data:S.data,sim:S.sim};
+  localStorage.setItem('ventsim_'+S.pid,JSON.stringify(snap));
+  localStorage.setItem('ventsim__last__',JSON.stringify(snap));
+}
+function checkSaved(pid){
+  const k=localStorage.getItem('ventsim_'+pid);
+  return k?JSON.parse(k):null;
+}
+
+/* ═══════════════════════════════════════════
+   S2 — CONSENT
+═══════════════════════════════════════════ */
+function checkConsent(){ consentChecked = document.getElementById('consent-cb').checked; }
+function goConsent(){
+  if(!consentChecked){ document.getElementById('c-err').textContent='Please tick the consent box to continue.'; return; }
+  S.consentDone = true;
+  show('login-sc'); setProg(12);
+}
+
+/* ═══════════════════════════════════════════
+   S3 — LOGIN
+═══════════════════════════════════════════ */
+async function startSession(){
+  const pid = document.getElementById('pid').value.trim().toUpperCase();
+  const err = document.getElementById('login-err');
+  document.getElementById('pid-err').textContent = '';
+  err.textContent = '';
+  if(!pid){ document.getElementById('pid-err').textContent='Please enter your participant number.'; return; }
+  const saved = checkSaved(pid);
+  if(saved && !S.savedSession){
+    S.savedSession = saved; S.pid = pid;
+    document.getElementById('res-banner').style.display='flex';
+    document.getElementById('res-info').textContent = pid+' — resume from where you left off?';
+    return;
+  }
+  loader(true,'VALIDATING...');
+  try{
+    const r = await fetch(WORKER_URL+'/validate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid})});
+    const j = await r.json(); loader(false);
+    if(!j.valid){ err.textContent = j.message||'Invalid participant ID.'; return; }
+    S.pid=pid; S.group=j.group||'intervention';
+    S.date=document.getElementById('ses-date').value||new Date().toISOString().split('T')[0];
+    S.sessionId=genSid(); S.startTime=Date.now();
+    document.getElementById('hbadge').textContent=pid+' · INT';
+    document.getElementById('hbadge2').textContent=pid+' · PRE-MCQ';
+    show('demo-sc'); setProg(15);
+    startAutoSave();
+  }catch(e){
+    loader(false);
+    // Offline fallback for testing
+    S.pid=pid; S.group='intervention';
+    S.date=document.getElementById('ses-date').value||new Date().toISOString().split('T')[0];
+    S.sessionId=genSid(); S.startTime=Date.now();
+    document.getElementById('hbadge').textContent=pid+' · INT';
+    document.getElementById('hbadge2').textContent=pid+' · PRE-MCQ';
+    show('demo-sc'); setProg(15);
+    startAutoSave();
+  }
+}
+function resumeSession(){
+  const saved=S.savedSession;
+  if(!saved) return;
+  S.pid=saved.pid; S.group=saved.group; S.sessionId=saved.sessionId;
+  S.data=saved.data; S.sim=saved.sim||S.sim;
+  document.getElementById('hbadge').textContent=saved.pid+' · INT';
+  show('demo-sc'); setProg(15);
+  startAutoSave();
+}
+function clearSaved(){
+  if(S.pid) localStorage.removeItem('ventsim_'+S.pid);
+  S.savedSession=null;
+  document.getElementById('res-banner').style.display='none';
+}
+function startAutoSave(){ S.autoSaveTimer=setInterval(saveLocal,120000); }
+
+/* ═══════════════════════════════════════════
+   S4 — DEMOGRAPHICS
+═══════════════════════════════════════════ */
+function submitDemo(){
+  const ids=['d1','d2','d3','d4','d5','d6','d7','d8','d9','d10','d11','d12','d13','d14','d15','d16','d17'];
+  const missing=ids.filter(i=>!document.getElementById(i).value);
+  if(missing.length){ document.getElementById('demo-err').textContent='Please complete all fields ('+missing.length+' remaining).'; return; }
+  ids.forEach(i=>S.data.demo[i]=document.getElementById(i).value);
+  show('premcq-sc'); setProg(28); saveLocal();
+}
+
+/* ═══════════════════════════════════════════
+   MCQ DATA — 20 Evidence-based Questions
+═══════════════════════════════════════════ */
+const MCQ_ITEMS = [
+  {q:"A ventilated ARDS patient has PaO₂/FiO₂ ratio of 120 mmHg. According to ARDSNet protocol, what is the maximum recommended tidal volume?",opts:["10 mL/kg actual body weight","6 mL/kg ideal body weight","8 mL/kg actual body weight","6 mL/kg actual body weight"],ans:1},
+  {q:"You notice double-triggering on the flow waveform with a short expiratory time. What is the most likely cause of patient-ventilator dyssynchrony?",opts:["Auto-PEEP","Flow starvation","Reverse triggering","Insufficient inspiratory time"],ans:2},
+  {q:"A ventilated patient suddenly desaturates to SpO₂ 82%. Using the DOPE mnemonic, what should you assess FIRST?",opts:["Check plateau pressure","Disconnect and bag ventilate","Assess for Displacement of ETT","Increase FiO₂ to 100%"],ans:2},
+  {q:"An ARDS patient on ARDSNet ventilation has plateau pressure of 34 cmH₂O. What is the MOST appropriate immediate action?",opts:["Reduce PEEP by 2 cmH₂O","Reduce tidal volume to achieve Pplat ≤30 cmH₂O","Increase sedation","Switch to pressure control ventilation"],ans:1},
+  {q:"Which parameter BEST predicts successful weaning from mechanical ventilation?",opts:["Vital capacity >10 mL/kg","Rapid Shallow Breathing Index (RSBI) <105","Maximum inspiratory pressure >-20 cmH₂O","Minute ventilation <10 L/min"],ans:1},
+  {q:"A patient on AC/VC ventilation develops flow starvation dyssynchrony. What ventilator change addresses this BEST?",opts:["Increase respiratory rate","Increase inspiratory flow rate or switch to pressure control","Increase tidal volume","Add PEEP"],ans:1},
+  {q:"What defines severe ARDS according to the Berlin Definition?",opts:["PaO₂/FiO₂ <200 mmHg","PaO₂/FiO₂ <100 mmHg","PaO₂/FiO₂ <150 mmHg","SpO₂ <88% on FiO₂ 0.6"],ans:1},
+  {q:"During a spontaneous breathing trial (SBT), which finding indicates FAILURE and should prompt stopping the trial?",opts:["RR 20 breaths/min","SpO₂ 93% on FiO₂ 0.4","RR >35 breaths/min for >5 minutes","HR 95 bpm"],ans:2},
+  {q:"A patient with ARDS is on PEEP 12 cmH₂O. SpO₂ remains 88% on FiO₂ 60%. What is the MOST appropriate next step?",opts:["Increase FiO₂ to 100%","Consider prone positioning","Reduce PEEP to decrease overdistension","Increase respiratory rate"],ans:1},
+  {q:"What is the correct sequence for the DOPE mnemonic in acute desaturation?",opts:["Displacement, Obstruction, Pneumothorax, Equipment","Dislodgement, Occlusion, Pulmonary embolism, Edema","Disconnection, Obstruction, Perfusion, Equipment","Displacement, Over-inflation, Pneumothorax, Equipment"],ans:0},
+  {q:"In pressure-controlled ventilation, the clinician sets:",opts:["Tidal volume and respiratory rate","Inspiratory pressure and respiratory rate","Flow rate and tidal volume","FiO₂ and PEEP only"],ans:1},
+  {q:"A patient develops auto-PEEP. Which intervention is MOST effective?",opts:["Increase inspiratory time","Decrease respiratory rate and increase expiratory time","Increase tidal volume","Switch from PCV to VCV"],ans:1},
+  {q:"The plateau pressure measures:",opts:["Peak airway resistance","Alveolar pressure at end-inspiration","Mean airway pressure","Work of breathing"],ans:1},
+  {q:"A nurse calculates driving pressure as 18 cmH₂O. This is calculated as:",opts:["Peak pressure minus PEEP","Plateau pressure minus PEEP","Mean airway pressure minus PEEP","PIP minus Pplat"],ans:1},
+  {q:"Which FiO₂/PEEP combination is recommended by ARDSNet for PaO₂/FiO₂ <100?",opts:["FiO₂ 0.5 / PEEP 8","FiO₂ 0.7 / PEEP 14","FiO₂ 0.9 / PEEP 18","FiO₂ 0.8 / PEEP 10"],ans:2},
+  {q:"A ventilated patient has RSBI of 65. What does this suggest?",opts:["Weaning likely to fail","Weaning likely to succeed","Patient is apnoeic","High work of breathing"],ans:1},
+  {q:"Reverse triggering dyssynchrony occurs when:",opts:["Patient triggers the ventilator early","Ventilator-delivered breath stimulates patient effort","Flow starvation occurs","Patient double-triggers"],ans:1},
+  {q:"The minimum duration of a spontaneous breathing trial before extubation decision is:",opts:["15 minutes","30 minutes","60 minutes","2 hours"],ans:1},
+  {q:"A patient on ARDSNet has IBW of 70 kg. What is the maximum recommended tidal volume?",opts:["350 mL","420 mL","490 mL","560 mL"],ans:1},
+  {q:"In acute ETT obstruction, after suctioning fails to relieve the blockage, what is the NEXT priority action?",opts:["Increase ventilator pressure","Change ETT immediately","Perform chest physiotherapy","Increase FiO₂"]  ,ans:1}
+];
+
+function buildMCQ(containerId, storeKey){
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  MCQ_ITEMS.forEach((item,i)=>{
+    const letters=['A','B','C','D'];
+    const div=document.createElement('div');
+    div.className='mcq-item'; div.id='mcq-item-'+storeKey+'-'+i;
+    div.innerHTML=`<div class="mcq-q"><span class="mcq-qn">Q${i+1}.</span>${item.q}</div><div class="mcq-opts">${item.opts.map((o,j)=>`<div class="mcq-opt" onclick="selMCQ('${storeKey}',${i},${j},this)" id="mopt-${storeKey}-${i}-${j}"><span class="mcq-letter">${letters[j]}</span>${o}</div>`).join('')}</div>`;
+    c.appendChild(div);
+  });
+}
+function selMCQ(key,qi,oi,el){
+  const prev=document.querySelector('#mcq-item-'+key+'-'+qi+' .mcq-opt.sel');
+  if(prev) prev.classList.remove('sel');
+  el.classList.add('sel');
+  S.data[key][qi]=oi;
+  document.getElementById('mcq-item-'+key+'-'+qi).classList.add('answered');
+}
+function scoreMCQ(key){ return MCQ_ITEMS.reduce((s,item,i)=>s+(S.data[key][i]===item.ans?1:0),0); }
+
+function submitPreMCQ(){
+  const answered=Object.keys(S.data.preMCQ).length;
+  if(answered<20){ document.getElementById('premcq-err').textContent='Please answer all 20 questions ('+(20-answered)+' remaining).'; return; }
+  S.data.preMCQScore=scoreMCQ('preMCQ');
+  show('precdmns-sc'); setProg(38); saveLocal();
+}
+function submitPostMCQ(){
+  const answered=Object.keys(S.data.postMCQ).length;
+  if(answered<20){ document.getElementById('postmcq-err').textContent='Please answer all 20 questions ('+(20-answered)+' remaining).'; return; }
+  S.data.postMCQScore=scoreMCQ('postMCQ');
+  show('postcdmns-sc'); setProg(82); saveLocal();
+}
+
+/* ═══════════════════════════════════════════
+   CDMNS — Jenkins 1985, 40 items, 4 subscales
+═══════════════════════════════════════════ */
+const CDMNS_ITEMS = [
+  // Subscale 1 — Searching for Alternatives (1–10)
+  "I search for information relevant to the care of my patients","I review options before making clinical decisions","I consult resources such as protocols or research findings","I consider multiple possibilities before deciding","I update my plan when new information becomes available","I look for evidence to support clinical decisions","I reassess patients after implementing a change","I seek advice from colleagues when uncertain","I explore different approaches to patient problems","I evaluate outcomes of my clinical decisions",
+  // Subscale 2 — Canvassing Objectives (11–20)
+  "I identify the goals of care for each patient","I prioritise patient needs before taking action","I align nursing interventions with patient outcomes","I set clear objectives for each clinical encounter","I coordinate care to meet patient goals","I adapt interventions based on changing patient status","I consider the patient's preferences in planning care","I document care plans that reflect clinical goals","I communicate goals clearly with the healthcare team","I evaluate whether goals have been achieved",
+  // Subscale 3 — Evaluating Consequences (21–30)
+  "I anticipate the likely consequences of clinical decisions","I consider risks before implementing interventions","I evaluate short-term and long-term effects of care","I revise my plan if anticipated outcomes are not met","I identify warning signs that indicate deterioration","I question decisions that seem inconsistent with evidence","I review the impact of interventions on patient status","I consider the effect of medications and treatments","I anticipate complications related to the patient's condition","I balance benefits and risks in clinical decisions",
+  // Subscale 4 — Searching for Information (31–40)
+  "I use patient data to guide clinical decisions","I monitor vital signs to detect changes in condition","I interpret laboratory and diagnostic results","I perform systematic physical assessments","I integrate clinical data to form a complete picture","I apply clinical knowledge to interpret assessment findings","I use a structured approach when assessing patients","I recognise patterns in clinical data that indicate risk","I identify the significance of abnormal findings","I use clinical information to anticipate patient needs"
+];
+const CDMNS_LABELS = ['Never','Rarely','Sometimes','Often','Always'];
+const CDMNS_SUBS = ['Searching for Alternatives','Canvassing Objectives','Evaluating Consequences','Searching for Information'];
+
+function buildCDMNS(containerId, storeKey){
+  const c=document.getElementById(containerId); c.innerHTML='';
+  CDMNS_SUBS.forEach((sub,si)=>{
+    const sd=document.createElement('div'); sd.className='card';
+    sd.innerHTML=`<div class="card-title">${si+1}. ${sub}</div>`;
+    for(let i=si*10;i<(si+1)*10;i++){
+      const row=document.createElement('div'); row.className='lk-row'; row.id='lk-'+storeKey+'-'+i;
+      row.innerHTML=`<div class="lk-q"><span class="lk-qn">${i+1}.</span>${CDMNS_ITEMS[i]}</div><div class="lk-opts">${[1,2,3,4,5].map(v=>`<button class="lk-opt" title="${CDMNS_LABELS[v-1]}" onclick="selLK('${storeKey}',${i},${v},this)">${v}</button>`).join('')}</div>`;
+      sd.appendChild(row);
+    }
+    c.appendChild(sd);
+  });
+}
+function selLK(key,qi,val,el){
+  document.querySelectorAll('#lk-'+key+'-'+qi+' .lk-opt').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel'); S.data[key][qi]=val;
+  document.getElementById('lk-'+key+'-'+qi).classList.add('answered');
+}
+function cdmnsComplete(key){ return Object.keys(S.data[key]).length>=40; }
+function cdmnsTotal(key){ return Object.values(S.data[key]).reduce((a,b)=>a+b,0); }
+
+function submitPreCDMNS(){
+  if(!cdmnsComplete('preCDMNS')){ document.getElementById('precdmns-err').textContent='Please rate all 40 items.'; return; }
+  show('orient-sc'); setProg(48); saveLocal();
+}
+function submitPostCDMNS(){
+  if(!cdmnsComplete('postCDMNS')){ document.getElementById('postcdmns-err').textContent='Please rate all 40 items.'; return; }
+  show('tam-sc'); setProg(90); saveLocal();
+}
+
+/* ═══════════════════════════════════════════
+   TAM — 19 items, 5 dimensions
+═══════════════════════════════════════════ */
+const TAM_DIMS = [
+  { name:'Perceived Usefulness', items:["Using VentSim AI improves my clinical decision-making performance","Using VentSim AI enhances my effectiveness in managing ventilated patients","VentSim AI is useful for developing ICU nursing competencies","Using VentSim AI increases my productivity in learning","VentSim AI provides useful feedback for my clinical practice"] },
+  { name:'Perceived Ease of Use', items:["Learning to use VentSim AI is easy for me","I find VentSim AI easy to interact with","The AI chat interface is clear and understandable","It is easy to navigate through the VentSim AI scenarios","Overall, VentSim AI is easy to use"] },
+  { name:'Behavioural Intention', items:["I intend to use AI simulation tools for clinical learning in the future","I plan to recommend AI-based simulation to my colleagues","I would use VentSim AI again if it were available"] },
+  { name:'AI-Specific Trust', items:["I trust the clinical guidance provided by VentSim AI","VentSim AI provides reliable information to support my decisions","I feel confident that VentSim AI's questions are evidence-based"] },
+  { name:'Educational Value', items:["VentSim AI effectively stimulates my critical thinking","The Socratic questioning approach helped me reason through clinical problems","VentSim AI is a valuable tool for ICU nursing education"] }
+];
+let tamItemIdx = 0;
+function buildTAM(){
+  const c=document.getElementById('tam-cont'); c.innerHTML='';
+  TAM_DIMS.forEach((dim,di)=>{
+    const dd=document.createElement('div'); dd.className='tam-dim';
+    dd.innerHTML=`<div class="tam-dim-title">${di+1}. ${dim.name}</div>`;
+    dim.items.forEach(item=>{
+      const row=document.createElement('div'); row.className='lk-row'; row.id='lk-tam-'+tamItemIdx;
+      const idx=tamItemIdx;
+      row.innerHTML=`<div class="lk-q"><span class="lk-qn">${idx+1}.</span>${item}</div><div class="lk-opts">${[1,2,3,4,5].map(v=>`<button class="lk-opt" title="${['Strongly Disagree','Disagree','Neutral','Agree','Strongly Agree'][v-1]}" onclick="selTAM(${idx},${v},this)">${v}</button>`).join('')}</div>`;
+      dd.appendChild(row);
+      tamItemIdx++;
+    });
+    c.appendChild(dd);
+  });
+}
+function selTAM(qi,val,el){
+  document.querySelectorAll('#lk-tam-'+qi+' .lk-opt').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel'); S.data.tam[qi]=val;
+  document.getElementById('lk-tam-'+qi).classList.add('answered');
+}
+function submitTAM(){
+  if(Object.keys(S.data.tam).length<19){ document.getElementById('tam-err').textContent='Please rate all 19 items.'; return; }
+  loadDebrief(); show('deb-sc'); setProg(96); saveLocal();
+}
+
+/* ═══════════════════════════════════════════
+   SIMULATION ENGINE
+═══════════════════════════════════════════ */
+const SCENARIOS = [
+  {
+    id:'SC1', title:'Patient-Ventilator Dyssynchrony',
+    mrn:'ICU-2026-001', age:58, sex:'Male', wt:75, ht:175,
+    dx:'Post-op Day 3 — Abdominal surgery. COPD background. Increasing agitation on ventilator.',
+    hx:'Mr. Al-Rashidi, 58M, admitted following emergency laparotomy for perforated peptic ulcer. Background: COPD (GOLD III), hypertension, smoker 30 pack-years. Currently sedated (RASS -1, target -2). Nurse reports increasing patient-triggered breaths not matching ventilator cycles. FiO₂ requirements increasing.',
+    vitals:{spo2:91,hr:108,rr:28,bp:'142/88',etco2:48,fio2:55},
+    vent:{mode:'AC/VC',tv:520,rr:14,peep:6,pip:36,fio2:55,ie:'1:2.5',plat:32},
+    wave:'dyssynchrony',
+    decisions:[
+      {prompt:'The waveforms show irregular flow patterns with abrupt drops — what type of dyssynchrony do you identify?',opts:[{t:'Flow starvation — insufficient inspiratory flow',c:true},{t:'Double-triggering — short expiratory time',c:false},{t:'Auto-PEEP — incomplete exhalation',c:false},{t:'Reverse triggering — passive inflation',c:false}],exp:'Flow starvation occurs when patient demand exceeds set flow, causing concave flow waveform dips. The clinical finding here — COPD patient, high inspiratory effort against fixed flow — is classic flow starvation.'},
+      {prompt:'To address flow starvation dyssynchrony, what is the MOST effective ventilator intervention?',opts:[{t:'Increase tidal volume to 650 mL',c:false},{t:'Increase peak inspiratory flow rate to 80 L/min or switch to PCV',c:true},{t:'Reduce respiratory rate to 10',c:false},{t:'Increase PEEP to 10 cmH₂O',c:false}],exp:'Increasing flow rate meets the patient\'s demand. PCV provides a decelerating flow pattern that better matches COPD patient breathing effort. Correct answer aligns with evidence for managing flow starvation.'},
+      {prompt:'After adjusting flow, patient remains distressed (RASS +1). SpO₂ still 91%. What is your NEXT priority assessment?',opts:[{t:'Immediately increase FiO₂ to 80%',c:false},{t:'Check for auto-PEEP using expiratory hold manoeuvre',c:true},{t:'Request CT chest',c:false},{t:'Increase sedation to RASS -3',c:false}],exp:'In COPD patients with dyssynchrony, auto-PEEP is common. Expiratory hold manoeuvre reveals intrinsic PEEP. Addressing auto-PEEP is essential before escalating FiO₂ or sedation.'}
+    ]
+  },
+  {
+    id:'SC2', title:'Acute Desaturation — DOPE',
+    mrn:'ICU-2026-002', age:44, sex:'Female', wt:62, ht:163,
+    dx:'Post-intubation Day 1. Sudden SpO₂ drop from 97% to 78% in 3 minutes.',
+    hx:'Ms. Zahra Al-Balushi, 44F, intubated 18 hours ago for type 2 respiratory failure secondary to community-acquired pneumonia. Previously well, no significant PMH. RASS -2, ETT size 7.5 mm at 22 cm lip. Nurse reports patient was being repositioned for pressure area care when desaturation began.',
+    vitals:{spo2:78,hr:132,rr:30,bp:'88/54',etco2:22,fio2:100},
+    vent:{mode:'AC/VC',tv:420,rr:18,peep:8,pip:52,fio2:100,ie:'1:2',plat:'N/A'},
+    wave:'obstruction',
+    decisions:[
+      {prompt:'SpO₂ is 78% and falling. The FIRST action using the DOPE mnemonic is:',opts:[{t:'Increase PEEP to 14 cmH₂O',c:false},{t:'Disconnect from ventilator and manually ventilate with 100% O₂',c:true},{t:'Order emergency chest X-ray',c:false},{t:'Increase respiratory rate to 24',c:false}],exp:'Disconnect and bag-valve-mask with 100% O₂ is the first action in acute desaturation. This confirms whether the problem is the ventilator (Equipment — E in DOPE) and provides immediate oxygenation while assessing.'},
+      {prompt:'Manual ventilation feels very stiff (high resistance). ETT appears to be at 26 cm lip. You suspect:',opts:[{t:'Tension pneumothorax',c:false},{t:'ETT displacement into right mainstem bronchus (D — Displacement)',c:true},{t:'Mucus plug obstruction',c:false},{t:'Patient-ventilator dyssynchrony',c:false}],exp:'ETT advancing from 22 cm to 26 cm after repositioning strongly suggests right mainstem intubation. This is the D (Displacement) of DOPE. Absent left breath sounds would confirm.'},
+      {prompt:'After confirming right mainstem intubation and pulling ETT back to 21 cm, SpO₂ improves to 88% but remains low. FiO₂ is 100%. What next?',opts:[{t:'Add PEEP 5 cmH₂O above current level and reassess SpO₂',c:true},{t:'Extubate immediately',c:false},{t:'Reduce FiO₂ to wean oxygen',c:false},{t:'Perform bronchoscopy immediately',c:false}],exp:'After correcting displacement, optimising PEEP addresses residual atelectasis from right mainstem intubation. Incremental PEEP titration is indicated before FiO₂ reduction.'}
+    ]
+  },
+  {
+    id:'SC3', title:'ARDS — Lung Protective Ventilation',
+    mrn:'ICU-2026-003', age:51, sex:'Male', wt:80, ht:178,
+    dx:'ARDS Day 2. PaO₂/FiO₂ 105. ARDSNet protocol review required.',
+    hx:'Mr. Khalid Al-Farsi, 51M, ARDS secondary to severe sepsis from intra-abdominal source. Day 2 in ICU. IBW 72 kg. Current settings not matching ARDSNet protocol — nurse flagged tidal volume as potentially too high. Recent ABG: pH 7.28, PaO₂ 62 mmHg, PaCO₂ 58 mmHg, on FiO₂ 80%.',
+    vitals:{spo2:88,hr:118,rr:32,bp:'98/62',etco2:55,fio2:80},
+    vent:{mode:'AC/VC',tv:650,rr:18,peep:10,pip:44,fio2:80,ie:'1:2',plat:34},
+    wave:'ards',
+    decisions:[
+      {prompt:'IBW is 72 kg. Current TV is 650 mL. According to ARDSNet, what should the tidal volume be?',opts:[{t:'650 mL — current setting is acceptable',c:false},{t:'432 mL (6 mL/kg IBW)',c:true},{t:'504 mL (7 mL/kg IBW)',c:false},{t:'576 mL (8 mL/kg IBW)',c:false}],exp:'ARDSNet mandates 6 mL/kg IBW. IBW 72 kg × 6 = 432 mL. Current TV of 650 mL is 9 mL/kg — significantly exceeding the safe threshold and causing volutrauma.'},
+      {prompt:'After reducing TV to 432 mL, plateau pressure is 33 cmH₂O. Target is ≤30 cmH₂O. What next?',opts:[{t:'Reduce TV further to 5 mL/kg (360 mL)',c:true},{t:'Increase PEEP to compensate',c:false},{t:'Accept plateau pressure — within acceptable range',c:false},{t:'Switch to PRVC mode',c:false}],exp:'ARDSNet allows TV reduction to 4 mL/kg if needed to achieve Pplat ≤30 cmH₂O. Permissive hypercapnia is acceptable. 5 mL/kg (360 mL) is the appropriate next reduction.'},
+      {prompt:'PaO₂/FiO₂ is 105 (severe ARDS). SpO₂ persists at 88% on FiO₂ 80% / PEEP 10. What additional intervention should be considered?',opts:[{t:'Immediate ECMO referral',c:false},{t:'Prone positioning for 16+ hours',c:true},{t:'High-frequency oscillatory ventilation',c:false},{t:'Increase FiO₂ to 100%',c:false}],exp:'PROSEVA trial demonstrated 28-day mortality reduction with prone positioning in severe ARDS (PaO₂/FiO₂ <150). Prone for ≥16 hours is standard of care. ECMO is considered only after prone positioning fails.'}
+    ]
+  },
+  {
+    id:'SC4', title:'Weaning Readiness & SBT',
+    mrn:'ICU-2026-004', age:66, sex:'Female', wt:68, ht:160,
+    dx:'Day 8 ventilation. Meets weaning criteria. Spontaneous breathing trial decision.',
+    hx:'Mrs. Fatima Al-Zaabi, 66F, ventilated for 8 days following Guillain-Barré syndrome exacerbation. Condition improving. Physiotherapy report: improving limb strength. RASS 0 (awake, calm). Last sedation 18 hours ago. SpO₂ satisfactory on low support. Team considering extubation. Requires SBT evaluation.',
+    vitals:{spo2:96,hr:82,rr:16,bp:'124/76',etco2:38,fio2:40},
+    vent:{mode:'PS/CPAP',tv:480,rr:16,peep:5,pip:18,fio2:40,ie:'1:2',plat:16},
+    wave:'weaning',
+    decisions:[
+      {prompt:'Before starting an SBT, which set of criteria MUST be met?',opts:[{t:'SpO₂ >90%, awake, haemodynamically stable, FiO₂ ≤50%',c:true},{t:'SpO₂ >95%, RASS -2, FiO₂ ≤40%, no vasopressors',c:false},{t:'Normal ABG, no fever, oral secretions controlled',c:false},{t:'Negative NIF >-30, VC >10 mL/kg, RR <20',c:false}],exp:'Readiness criteria include: adequate oxygenation (SpO₂ >90% on FiO₂ ≤50%, PEEP ≤8), haemodynamic stability, alert/cooperative, resolving cause. This patient meets all criteria.'},
+      {prompt:'You commence a 30-minute T-piece SBT. At 15 minutes: RR 34, SpO₂ 91%, increasing accessory muscle use, HR 118 (was 82). What do you do?',opts:[{t:'Continue — minor changes are expected during SBT',c:false},{t:'Stop the SBT immediately — failure criteria met',c:true},{t:'Increase FiO₂ during trial',c:false},{t:'Extend SBT to 60 minutes to give more time',c:false}],exp:'SBT failure criteria: RR >35, SpO₂ <90%, HR increase >20%, increased work of breathing, agitation or distress. Multiple failure criteria present. Continuing risks patient fatigue and decompensation.'},
+      {prompt:'SBT stopped. Patient returned to PS ventilation. What is the MOST appropriate next action?',opts:[{t:'Immediate tracheostomy',c:false},{t:'Rest patient for 24 hours then reassess readiness for repeat SBT',c:true},{t:'Return to full AC ventilation for 48 hours',c:false},{t:'Increase sedation and restart in 6 hours',c:false}],exp:'After SBT failure, allow patient 24 hours rest on comfortable ventilator settings. Identify and address reversible causes of failure. Daily reassessment with spontaneous awakening trial + SBT bundle is evidence-based.'}
+    ]
+  }
+];
+
+const WAVE_TYPES = { dyssynchrony:true, obstruction:true, ards:true, weaning:true };
+let waveAnimFrame = null;
+let waveTime = 0;
+let currentWaveType = 'flow';
+
+function setWave(type, el){
+  document.querySelectorAll('.wave-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.wc').forEach(c=>c.classList.remove('active'));
+  document.getElementById('wc-'+type).classList.add('active');
+  currentWaveType = type;
+  const units={'flow':'L/min','pressure':'cmH₂O','volume':'mL'};
+  document.getElementById('wave-lbl').textContent = units[type];
+}
+
+function drawWave(canvasId, type, scenarioType){
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth || 600;
+  const W=canvas.width, H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#050d14'; ctx.fillRect(0,0,W,H);
+  // Grid
+  ctx.strokeStyle='rgba(14,42,63,.8)'; ctx.lineWidth=1;
+  for(let x=0;x<W;x+=50){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=30){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  // Baseline
+  ctx.strokeStyle='rgba(0,229,255,.2)'; ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
+  ctx.setLineDash([]);
+
+  const colors={flow:'#00e5ff',pressure:'#ffd740',volume:'#00e676'};
+  ctx.strokeStyle=colors[type]||'#00e5ff';
+  ctx.lineWidth=2;
+  ctx.shadowBlur=6; ctx.shadowColor=colors[type]||'#00e5ff';
+  ctx.beginPath();
+
+  const speed=2;
+  for(let x=0;x<W;x++){
+    const t=(x+waveTime*speed)/W*4*Math.PI;
+    let y=H/2;
+    if(type==='flow'){
+      if(scenarioType==='dyssynchrony'){
+        const base=Math.sin(t)*H*0.3;
+        const notch=(Math.sin(t*3)*0.15)*(Math.abs(Math.sin(t))>0.3?1:0);
+        y=H/2-base-notch*H;
+      } else if(scenarioType==='obstruction'){
+        y=H/2-(Math.sin(t)*H*0.35)*(Math.cos(t*0.5)>0?1.3:0.4);
+      } else if(scenarioType==='ards'){
+        y=H/2-Math.sin(t)*H*0.25;
+      } else {
+        y=H/2-Math.sin(t)*H*0.25*(1+0.1*Math.sin(t*7));
+      }
+    } else if(type==='pressure'){
+      const base=Math.max(0,Math.sin(t));
+      if(scenarioType==='ards'){ y=H/2-base*H*0.38; }
+      else if(scenarioType==='dyssynchrony'){ y=H/2-base*H*0.35*(1+0.15*Math.sin(t*4)); }
+      else { y=H/2-base*H*0.3; }
+    } else {
+      if(scenarioType==='weaning'){
+        y=H/2-Math.max(0,Math.sin(t))*H*0.25*(0.8+0.2*Math.sin(t*0.3));
+      } else {
+        y=H/2-Math.max(0,Math.sin(t))*H*0.28;
+      }
+    }
+    x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }
+  ctx.stroke(); ctx.shadowBlur=0;
+}
+
+function animateWaves(){
+  const sc=SCENARIOS[S.sim.scenario];
+  if(!sc) return;
+  waveTime++;
+  ['flow','pressure','volume'].forEach(t=>drawWave('wc-'+t,t,sc.wave));
+  waveAnimFrame=requestAnimationFrame(animateWaves);
+}
+
+function loadScenario(idx){
+  const sc=SCENARIOS[idx];
+  S.sim.scenario=idx; S.sim.step=0;
+  S.chat.history=[];
+
+  // Patient info
+  document.getElementById('pt-name').textContent=sc.title;
+  document.getElementById('pt-meta').textContent='MRN: '+sc.mrn+' · '+sc.age+'yr '+sc.sex+' · '+sc.wt+'kg '+sc.ht+'cm';
+  document.getElementById('pt-dx').textContent=sc.dx;
+  document.getElementById('sc-badge').textContent='SCENARIO '+(idx+1)+'/4';
+  document.getElementById('sc-prog').textContent=(idx+1)+' of 4 scenarios';
+  document.getElementById('sim-sc-ind').textContent='SCENARIO '+(idx+1)+'/4';
+
+  // Vitals
+  const v=sc.vitals;
+  ['spo2','hr','rr','bp','etco2','fio2'].forEach(k=>{
+    document.getElementById('v-'+k).textContent=v[k];
+  });
+  // Alert styling
+  document.querySelector('.v-spo2').parentElement.classList.toggle('alert',v.spo2<90);
+  document.querySelector('.v-hr').parentElement.classList.toggle('alert',v.hr>120||v.hr<50);
+
+  // Vent settings
+  const vs=sc.vent;
+  document.getElementById('vs-mode').textContent=vs.mode;
+  document.getElementById('vs-tv').textContent=vs.tv;
+  document.getElementById('vs-rr').textContent=vs.rr;
+  document.getElementById('vs-peep').textContent=vs.peep;
+  document.getElementById('vs-pip').textContent=vs.pip;
+  document.getElementById('vs-fio2').textContent=vs.fio2;
+  document.getElementById('vs-ie').textContent=vs.ie;
+  document.getElementById('vs-plat').textContent=vs.plat;
+
+  // History
+  document.getElementById('hx-box').textContent=sc.hx;
+
+  // Clear chat
+  document.getElementById('msgs').innerHTML='';
+  S.chat.scenarioSystem = buildSystemPrompt(sc);
+
+  // Load first decision
+  loadDecision(0);
+
+  // Restart waveform
+  if(waveAnimFrame) cancelAnimationFrame(waveAnimFrame);
+  waveTime=0; animateWaves();
+
+  // AI opens scenario proactively
+  setTimeout(()=>aiOpenScenario(sc), 1200);
+}
+
+function buildSystemPrompt(sc){
+  return `You are VentSim AI, a Socratic clinical mentor for ICU nursing simulation.
+
+SCENARIO: ${sc.title} (${sc.id})
+PATIENT: ${sc.age}yr ${sc.sex}, ${sc.dx}
+CURRENT VITALS: SpO₂ ${sc.vitals.spo2}%, HR ${sc.vitals.hr}, RR ${sc.vitals.rr}, BP ${sc.vitals.bp}, FiO₂ ${sc.vitals.fio2}%
+VENTILATOR: ${sc.vent.mode}, TV ${sc.vent.tv}mL, PEEP ${sc.vent.peep}, PIP ${sc.vent.pip}, Pplat ${sc.vent.plat}
+
+YOUR ROLE: Guide the nurse's CRITICAL THINKING using the Socratic method. You NEVER give direct answers or immediate solutions. Instead, you guide through 4 progressive levels:
+1. OBSERVE — "What do you see/notice?"
+2. ANALYSE — "What does that mean clinically?"
+3. EVALUATE — "What are the implications?"
+4. SYNTHESISE — "What should be done and why?"
+
+RULES:
+- Ask ONE focused question per response (never multiple)
+- Keep responses SHORT (2–4 sentences maximum)
+- Build on what the nurse just said
+- If the nurse is on the right track, affirm briefly then probe deeper
+- If the nurse is off track, gently redirect with a question
+- Never say "correct" or "wrong" — let the reasoning unfold
+- Reference the patient data naturally (vitals, waveforms, settings)
+- Be warm, calm, professional — like a senior colleague beside them
+- Do NOT give the answer even if asked directly. Redirect: "What does your assessment tell you?"
+- After a decision is made, you may briefly acknowledge the reasoning and ask about anticipated effects
+- Engage the nurse ACTIVELY throughout — do not go silent between decisions`;
+}
+
+function aiOpenScenario(sc){
+  const opens = {
+    'SC1': `You're taking over care of Mr. Al-Rashidi. Before anything else — what do those ventilator waveforms tell you about how this patient is interacting with the machine?`,
+    'SC2': `Ms. Al-Balushi just desaturated from 97% to 78% in three minutes during repositioning. What's the very first thing going through your mind right now?`,
+    'SC3': `Looking at Mr. Al-Farsi's ventilator settings and his IBW — is there anything that stands out to you before we go further?`,
+    'SC4': `Mrs. Al-Zaabi has been improving and the team is considering extubation. What would you want to assess before even considering a spontaneous breathing trial?`
+  };
+  const msg = opens[sc.id] || `You're now caring for this patient. What is your initial clinical impression from the data in front of you?`;
+  addMsg('ai', msg);
+  S.chat.history.push({role:'assistant', content:msg});
+}
+
+function loadDecision(stepIdx){
+  const sc=SCENARIOS[S.sim.scenario];
+  const dec=sc.decisions[stepIdx];
+  if(!dec){ showScenarioDebrief(); return; }
+  document.getElementById('dec-prompt').textContent=dec.prompt;
+  const opts=document.getElementById('dec-opts');
+  opts.innerHTML='';
+  dec.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='dec-opt'; btn.id='dopt-'+i;
+    btn.innerHTML=`<span class="dec-icon">○</span>${opt.t}`;
+    btn.onclick=()=>makeDecision(i,btn,dec);
+    opts.appendChild(btn);
+  });
+  document.getElementById('sdeb-area').style.display='none';
+  // AI asks a focusing question before each decision (after first which is handled by scenario open)
+  if(stepIdx>0){ setTimeout(()=>aiPreDecision(dec,stepIdx), 800); }
+}
+
+function aiPreDecision(dec, stepIdx){
+  const questions=[
+    `You've addressed that. Now — ${dec.prompt.toLowerCase().replace('?','.')} What's your clinical reasoning here?`,
+    `Good — the patient's condition is evolving. What does the current data suggest you should focus on now?`,
+    `Before you choose — what would you expect to happen to this patient's physiology with each of those options?`
+  ];
+  const q=questions[Math.min(stepIdx-1, questions.length-1)];
+  addMsg('sys', '— Decision Point '+(stepIdx+1)+' —');
+  // Small delay then AI prompts
+  setTimeout(()=>{
+    addMsg('ai', q);
+    S.chat.history.push({role:'assistant',content:q});
+  }, 500);
+}
+
+function makeDecision(optIdx, btn, dec){
+  const isCorrect=dec.opts[optIdx].c;
+  S.sim.total++;
+  if(isCorrect) S.sim.correct++;
+  S.sim.decisions.push({step:S.sim.step, optIdx, correct:isCorrect, timestamp:Date.now()});
+
+  // Disable all options and show result
+  document.querySelectorAll('.dec-opt').forEach(b=>{
+    b.disabled=true;
+    const oi=parseInt(b.id.replace('dopt-',''));
+    if(dec.opts[oi].c) b.classList.add('correct');
+    else if(oi===optIdx && !isCorrect) b.classList.add('incorrect');
+  });
+
+  // AI responds to the decision after a short pause
+  setTimeout(()=>aiPostDecision(dec, optIdx, isCorrect), 600);
+
+  S.sim.step++;
+  const sc=SCENARIOS[S.sim.scenario];
+  setTimeout(()=>loadDecision(S.sim.step), 4500);
+  saveLocal();
+}
+
+async function aiPostDecision(dec, optIdx, isCorrect){
+  const chosen=dec.opts[optIdx].t;
+  const prompt=`The nurse just chose: "${chosen}". This is ${isCorrect?'the correct clinical approach':'not the optimal choice'}. 
+  
+  Clinical context for this decision: ${dec.exp}
+  
+  Your task: WITHOUT saying correct or incorrect, ask one Socratic question that helps the nurse reflect on the REASONING behind this decision and its expected clinical consequences. If the choice was wrong, guide gently toward understanding why the optimal choice would be better. Keep it to 2-3 sentences maximum.`;
+
+  S.chat.history.push({role:'user', content:`I chose: ${chosen}`});
+  showTyping();
+  try{
+    const r=await fetch(WORKER_URL+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:S.pid,max_tokens:120,system:S.chat.scenarioSystem,messages:[...S.chat.history,{role:'user',content:prompt}]})});
+    const j=await r.json(); hideTyping();
+    const txt=j?.content?.[0]?.text||fallbackPostDecision(isCorrect);
+    addMsg('ai',txt); S.chat.history.push({role:'assistant',content:txt});
+  }catch(e){ hideTyping(); addMsg('ai',fallbackPostDecision(isCorrect)); }
+}
+function fallbackPostDecision(isCorrect){
+  return isCorrect
+    ? `Good thinking. What do you expect to see happen to the patient's physiology over the next few minutes?`
+    : `Interesting choice. What was your clinical reasoning there — and what outcome would you anticipate with that approach?`;
+}
+
+async function sendMsg(){
+  const inp=document.getElementById('chat-inp');
+  const txt=inp.value.trim();
+  if(!txt) return;
+  addMsg('usr',txt);
+  S.chat.history.push({role:'user',content:txt});
+  inp.value='';
+  showTyping();
+  try{
+    const msgs=S.chat.history.slice(-10);
+    const r=await fetch(WORKER_URL+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:S.pid,max_tokens:130,system:S.chat.scenarioSystem,messages:msgs})});
+    const j=await r.json(); hideTyping();
+    const reply=j?.content?.[0]?.text||`What does the patient's data tell you about the next step?`;
+    addMsg('ai',reply); S.chat.history.push({role:'assistant',content:reply});
+  }catch(e){ hideTyping(); addMsg('ai',`What pattern do you notice in the clinical data right now?`); }
+}
+
+function chatKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
+
+function addMsg(type,txt){
+  const c=document.getElementById('msgs');
+  const d=document.createElement('div'); d.className='msg '+type;
+  if(type==='sys'){
+    d.innerHTML=`<div class="mb">${txt}</div>`; c.appendChild(d);
+  } else {
+    const av=document.createElement('div');
+    av.className='mav '+(type==='usr'?'u':'ai');
+    av.textContent=type==='usr'?'RN':'AI';
+    const b=document.createElement('div'); b.className='mb'; b.textContent=txt;
+    d.appendChild(av); d.appendChild(b); c.appendChild(d);
+  }
+  c.scrollTop=c.scrollHeight;
+}
+function showTyping(){
+  const c=document.getElementById('msgs');
+  const d=document.createElement('div'); d.className='msg ai'; d.id='typing-ind';
+  const av=document.createElement('div'); av.className='mav ai'; av.textContent='AI';
+  const b=document.createElement('div'); b.className='mb';
+  b.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
+  d.appendChild(av); d.appendChild(b); c.appendChild(d);
+  c.scrollTop=c.scrollHeight;
+}
+function hideTyping(){ const t=document.getElementById('typing-ind'); if(t) t.remove(); }
+
+function showScenarioDebrief(){
+  const sc=SCENARIOS[S.sim.scenario];
+  const correct=S.sim.decisions.filter(d=>d.correct&&SCENARIOS[S.sim.scenario]&&d.step<sc.decisions.length).length;
+  // Count for this scenario only
+  const scDecisions=S.sim.decisions.filter(d=>{
+    const start=S.sim.scenario*3;
+    return d.step>=start&&d.step<start+3;
+  });
+  const scCorrect=scDecisions.filter(d=>d.correct).length;
+  const pct=Math.round((scCorrect/3)*100);
+  const cls=pct>=67?'good':pct>=33?'mid':'poor';
+  const msg=pct>=67?'Strong clinical reasoning on this scenario.':pct>=33?'Good effort — review the decision rationale below.':'This was challenging — the explanations below will help reinforce key concepts.';
+  const area=document.getElementById('sdeb-area');
+  area.style.display='block';
+  area.innerHTML=`<div class="sdeb-wrap">
+    <div class="sdeb-score">
+      <div class="sdeb-ring ${cls}">${pct}%</div>
+      <div><strong style="color:var(--text);font-family:var(--sans);">Scenario ${S.sim.scenario+1} Complete</strong><br><span style="font-size:.78rem;color:var(--text3);">${sc.title}</span></div>
+    </div>
+    <div class="sdeb-fb">${msg}<br><br>
+    ${sc.decisions.map((d,i)=>`<strong>Decision ${i+1}:</strong> ${d.exp}`).join('<br><br>')}
+    </div>
+    ${S.sim.scenario<3?`<button class="btn btn-p" style="margin-top:14px;width:100%;" onclick="nextScenario()">▶ SCENARIO ${S.sim.scenario+2}</button>`:`<button class="btn btn-g" style="margin-top:14px;width:100%;" onclick="endSim()">✓ COMPLETE SIMULATION</button>`}
+  </div>`;
+  area.scrollIntoView({behavior:'smooth'});
+  // AI scenario closing reflection
+  setTimeout(()=>aiCloseScenario(sc,pct), 800);
+}
+
+async function aiCloseScenario(sc, pct){
+  const prompt=`The nurse has just completed scenario ${S.sim.scenario+1}: "${sc.title}" with ${pct}% decision accuracy. 
+
+  Ask ONE reflective question that prompts them to consolidate their learning from this scenario — what would they do differently next time, or what was the most important clinical lesson? Keep it to 2 sentences, warm and encouraging.`;
+  showTyping();
+  try{
+    const r=await fetch(WORKER_URL+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:S.pid,max_tokens:100,system:S.chat.scenarioSystem,messages:[{role:'user',content:prompt}]})});
+    const j=await r.json(); hideTyping();
+    const txt=j?.content?.[0]?.text||`Reflecting on this scenario — what is the single most important clinical principle you'll take forward from this case?`;
+    addMsg('ai',txt);
+  }catch(e){ hideTyping(); addMsg('ai',`Reflecting on this scenario — what is the single most important clinical principle you'll take forward from this case?`); }
+}
+
+function nextScenario(){
+  S.sim.scenario++;
+  loadScenario(S.sim.scenario);
+  window.scrollTo({top:0,behavior:'smooth'});
+  const pctMap=[55,62,68,75];
+  setProg(pctMap[S.sim.scenario]||70);
+}
+function endSim(){
+  if(waveAnimFrame) cancelAnimationFrame(waveAnimFrame);
+  S.sim.endTime=Date.now();
+  S.sim.durationSec=Math.floor((S.sim.endTime-S.sim.startTime)/1000);
+  buildMCQ('mcq-post-cont','postMCQ');
+  show('postmcq-sc'); setProg(75); saveLocal();
+}
+function startSim(){
+  S.sim.startTime=Date.now();
+  show('sim-sc'); setProg(55);
+  loadScenario(0);
+}
+
+/* ═══════════════════════════════════════════
+   DEBRIEF
+═══════════════════════════════════════════ */
+async function loadDebrief(){
+  const preMCQ=S.data.preMCQScore||0;
+  const postMCQ=S.data.postMCQScore||0;
+  const preCDMNS=cdmnsTotal('preCDMNS');
+  const postCDMNS=cdmnsTotal('postCDMNS');
+  const acc=S.sim.total>0?Math.round((S.sim.correct/S.sim.total)*100):0;
+
+  document.getElementById('deb-sim-score').textContent=S.sim.correct+'/'+S.sim.total;
+  document.getElementById('deb-sim-acc').textContent=acc+'% accuracy';
+  document.getElementById('deb-mcq-gain').textContent=(postMCQ-preMCQ>=0?'+':'')+(postMCQ-preMCQ);
+  document.getElementById('deb-mcq-sub').textContent=preMCQ+' → '+postMCQ+' / 20';
+  document.getElementById('deb-cdmns-gain').textContent=(postCDMNS-preCDMNS>=0?'+':'')+(postCDMNS-preCDMNS);
+
+  const debPrompt=`Generate a personalised clinical debrief (per INACSL Standards 2021) for an ICU nurse who just completed VentSim AI.
+
+PERFORMANCE DATA:
+- Simulation: ${S.sim.correct}/${S.sim.total} correct decisions (${acc}% accuracy)
+- MCQ: Pre ${preMCQ}/20 → Post ${postMCQ}/20 (gain: ${postMCQ-preMCQ})
+- CDMNS: Pre ${preCDMNS}/200 → Post ${postCDMNS}/200 (gain: ${postCDMNS-preCDMNS})
+- Scenarios completed: Patient-Ventilator Dyssynchrony, Acute Desaturation/DOPE, ARDS Lung Protective Ventilation, Weaning Readiness/SBT
+
+Write a debrief with 4 clear sections:
+1. Performance Summary (2–3 sentences — specific, not generic)
+2. Clinical Strengths Demonstrated
+3. Key Learning Areas (specific to ventilation management)
+4. One Forward-Looking Takeaway
+
+Keep total length under 220 words. Be warm, evidence-based, and specific to mechanical ventilation nursing.`;
+
+  try{
+    const r=await fetch(WORKER_URL+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:S.pid,max_tokens:300,messages:[{role:'user',content:debPrompt}]})});
+    const j=await r.json();
+    document.getElementById('deb-fb').textContent=j?.content?.[0]?.text||'Your performance data has been recorded. Thank you for your participation in this research study.';
+  }catch(e){
+    document.getElementById('deb-fb').textContent='Simulation complete. Correct decisions: '+S.sim.correct+'/'+S.sim.total+'. Your MCQ score changed from '+preMCQ+' to '+postMCQ+'. All data has been recorded. Thank you for your participation.';
+  }
+}
+
+/* ═══════════════════════════════════════════
+   FINISH & SAVE
+═══════════════════════════════════════════ */
+async function finish(){
+  loader(true,'SAVING SESSION DATA...');
+  const preCDMNS=S.data.preCDMNS||{};
+  const postCDMNS=S.data.postCDMNS||{};
+  const acc=S.sim.total>0?Math.round((S.sim.correct/S.sim.total)*100):0;
+  const record={
+    session_id:S.sessionId, participant_id:S.pid, group:'intervention',
+    version:'intervention-v1', session_date:S.date,
+    timestamp:new Date().toISOString(),
+    demographics:S.data.demo,
+    pre_mcq_score:S.data.preMCQScore, pre_mcq_raw:S.data.preMCQ,
+    post_mcq_score:S.data.postMCQScore, post_mcq_raw:S.data.postMCQ,
+    mcq_gain:(S.data.postMCQScore||0)-(S.data.preMCQScore||0),
+    pre_cdmns_raw:preCDMNS, pre_cdmns_total:cdmnsTotal('preCDMNS'),
+    post_cdmns_raw:postCDMNS, post_cdmns_total:cdmnsTotal('postCDMNS'),
+    cdmns_gain:cdmnsTotal('postCDMNS')-cdmnsTotal('preCDMNS'),
+    tam_raw:S.data.tam, tam_total:Object.values(S.data.tam||{}).reduce((a,b)=>a+b,0),
+    simulation:{
+      correct:S.sim.correct, total:S.sim.total,
+      accuracy_pct:acc, decisions:S.sim.decisions,
+      duration_sec:S.sim.durationSec||0,
+      duration_min:parseFloat(((S.sim.durationSec||0)/60).toFixed(1))
+    }
+  };
+
+  let saveOk=false;
+  try{
+    const r=await fetch(WORKER_URL+'/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(record)});
+    const j=await r.json(); saveOk=j.success;
+  }catch(e){}
+
+  localStorage.setItem('ventsim_final_'+S.pid,JSON.stringify(record));
+  localStorage.removeItem('ventsim_'+S.pid);
+
+  
