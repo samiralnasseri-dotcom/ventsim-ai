@@ -363,7 +363,7 @@ canvas.wc.active{display:block;}
           <div><span style="color:var(--text3);font-family:var(--mono);font-size:.68rem;">ESTIMATED TIME</span><br>~90 minutes</div>
         </div>
       </div>
-      <button class="btn btn-p btn-w" onclick="vsShow('consent-sc');vsProg(5)">▶ BEGIN STUDY PARTICIPATION</button>
+      <button class="btn btn-p btn-w" onclick="show('consent-sc');setProg(5)">▶ BEGIN STUDY PARTICIPATION</button>
       <div class="contact-footer">For enquiries: <a href="/cdn-cgi/l/email-protection#3645575b5f4418575a5857454553445f76515b575f5a1855595b"><span class="__cf_email__" data-cfemail="ea998b878398c48b86848b99998f9883aa8d878b8386c4898587">[email&#160;protected]</span></a> · <a href="tel:+9689944245">+968 9944245</a></div>
     </div>
   </div>
@@ -850,18 +850,11 @@ canvas.wc.active{display:block;}
 
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-function vsShow(id){
-  document.querySelectorAll(".sc").forEach(s=>s.classList.remove("active"));
-  var el=document.getElementById(id);
-  if(el){el.classList.add("active");}
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-function vsProg(pct){var b=document.getElementById("prog-bar");if(b)b.style.width=pct+"%";}
 var consentChecked=false;
 function checkConsent(){ consentChecked=document.getElementById('consent-cb').checked; }
 function goConsent(){
   if(!consentChecked){var e=document.getElementById('c-err');if(e)e.textContent='Please tick the consent box to continue.';return;}
-  vsShow('login-sc');vsProg(12);
+  show('login-sc');setProg(12);
   var d=document.getElementById('ses-date');
   if(d&&!d.value){d.value=new Date().toISOString().split('T')[0];}
 }
@@ -894,12 +887,12 @@ const S = {
 /* ═══════════════════════════════════════════
    UTILITIES
 ═══════════════════════════════════════════ */
-function vsShow(id){
+function show(id){
   document.querySelectorAll('.sc').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function vsProg(pct){ document.getElementById('prog-bar').style.width=pct+'%'; }
+function setProg(pct){ document.getElementById('prog-bar').style.width=pct+'%'; }
 function loader(on,txt='PROCESSING...'){
   document.getElementById('loader').classList.toggle('on',on);
   document.getElementById('ltxt').textContent=txt;
@@ -936,7 +929,7 @@ async function _realStartSession(){
     S.sessionId='TEST-'+Date.now(); S.startTime=Date.now();
     document.getElementById('hbadge').textContent=pid+' · TEST';
     document.getElementById('hbadge2').textContent=pid+' · TEST';
-    vsShow('demo-sc'); vsProg(15);
+    show('demo-sc'); setProg(15);
     startAutoSave();
     return;
   }
@@ -957,7 +950,7 @@ async function _realStartSession(){
     S.sessionId=genSid(); S.startTime=Date.now();
     document.getElementById('hbadge').textContent=pid+' · INT';
     document.getElementById('hbadge2').textContent=pid+' · PRE-MCQ';
-    vsShow('demo-sc'); vsProg(15);
+    show('demo-sc'); setProg(15);
     startAutoSave();
   }catch(e){
     loader(false);
@@ -966,7 +959,7 @@ async function _realStartSession(){
     S.sessionId=genSid(); S.startTime=Date.now();
     document.getElementById('hbadge').textContent=pid+' · INT';
     document.getElementById('hbadge2').textContent=pid+' · PRE-MCQ';
-    vsShow('demo-sc'); vsProg(15);
+    show('demo-sc'); setProg(15);
     startAutoSave();
   }
 }
@@ -977,7 +970,7 @@ window._realStartSession = _realStartSession;
   S.pid=saved.pid; S.group=saved.group; S.sessionId=saved.sessionId;
   S.data=saved.data; S.sim=saved.sim||S.sim;
   document.getElementById('hbadge').textContent=saved.pid+' · INT';
-  vsShow('demo-sc'); vsProg(15);
+  show('demo-sc'); setProg(15);
   startAutoSave();
 }
 function clearSaved(){
@@ -995,7 +988,7 @@ function submitDemo(){
   const missing=ids.filter(i=>!document.getElementById(i).value);
   if(missing.length){ document.getElementById('demo-err').textContent='Please complete all fields ('+missing.length+' remaining).'; return; }
   ids.forEach(i=>S.data.demo[i]=document.getElementById(i).value);
-  vsShow('premcq-sc'); vsProg(28); saveLocal();
+  show('premcq-sc'); setProg(28); saveLocal();
   buildMCQ('mcq-pre-cont','preMCQ');
 }
 
@@ -1049,14 +1042,14 @@ function submitPreMCQ(){
   const answered=Object.keys(S.data.preMCQ).length;
   if(answered<20){ document.getElementById('premcq-err').textContent='Please answer all 20 questions ('+(20-answered)+' remaining).'; return; }
   S.data.preMCQScore=scoreMCQ('preMCQ');
-  vsShow('precdmns-sc'); vsProg(38); saveLocal();
+  show('precdmns-sc'); setProg(38); saveLocal();
   buildCDMNS('cdmns-pre-cont','preCDMNS');
 }
 function submitPostMCQ(){
   const answered=Object.keys(S.data.postMCQ).length;
   if(answered<20){ document.getElementById('postmcq-err').textContent='Please answer all 20 questions ('+(20-answered)+' remaining).'; return; }
   S.data.postMCQScore=scoreMCQ('postMCQ');
-  vsShow('postcdmns-sc'); vsProg(82); saveLocal();
+  show('postcdmns-sc'); setProg(82); saveLocal();
   buildCDMNS('cdmns-post-cont','postCDMNS');
 }
 
@@ -1099,11 +1092,11 @@ function cdmnsTotal(key){ return Object.values(S.data[key]).reduce((a,b)=>a+b,0)
 
 function submitPreCDMNS(){
   if(!cdmnsComplete('preCDMNS')){ document.getElementById('precdmns-err').textContent='Please rate all 40 items.'; return; }
-  vsShow('orient-sc'); vsProg(48); saveLocal();
+  show('orient-sc'); setProg(48); saveLocal();
 }
 function submitPostCDMNS(){
   if(!cdmnsComplete('postCDMNS')){ document.getElementById('postcdmns-err').textContent='Please rate all 40 items.'; return; }
-  vsShow('tam-sc'); vsProg(90); saveLocal();
+  show('tam-sc'); setProg(90); saveLocal();
   buildTAM();
 }
 
@@ -1140,7 +1133,7 @@ function selTAM(qi,val,el){
 }
 function submitTAM(){
   if(Object.keys(S.data.tam).length<19){ document.getElementById('tam-err').textContent='Please rate all 19 items.'; return; }
-  loadDebrief(); vsShow('deb-sc'); vsProg(96); saveLocal();
+  loadDebrief(); show('deb-sc'); setProg(96); saveLocal();
 }
 
 /* ═══════════════════════════════════════════
@@ -1779,18 +1772,18 @@ function nextScenario(){
   loadScenario(S.sim.scenario);
   window.scrollTo({top:0,behavior:'smooth'});
   const pctMap=[55,62,68,75];
-  vsProg(pctMap[S.sim.scenario]||70);
+  setProg(pctMap[S.sim.scenario]||70);
 }
 function endSim(){
   if(waveAnimFrame) cancelAnimationFrame(waveAnimFrame);
   S.sim.endTime=Date.now();
   S.sim.durationSec=Math.floor((S.sim.endTime-S.sim.startTime)/1000);
   buildMCQ('mcq-post-cont','postMCQ');
-  vsShow('postmcq-sc'); vsProg(75); saveLocal();
+  show('postmcq-sc'); setProg(75); saveLocal();
 }
 function startSim(){
   S.sim.startTime=Date.now();
-  vsShow('sim-sc'); vsProg(55);
+  show('sim-sc'); setProg(55);
   loadScenario(0);
 }
 
@@ -1877,7 +1870,7 @@ async function finish(){
   localStorage.setItem('ventsim_final_'+S.pid,JSON.stringify(record));
   localStorage.removeItem('ventsim_'+S.pid);
 
-  vsShow('ty-sc'); vsProg(100);
+  show('ty-sc'); setProg(100);
   populateTyScreen();
   loader(false);
 }
