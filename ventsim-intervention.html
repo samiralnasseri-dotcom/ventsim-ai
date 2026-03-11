@@ -48,6 +48,16 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .hlogo{font-family:var(--sans);font-size:1rem;font-weight:800;color:var(--cyan);letter-spacing:-.5px;}
 .hlogo span{color:var(--text2);font-weight:400;}
 .hbadge{margin-left:auto;font-family:var(--mono);font-size:.7rem;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);color:var(--cyan);padding:4px 10px;border-radius:4px;}
+.xp-badge{font-family:var(--mono);font-size:.7rem;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);color:var(--green);padding:4px 10px;border-radius:4px;margin-left:8px;transition:all .3s;}
+.xp-pop{animation:xpPop .6s ease;}
+@keyframes xpPop{0%{transform:scale(1)}50%{transform:scale(1.3);color:#ffd740}100%{transform:scale(1)}}
+.stars-wrap{display:flex;gap:4px;font-size:1.4rem;margin:8px 0;}
+.star-lit{color:#ffd740;text-shadow:0 0 8px rgba(255,215,64,.6);}
+.star-dim{color:var(--border2);}
+.level-badge{display:inline-block;font-family:var(--mono);font-size:.65rem;background:rgba(206,147,216,.1);border:1px solid rgba(206,147,216,.3);color:var(--purple);padding:3px 8px;border-radius:4px;margin-left:6px;}
+.xp-gain-toast{position:fixed;top:60px;right:20px;background:rgba(0,230,118,.15);border:1px solid var(--green);color:var(--green);font-family:var(--mono);font-size:.8rem;padding:8px 14px;border-radius:6px;z-index:9999;animation:toastIn .4s ease,toastOut .4s ease 1.6s forwards;}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(-10px)}}
 .hprog{flex:1;max-width:200px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
 .hprog-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:2px;transition:width .5s ease;width:0%;}
 
@@ -550,6 +560,7 @@ canvas.wc.active{display:block;}
     <div class="hprog"><div class="hprog-fill" style="width:55%"></div></div>
     <span id="sim-sc-ind" style="font-family:var(--mono);font-size:.7rem;color:var(--text3);">SCENARIO 1/4</span>
     <div class="hbadge" id="sim-hbadge">SIM</div>
+    <div class="xp-badge" id="xp-badge">✦ 0 XP</div>
   </div>
   <div style="display:flex;justify-content:center;width:100%;">
     <div class="sim-layout">
@@ -785,6 +796,7 @@ const S = {
   sim:{ scenario:0, step:0, decisions:[], correct:0, total:0,
         startTime:0, scores:[] },
   chat:{ history:[], scenarioSystem:'' },
+  xp: 0,
   autoSaveTimer:null
 };
 /* ═══════════════════════════════════════════
@@ -1263,13 +1275,20 @@ FORMAT RULES:
 }
 
 function aiOpenScenario(sc){
+  const encouragements = [
+    `You're doing great — let's tackle this together. `,
+    `Building on your last scenario — you've got this. `,
+    `Halfway through — your reasoning is developing well. `,
+    `Final scenario — show everything you've learned. `
+  ];
+  const enc = encouragements[S.sim.scenario] || '';
   const opens = {
     'SC1': `You're taking over care of Mr. Al-Rashidi. Before anything else — what do those ventilator waveforms tell you about how this patient is interacting with the machine?`,
     'SC2': `Ms. Al-Balushi just desaturated from 97% to 78% in three minutes during repositioning. What's the very first thing going through your mind right now?`,
     'SC3': `Looking at Mr. Al-Farsi's ventilator settings and his IBW — is there anything that stands out to you before we go further?`,
     'SC4': `Mrs. Al-Zaabi has been improving and the team is considering extubation. What would you want to assess before even considering a spontaneous breathing trial?`
   };
-  const msg = opens[sc.id] || `You're now caring for this patient. What is your initial clinical impression from the data in front of you?`;
+  const msg = enc + (opens[sc.id] || `You're now caring for this patient. What is your initial clinical impression from the data in front of you?`);
   addMsg('ai', msg);
   S.chat.history.push({role:'assistant', content:msg});
 }
@@ -1398,6 +1417,38 @@ function showTyping(){
 }
 function hideTyping(){ const t=document.getElementById('typing-ind'); if(t) t.remove(); }
 
+function getLevel(xp){
+  if(xp>=300) return {name:'ICU Expert',icon:'🏆'};
+  if(xp>=150) return {name:'Senior Clinician',icon:'🎖️'};
+  if(xp>=50)  return {name:'ICU Nurse',icon:'⭐'};
+  return {name:'Resident',icon:'🩺'};
+}
+function addXP(points){
+  S.xp += points;
+  const badge = document.getElementById('xp-badge');
+  if(badge){
+    const lv = getLevel(S.xp);
+    badge.textContent = `${lv.icon} ${S.xp} XP`;
+    badge.classList.remove('xp-pop');
+    void badge.offsetWidth;
+    badge.classList.add('xp-pop');
+  }
+  // Toast notification
+  const toast = document.createElement('div');
+  toast.className = 'xp-gain-toast';
+  toast.textContent = `+${points} XP`;
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(), 2100);
+}
+function getStars(pct){
+  if(pct===100) return 3;
+  if(pct>=67) return 2;
+  if(pct>=33) return 1;
+  return 0;
+}
+function renderStars(n){
+  return `<div class="stars-wrap">${[1,2,3].map(i=>`<span class="${i<=n?'star-lit':'star-dim'}">★</span>`).join('')}</div>`;
+}
 function showScenarioDebrief(){
   const sc=SCENARIOS[S.sim.scenario];
   const correct=S.sim.decisions.filter(d=>d.correct&&SCENARIOS[S.sim.scenario]&&d.step<sc.decisions.length).length;
@@ -1409,13 +1460,25 @@ function showScenarioDebrief(){
   const scCorrect=scDecisions.filter(d=>d.correct).length;
   const pct=Math.round((scCorrect/3)*100);
   const cls=pct>=67?'good':pct>=33?'mid':'poor';
-  const msg=pct>=67?'Strong clinical reasoning on this scenario.':pct>=33?'Good effort — review the decision rationale below.':'This was challenging — the explanations below will help reinforce key concepts.';
+  const stars=getStars(pct);
+  const xpEarned=scCorrect*25;
+  addXP(xpEarned);
+  const lv=getLevel(S.xp);
+  const msg=pct===100?'🏆 Perfect scenario! Exceptional clinical reasoning!':
+    pct>=67?'⭐ Strong clinical reasoning on this scenario.':
+    pct>=33?'💪 Good effort — review the decision rationale below.':
+    '📚 This was challenging — the explanations below will reinforce key concepts.';
   const area=document.getElementById('sdeb-area');
   area.style.display='block';
   area.innerHTML=`<div class="sdeb-wrap">
     <div class="sdeb-score">
       <div class="sdeb-ring ${cls}">${pct}%</div>
-      <div><strong style="color:var(--text);font-family:var(--sans);">Scenario ${S.sim.scenario+1} Complete</strong><br><span style="font-size:.78rem;color:var(--text3);">${sc.title}</span></div>
+      <div>
+        <strong style="color:var(--text);font-family:var(--sans);">Scenario ${S.sim.scenario+1} Complete</strong>
+        ${renderStars(stars)}
+        <span style="font-size:.78rem;color:var(--text3);">${sc.title}</span><br>
+        <span style="font-size:.72rem;color:var(--green);font-family:var(--mono);">+${xpEarned} XP &nbsp;·&nbsp; ${lv.icon} ${lv.name}</span>
+      </div>
     </div>
     <div class="sdeb-fb">${msg}<br><br>
     ${sc.decisions.map((d,i)=>`<strong>Decision ${i+1}:</strong> ${d.exp}`).join('<br><br>')}
