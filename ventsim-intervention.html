@@ -58,7 +58,28 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .xp-gain-toast{position:fixed;top:60px;right:20px;background:rgba(0,230,118,.15);border:1px solid var(--green);color:var(--green);font-family:var(--mono);font-size:.8rem;padding:8px 14px;border-radius:6px;z-index:9999;animation:toastIn .4s ease,toastOut .4s ease 1.6s forwards;}
 @keyframes toastIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
 @keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(-10px)}}
-.hprog{flex:1;max-width:200px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.compass-wrap{margin-top:10px;border:1px solid rgba(0,229,255,.2);border-radius:var(--r);overflow:hidden;background:var(--panel);}
+.compass-toggle{width:100%;background:rgba(0,229,255,.06);border:none;color:var(--cyan);font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:1px;padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;text-transform:uppercase;}
+.compass-toggle:hover{background:rgba(0,229,255,.1);}
+.compass-arrow{margin-left:auto;transition:transform .3s;}
+.compass-body{padding:12px;}
+.compass-tabs{display:flex;gap:6px;margin-bottom:12px;}
+.ctab{flex:1;background:transparent;border:1px solid var(--border2);color:var(--text3);font-family:var(--mono);font-size:.65rem;padding:6px 4px;border-radius:4px;cursor:pointer;transition:all .2s;}
+.ctab.active{background:rgba(0,229,255,.08);border-color:var(--cyan);color:var(--cyan);}
+.compass-content{font-size:.78rem;color:var(--text2);line-height:1.6;}
+.compare-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:4px;margin-bottom:4px;background:var(--bg2);}
+.compare-label{color:var(--text3);font-family:var(--mono);font-size:.68rem;}
+.compare-set{color:var(--blue);}
+.compare-actual{color:var(--text);}
+.compare-warn{color:var(--amber);}
+.compare-ok{color:var(--green);}
+.ref-item{padding:6px 0;border-bottom:1px solid var(--border);font-size:.76rem;}
+.ref-item:last-child{border-bottom:none;}
+.ref-label{color:var(--cyan);font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;}
+.hint-box{background:rgba(255,215,64,.05);border:1px solid rgba(255,215,64,.2);border-radius:5px;padding:10px;margin-bottom:8px;font-size:.78rem;color:var(--text);line-height:1.5;}
+.hint-btn{width:100%;background:rgba(255,215,64,.08);border:1px solid rgba(255,215,64,.25);color:var(--amber);font-family:var(--mono);font-size:.7rem;padding:8px;border-radius:4px;cursor:pointer;margin-top:6px;}
+.hint-btn:hover{background:rgba(255,215,64,.15);}
+.hint-used{color:var(--text3);font-size:.72rem;text-align:center;padding:6px;}
 .hprog-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:2px;transition:width .5s ease;width:0%;}
 
 /* ── WRAP & INNER ── */
@@ -343,7 +364,7 @@ canvas.wc.active{display:block;}
         </div>
       </div>
       <button class="btn btn-p btn-w" onclick="show('consent-sc');setProg(5)">▶ BEGIN STUDY PARTICIPATION</button>
-      <div class="contact-footer">For enquiries: <a href="/cdn-cgi/l/email-protection#5023313d39227e313c3e31232335223910373d31393c7e333f3d"><span class="__cf_email__" data-cfemail="681b0905011a46090406091b1b0d1a01280f05090104460b0705">[email&#160;protected]</span></a> · <a href="tel:+9689944245">+968 9944245</a></div>
+      <div class="contact-footer">For enquiries: <a href="mailto:samir.alnasseri@gmail.com">samir.alnasseri@gmail.com</a> · <a href="tel:+9689944245">+968 9944245</a></div>
     </div>
   </div>
 </div>
@@ -375,7 +396,7 @@ canvas.wc.active{display:block;}
       <h4>Ethics Approval</h4>
       <p>This study has been approved by the Universiti Malaya Research Ethics Committee (UMREC) and the Ministry of Health Oman.</p>
       <h4>Contact</h4>
-      <p>For questions: Samir Alnasseri — <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2251434f4b500c434e4c43515147504b62454f434b4e0c414d4f">[email&#160;protected]</a></strong> · <strong>+968 9944245</strong></p>
+      <p>For questions: Samir Alnasseri — <strong><a href="mailto:samir.alnasseri@gmail.com">samir.alnasseri@gmail.com</a></strong> · <strong>+968 9944245</strong></p>
     </div>
     <label class="consent-check">
       <input type="checkbox" id="consent-cb" onchange="checkConsent()">
@@ -384,7 +405,7 @@ canvas.wc.active{display:block;}
     <div class="ferr" id="c-err"></div>
     <br>
     <button class="btn btn-p btn-w" onclick="goConsent()">CONFIRM CONSENT & CONTINUE ▶</button>
-    <div class="contact-footer">Enquiries: <a href="/cdn-cgi/l/email-protection#d4a7b5b9bda6fab5b8bab5a7a7b1a6bd94b3b9b5bdb8fab7bbb9"><span class="__cf_email__" data-cfemail="6310020e0a114d020f0d02101006110a23040e020a0f4d000c0e">[email&#160;protected]</span></a> · <a href="tel:+9689944245">+968 9944245</a></div>
+    <div class="contact-footer">Enquiries: <a href="mailto:samir.alnasseri@gmail.com">samir.alnasseri@gmail.com</a> · <a href="tel:+9689944245">+968 9944245</a></div>
   </div></div>
 </div>
 
@@ -423,7 +444,7 @@ canvas.wc.active{display:block;}
       <div class="ferr" id="login-err"></div>
     </div>
     <button class="btn btn-p btn-w" onclick="startSession()">▶ BEGIN SESSION</button>
-    <div class="contact-footer">Problems? <a href="/cdn-cgi/l/email-protection#b5c6d4d8dcc79bd4d9dbd4c6c6d0c7dcf5d2d8d4dcd99bd6dad8"><span class="__cf_email__" data-cfemail="4231232f2b306c232e2c23313127302b02252f232b2e6c212d2f">[email&#160;protected]</span></a> · <a href="tel:+9689944245">+968 9944245</a></div>
+    <div class="contact-footer">Problems? <a href="mailto:samir.alnasseri@gmail.com">samir.alnasseri@gmail.com</a> · <a href="tel:+9689944245">+968 9944245</a></div>
   </div></div>
 </div>
 
@@ -651,6 +672,29 @@ canvas.wc.active{display:block;}
             <button class="chat-send" onclick="sendMsg()">SEND ↑</button>
           </div>
         </div>
+        <!-- CLINICAL COMPASS PANEL -->
+        <div class="compass-wrap" id="compass-wrap">
+          <button class="compass-toggle" onclick="toggleCompass()">
+            <span>📊</span> CLINICAL COMPASS <span class="compass-arrow" id="compass-arrow">▼</span>
+          </button>
+          <div class="compass-body" id="compass-body" style="display:none;">
+            <div class="compass-tabs">
+              <button class="ctab active" id="ctab-compare" onclick="switchTab('compare')">📊 Compare</button>
+              <button class="ctab" id="ctab-reference" onclick="switchTab('reference')">📖 Reference</button>
+              <button class="ctab" id="ctab-hint" onclick="switchTab('hint')">💡 Hints</button>
+            </div>
+            <div class="compass-content" id="compass-compare">
+              <div id="compare-table"></div>
+            </div>
+            <div class="compass-content" id="compass-reference" style="display:none;">
+              <div id="reference-content"></div>
+            </div>
+            <div class="compass-content" id="compass-hint" style="display:none;">
+              <div id="hint-content"></div>
+              <button class="hint-btn" id="hint-btn" onclick="showNextHint()">💡 Show Hint</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -737,25 +781,73 @@ canvas.wc.active{display:block;}
      S13: THANK YOU
 ═══════════════════════════════════ -->
 <div class="sc" id="ty-sc">
-  <div class="wrap" style="align-items:center;"><div class="inner" style="max-width:560px;">
+  <div class="wrap"><div class="inner" style="max-width:680px;">
+
+    <!-- SESSION COMPLETE CARD -->
     <div class="ty-box">
       <div class="ty-icon">✅</div>
-      <div class="ty-title">Thank You!</div>
-      <div class="ty-sub">Your session is complete and your data has been saved. Your participation contributes to advancing nursing education in Oman.</div>
+      <div class="ty-title">Session Complete</div>
+      <div class="ty-sub">Your data has been saved. Thank you for contributing to nursing education research in Oman.</div>
       <div class="ty-info">
         <div class="ty-row"><span class="ty-row-lbl">PARTICIPANT</span><span class="ty-row-val" id="ty-pid">--</span></div>
         <div class="ty-row"><span class="ty-row-lbl">GROUP</span><span class="ty-row-val">Intervention Group</span></div>
         <div class="ty-row"><span class="ty-row-lbl">SESSION ID</span><span class="ty-row-val" id="ty-sid">--</span></div>
         <div class="ty-row"><span class="ty-row-lbl">STATUS</span><span class="ty-row-val" id="ty-st">Saved ✓</span></div>
       </div>
-      <div class="contact-box">
-        <div style="margin-bottom:6px;color:var(--text);font-weight:500;">Research Team Contact</div>
-        Samir Alnasseri · PhD Candidate · Universiti Malaya<br>
-        <a href="/cdn-cgi/l/email-protection#1e6d7f73776c307f72707f6d6d7b6c775e79737f7772307d7173"><span class="__cf_email__" data-cfemail="7102101c18035f101d1f10020214031831161c10181d5f121e1c">[email&#160;protected]</span></a> · <a href="tel:+9689944245">+968 9944245</a>
+    </div>
+
+    <!-- PERFORMANCE SUMMARY -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title">📊 Your Session Summary</div>
+      <div id="ty-summary" style="font-size:.82rem;color:var(--text2);line-height:1.8;"></div>
+    </div>
+
+    <!-- XP & LEVEL -->
+    <div class="card" style="background:rgba(0,230,118,.04);border-color:rgba(0,230,118,.2);">
+      <div class="card-title" style="color:var(--green);">🏆 Kolb Learning Achievement</div>
+      <div id="ty-xp" style="font-size:.85rem;color:var(--text2);line-height:1.8;"></div>
+      <div style="font-size:.72rem;color:var(--text3);margin-top:8px;font-family:var(--mono);">
+        XP reflects Kolb's cycle: Concrete Experience · Reflective Observation · Abstract Conceptualisation · Active Experimentation
       </div>
     </div>
+
+    <!-- PRINT CERTIFICATE BUTTON -->
+    <div style="text-align:center;margin:16px 0;">
+      <button class="btn btn-o" onclick="printCertificate()" style="gap:8px;">🖨️ Print Participation Certificate</button>
+    </div>
+
+    <!-- APA REFERENCES -->
+    <div class="card" style="margin-top:8px;">
+      <div class="card-title">📚 References & Instruments Used</div>
+      <div style="font-size:.74rem;color:var(--text2);line-height:1.9;font-family:var(--body);">
+        <p style="margin-bottom:8px;">Bloom, B. S., Engelhart, M. D., Furst, E. J., Hill, W. H., &amp; Krathwohl, D. R. (1956). <em>Taxonomy of educational objectives: The classification of educational goals. Handbook I: Cognitive domain.</em> David McKay.</p>
+        <p style="margin-bottom:8px;">Davis, F. D. (1989). Perceived usefulness, perceived ease of use, and user acceptance of information technology. <em>MIS Quarterly, 13</em>(3), 319–340. https://doi.org/10.2307/249008</p>
+        <p style="margin-bottom:8px;">INACSL Standards Committee. (2021). Healthcare simulation standards of best practice: Debriefing. <em>Clinical Simulation in Nursing, 58</em>, 27–32. https://doi.org/10.1016/j.ecns.2021.08.011</p>
+        <p style="margin-bottom:8px;">Jenkins, H. M. (1985). A research tool for measuring perceptions of clinical decision making. <em>Journal of Professional Nursing, 1</em>(4), 221–229. https://doi.org/10.1016/S8755-7223(85)80055-7</p>
+        <p style="margin-bottom:8px;">Kolb, D. A. (1984). <em>Experiential learning: Experience as the source of learning and development.</em> Prentice-Hall.</p>
+        <p style="margin-bottom:8px;">Papazian, L., Aubron, C., Brochard, L., Chiche, J. D., Combes, A., Dreyfuss, D., Forel, J. M., Guérin, C., Jaber, S., Mekontso-Dessap, A., Mercat, A., Richard, J. C., Roux, D., Vielle, B., &amp; Faure, H. (2019). Formal guidelines: Management of acute respiratory distress syndrome. <em>Annals of Intensive Care, 9</em>(1), 69. https://doi.org/10.1186/s13613-019-0540-9</p>
+        <p style="margin-bottom:8px;">Schmidt, G. A., Girard, T. D., Kress, J. P., Morris, P. E., Ouellette, D. R., Alhazzani, W., Burns, S. M., Epstein, S. K., Esteban, A., Fan, E., Ferrer, M., Fraser, G. L., Haas, C. F., Hough, C. L., Mehta, S., Nanchal, R., Patel, S., Pawlik, A. J., Schweickert, W. D., … Truwit, J. D. (2019). Liberation from mechanical ventilation in critically ill adults. <em>Chest, 156</em>(1), 3–9. https://doi.org/10.1016/j.chest.2018.11.018</p>
+        <p style="margin-bottom:8px;">Tobin, M. J. (2001). Advances in mechanical ventilation. <em>New England Journal of Medicine, 344</em>(26), 1986–1996. https://doi.org/10.1056/NEJM200106283442606</p>
+        <p style="margin-bottom:8px;">Ventilation with lower tidal volumes as compared with traditional tidal volumes for acute lung injury and the acute respiratory distress syndrome. (2000). <em>New England Journal of Medicine, 342</em>(18), 1301–1308. https://doi.org/10.1056/NEJM200005043421801</p>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="contact-box" style="margin-top:16px;">
+      <div style="margin-bottom:6px;color:var(--text);font-weight:500;">Research Team Contact</div>
+      Samir Alnasseri · PhD Candidate · Universiti Malaya<br>
+      <a href="mailto:samir.alnasseri@gmail.com">samir.alnasseri@gmail.com</a> ·
+      <a href="tel:+9689944245">+968 9944245</a>
+    </div>
+
   </div></div>
 </div>
+
+<!-- PRINT CERTIFICATE (hidden) -->
+<div id="cert-print" style="display:none;">
+  <div id="cert-content"></div>
+</div>
+
 
 <script>
 function show(id){
@@ -1191,10 +1283,168 @@ function animateWaves(){
   waveAnimFrame=requestAnimationFrame(animateWaves);
 }
 
+const COMPASS_DATA = {
+  'SC1': {
+    compare: [
+      {label:'RR Set', set:'14 /min', actual:'28 /min', warn:true, note:'Patient breathing faster than set'},
+      {label:'FiO₂', set:'55%', actual:'55%', warn:false, note:''},
+      {label:'TV', set:'520 mL', actual:'520 mL', warn:false, note:''},
+      {label:'PEEP', set:'6 cmH₂O', actual:'6 cmH₂O', warn:false, note:''},
+      {label:'PIP', set:'—', actual:'36 cmH₂O', warn:true, note:'Elevated peak pressure'},
+    ],
+    reference: [
+      {label:'Normal flow waveform', val:'Smooth descending ramp — no abrupt drops'},
+      {label:'Dyssynchrony signs', val:'Irregular waveform, double triggering, flow starvation'},
+      {label:'Flow starvation fix', val:'Increase peak flow (≥60 L/min) or switch to PCV'},
+      {label:'COPD consideration', val:'Prolonged expiratory time needed — I:E ratio 1:3 or longer'},
+      {label:'Sedation role', val:'RASS target -2 — assess if sedation adequate'},
+    ],
+    hints: [
+      'Look at the flow waveform shape — a normal waveform descends smoothly. What do you see instead?',
+      'The patient RR is 28 but the ventilator is set to 14 — this mismatch means the patient is generating their own breaths. What type of dyssynchrony does this suggest?',
+      'Flow starvation occurs when the patient\'s inspiratory demand exceeds what the ventilator delivers. The fix is to increase peak inspiratory flow to ≥60 L/min or switch to Pressure Control Ventilation (PCV).'
+    ]
+  },
+  'SC2': {
+    compare: [
+      {label:'SpO₂', set:'≥95%', actual:'78%', warn:true, note:'Critical desaturation'},
+      {label:'RR', set:'14 /min', actual:'32 /min', warn:true, note:'Tachypnoea'},
+      {label:'FiO₂', set:'60%', actual:'60%', warn:false, note:''},
+      {label:'PEEP', set:'8 cmH₂O', actual:'8 cmH₂O', warn:false, note:''},
+      {label:'PIP', set:'—', actual:'42 cmH₂O', warn:true, note:'Significantly elevated'},
+    ],
+    reference: [
+      {label:'DOPE mnemonic', val:'Displacement · Obstruction · Pneumothorax · Equipment failure'},
+      {label:'First action', val:'Disconnect ventilator — manual bag ventilation to assess lung compliance'},
+      {label:'Pneumothorax signs', val:'Absent breath sounds, tracheal deviation, SpO₂ drop post-repositioning'},
+      {label:'ETT check', val:'Confirm position at lip — note cm marking, bilateral air entry'},
+      {label:'Suction indication', val:'If secretions suspected — pass suction catheter'},
+    ],
+    hints: [
+      'SpO₂ dropped from 97% to 78% during repositioning — use the DOPE mnemonic. What does each letter stand for?',
+      'Repositioning is a key clue — ETT displacement is common during turns. What would you check first at the bedside before anything else?',
+      'Disconnect the ventilator and use a bag-mask — if lungs are easy to ventilate, obstruction is less likely. If hard to ventilate, think pneumothorax. Auscultate both sides immediately.'
+    ]
+  },
+  'SC3': {
+    compare: [
+      {label:'TV Set', set:'520 mL', actual:'520 mL', warn:true, note:'Above lung-protective target'},
+      {label:'IBW Target', set:'6mL/kg = 450mL', actual:'520 mL delivered', warn:true, note:'70mL above target'},
+      {label:'Pplat', set:'<30 cmH₂O', actual:'34 cmH₂O', warn:true, note:'Exceeds safe limit'},
+      {label:'FiO₂', set:'70%', actual:'70%', warn:true, note:'High — consider PEEP optimisation'},
+      {label:'PEEP', set:'10 cmH₂O', actual:'10 cmH₂O', warn:false, note:''},
+    ],
+    reference: [
+      {label:'ARDS TV target', val:'6 mL/kg IBW (max 8 mL/kg)'},
+      {label:'IBW calculation (male)', val:'50 + 0.91 × (height cm − 152.4)'},
+      {label:'For 175cm male', val:'IBW = 50 + 0.91×22.6 = 70.6kg → TV target = 424mL'},
+      {label:'Plateau pressure target', val:'<30 cmH₂O — driving pressure <15 cmH₂O'},
+      {label:'PEEP/FiO₂ table', val:'FiO₂ 0.70 → PEEP 10–12 cmH₂O (ARDSnet table)'},
+    ],
+    hints: [
+      'Look at the TV (520mL) and the patient\'s height (175cm). Calculate IBW using: 50 + 0.91 × (height − 152.4). What TV should this patient be receiving?',
+      'IBW ≈ 70kg → target TV = 6×70 = 420mL. The patient is receiving 520mL — 100mL above the lung-protective target. What does this risk?',
+      'Volutrauma from excess TV worsens ARDS. Reduce TV to 420mL and monitor Pplat — it should drop below 30 cmH₂O. If Pplat stays high, consider reducing RR or increasing I:E ratio.'
+    ]
+  },
+  'SC4': {
+    compare: [
+      {label:'SpO₂', set:'≥95%', actual:'97%', warn:false, note:'Adequate'},
+      {label:'FiO₂', set:'40%', actual:'40%', warn:false, note:'Acceptable for SBT'},
+      {label:'PEEP', set:'5 cmH₂O', actual:'5 cmH₂O', warn:false, note:'Low — appropriate for weaning'},
+      {label:'RR', set:'12 /min', actual:'18 /min', warn:false, note:'Within acceptable range'},
+      {label:'MIP', set:'>-25 cmH₂O', actual:'-28 cmH₂O', warn:false, note:'Adequate respiratory muscle strength'},
+    ],
+    reference: [
+      {label:'SBT readiness criteria', val:'FiO₂ ≤50%, PEEP ≤8, SpO₂ >90%, haemodynamically stable'},
+      {label:'RSBI formula', val:'RR ÷ TV(L) — target <105'},
+      {label:'SBT failure signs', val:'RR>35, SpO₂<90%, HR±20%, agitation, diaphoresis'},
+      {label:'SBT duration', val:'30–120 minutes on T-piece or low-level PS'},
+      {label:'Cuff leak test', val:'Deflate cuff — air leak around ETT suggests adequate airway'},
+    ],
+    hints: [
+      'Before starting an SBT, check readiness criteria: FiO₂ ≤50%, PEEP ≤8, haemodynamically stable, adequate cough. Does this patient meet criteria?',
+      'Calculate RSBI = RR ÷ TV in litres. RR is 18, TV is 480mL (0.48L). RSBI = 18÷0.48 = 37.5 — well below 105. What does a low RSBI predict?',
+      'RSBI <105 predicts successful extubation. All criteria met. Proceed with 30-minute SBT on T-piece. Monitor for failure signs: RR>35, SpO₂<90%, agitation, diaphoresis, accessory muscle use.'
+    ]
+  }
+};
+
+function buildCompass(sc){
+  const data = COMPASS_DATA[sc.id];
+  if(!data) return;
+  // Compare tab
+  const ct = document.getElementById('compare-table');
+  if(ct) ct.innerHTML = data.compare.map(r=>`
+    <div class="compare-row">
+      <span class="compare-label">${r.label}</span>
+      <span class="compare-set">${r.set}</span>
+      <span class="${r.warn?'compare-warn':'compare-ok'}">${r.actual} ${r.warn?'⚠️':'✓'}</span>
+    </div>
+    ${r.note?`<div style="font-size:.68rem;color:var(--text3);padding:0 10px 4px;">${r.note}</div>`:''}`
+  ).join('');
+  // Reference tab
+  const rc = document.getElementById('reference-content');
+  if(rc) rc.innerHTML = data.reference.map(r=>`
+    <div class="ref-item">
+      <div class="ref-label">${r.label}</div>
+      <div>${r.val}</div>
+    </div>`
+  ).join('');
+  // Reset hints
+  window._compassHints = data.hints;
+  window._hintLevel = 0;
+  const hc = document.getElementById('hint-content');
+  if(hc) hc.innerHTML = '';
+  const hb = document.getElementById('hint-btn');
+  if(hb){ hb.style.display='block'; hb.textContent='💡 Show Hint 1 of 3'; }
+}
+
+function toggleCompass(){
+  const body = document.getElementById('compass-body');
+  const arrow = document.getElementById('compass-arrow');
+  const open = body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  arrow.style.transform = open ? 'rotate(180deg)' : '';
+}
+
+function switchTab(tab){
+  ['compare','reference','hint'].forEach(t=>{
+    document.getElementById('compass-'+t).style.display = t===tab?'block':'none';
+    document.getElementById('ctab-'+t).classList.toggle('active', t===tab);
+  });
+}
+
+function showNextHint(){
+  const hints = window._compassHints || [];
+  const level = window._hintLevel || 0;
+  if(level >= hints.length) return;
+  const hc = document.getElementById('hint-content');
+  const div = document.createElement('div');
+  div.className = 'hint-box';
+  div.innerHTML = `<strong style="color:var(--amber);font-size:.68rem;">HINT ${level+1}</strong><br>${hints[level]}`;
+  hc.appendChild(div);
+  window._hintLevel = level + 1;
+  const hb = document.getElementById('hint-btn');
+  if(window._hintLevel >= hints.length){
+    hb.style.display = 'none';
+    const done = document.createElement('div');
+    done.className = 'hint-used';
+    done.textContent = '— All hints shown — reflect on these before deciding —';
+    hc.appendChild(done);
+  } else {
+    hb.textContent = `💡 Show Hint ${window._hintLevel+1} of 3`;
+  }
+}
+
 function loadScenario(idx){
   const sc=SCENARIOS[idx];
   S.sim.scenario=idx; S.sim.step=0;
   S.chat.history=[];
+  window._hintLevel=0;
+  buildCompass(sc);
+  // Kolb: Concrete Experience — participant engages with scenario
+  setTimeout(()=>addXP(KOLB_XP.concrete.pts, KOLB_XP.concrete.label), 1000);
 
   // Patient info
   document.getElementById('pt-name').textContent=sc.title;
@@ -1332,6 +1582,10 @@ function makeDecision(optIdx, btn, dec){
   S.sim.total++;
   if(isCorrect) S.sim.correct++;
   S.sim.decisions.push({step:S.sim.step, optIdx, correct:isCorrect, timestamp:Date.now()});
+  // Kolb: Abstract Conceptualisation — making a decision
+  addXP(KOLB_XP.abstract.pts, KOLB_XP.abstract.label);
+  // Kolb: Active Experimentation — correct decision bonus
+  if(isCorrect) setTimeout(()=>addXP(KOLB_XP.active.pts, KOLB_XP.active.label), 800);
 
   // Disable all options and show result
   document.querySelectorAll('.dec-opt').forEach(b=>{
@@ -1380,6 +1634,9 @@ async function sendMsg(){
   addMsg('usr',txt);
   S.chat.history.push({role:'user',content:txt});
   inp.value='';
+  // Kolb: Reflective Observation — award XP for first 3 reflections per scenario
+  const userMsgs = S.chat.history.filter(m=>m.role==='user').length;
+  if(userMsgs<=3) addXP(KOLB_XP.reflective.pts, KOLB_XP.reflective.label);
   showTyping();
   try{
     const msgs=S.chat.history.slice(-10);
@@ -1423,7 +1680,19 @@ function getLevel(xp){
   if(xp>=50)  return {name:'ICU Nurse',icon:'⭐'};
   return {name:'Resident',icon:'🩺'};
 }
-function addXP(points){
+// Kolb XP stages:
+// Concrete Experience (observing) = awarded when scenario loads
+// Reflective Observation (AI chat engagement) = awarded when sending a message
+// Abstract Conceptualisation (making a decision) = awarded on any decision
+// Active Experimentation (correct decision bonus) = awarded for correct decisions
+const KOLB_XP = {
+  concrete: {pts:10, label:'Concrete Experience'},
+  reflective: {pts:20, label:'Reflective Observation'},
+  abstract: {pts:35, label:'Abstract Conceptualisation'},
+  active: {pts:15, label:'Active Experimentation'}
+};
+
+function addXP(points, stage){
   S.xp += points;
   const badge = document.getElementById('xp-badge');
   if(badge){
@@ -1433,10 +1702,9 @@ function addXP(points){
     void badge.offsetWidth;
     badge.classList.add('xp-pop');
   }
-  // Toast notification
   const toast = document.createElement('div');
   toast.className = 'xp-gain-toast';
-  toast.textContent = `+${points} XP`;
+  toast.innerHTML = `+${points} XP<br><span style="font-size:.65rem;opacity:.8;">${stage||''}</span>`;
   document.body.appendChild(toast);
   setTimeout(()=>toast.remove(), 2100);
 }
@@ -1461,13 +1729,15 @@ function showScenarioDebrief(){
   const pct=Math.round((scCorrect/3)*100);
   const cls=pct>=67?'good':pct>=33?'mid':'poor';
   const stars=getStars(pct);
-  const xpEarned=scCorrect*25;
-  addXP(xpEarned);
+  // XP already awarded per Kolb stage during scenario — just show total
   const lv=getLevel(S.xp);
   const msg=pct===100?'🏆 Perfect scenario! Exceptional clinical reasoning!':
     pct>=67?'⭐ Strong clinical reasoning on this scenario.':
     pct>=33?'💪 Good effort — review the decision rationale below.':
     '📚 This was challenging — the explanations below will reinforce key concepts.';
+  const kolbSummary=`<div style="font-size:.7rem;color:var(--text3);font-family:var(--mono);margin-top:4px;">
+    Kolb XP earned: CE +${KOLB_XP.concrete.pts} · RO up to +${KOLB_XP.reflective.pts*3} · AC +${KOLB_XP.abstract.pts*3} · AE +${scCorrect*KOLB_XP.active.pts}
+  </div>`;
   const area=document.getElementById('sdeb-area');
   area.style.display='block';
   area.innerHTML=`<div class="sdeb-wrap">
@@ -1477,7 +1747,8 @@ function showScenarioDebrief(){
         <strong style="color:var(--text);font-family:var(--sans);">Scenario ${S.sim.scenario+1} Complete</strong>
         ${renderStars(stars)}
         <span style="font-size:.78rem;color:var(--text3);">${sc.title}</span><br>
-        <span style="font-size:.72rem;color:var(--green);font-family:var(--mono);">+${xpEarned} XP &nbsp;·&nbsp; ${lv.icon} ${lv.name}</span>
+        <span style="font-size:.72rem;color:var(--green);font-family:var(--mono);">${lv.icon} ${lv.name} · ${S.xp} XP Total</span>
+        ${kolbSummary}
       </div>
     </div>
     <div class="sdeb-fb">${msg}<br><br>
@@ -1606,10 +1877,138 @@ async function finish(){
   localStorage.setItem('ventsim_final_'+S.pid,JSON.stringify(record));
   localStorage.removeItem('ventsim_'+S.pid);
 
-  
-  show('thankyou-sc'); setProg(100);
+  show('ty-sc'); setProg(100);
+  populateTyScreen();
   loader(false);
 }
+
+function populateTyScreen(){
+  const pid = document.getElementById('ty-pid');
+  const sid = document.getElementById('ty-sid');
+  if(pid) pid.textContent = S.pid;
+  if(sid) sid.textContent = S.sessionId||'—';
+
+  // Performance summary
+  const preMCQ = S.data.preMCQScore||0;
+  const postMCQ = S.data.postMCQScore||0;
+  const gain = postMCQ - preMCQ;
+  const gainStr = gain>0?`<span style="color:var(--green)">+${gain}</span>`: gain<0?`<span style="color:var(--red)">${gain}</span>`:`<span style="color:var(--text3)">no change</span>`;
+  const simPct = S.sim.total>0?Math.round((S.sim.correct/S.sim.total)*100):0;
+  const sumEl = document.getElementById('ty-summary');
+  if(sumEl) sumEl.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:var(--bg2);padding:10px;border-radius:6px;">
+        <div style="font-size:.68rem;color:var(--text3);font-family:var(--mono);">PRE-TEST MCQ</div>
+        <div style="font-size:1.4rem;color:var(--cyan);font-family:var(--mono);">${preMCQ}/20</div>
+      </div>
+      <div style="background:var(--bg2);padding:10px;border-radius:6px;">
+        <div style="font-size:.68rem;color:var(--text3);font-family:var(--mono);">POST-TEST MCQ</div>
+        <div style="font-size:1.4rem;color:var(--cyan);font-family:var(--mono);">${postMCQ}/20 (${gainStr})</div>
+      </div>
+      <div style="background:var(--bg2);padding:10px;border-radius:6px;">
+        <div style="font-size:.68rem;color:var(--text3);font-family:var(--mono);">SIMULATION ACCURACY</div>
+        <div style="font-size:1.4rem;color:var(--green);font-family:var(--mono);">${simPct}%</div>
+      </div>
+      <div style="background:var(--bg2);padding:10px;border-radius:6px;">
+        <div style="font-size:.68rem;color:var(--text3);font-family:var(--mono);">TOTAL XP EARNED</div>
+        <div style="font-size:1.4rem;color:var(--amber);font-family:var(--mono);">${S.xp} XP</div>
+      </div>
+    </div>`;
+
+  // XP level summary
+  const lv = getLevel(S.xp);
+  const xpEl = document.getElementById('ty-xp');
+  if(xpEl) xpEl.innerHTML = `
+    <div style="font-size:1.5rem;margin-bottom:6px;">${lv.icon} <strong style="color:var(--green);">${lv.name}</strong></div>
+    <div>Total XP: <strong style="color:var(--amber);">${S.xp} points</strong></div>
+    <div style="font-size:.75rem;margin-top:4px;">Earned through: observing clinical data, reflecting with AI mentor, making decisions, and correct clinical reasoning.</div>`;
+}
+
+function printCertificate(){
+  const name = S.pid || 'Participant';
+  const date = new Date().toLocaleDateString('en-GB',{year:'numeric',month:'long',day:'numeric'});
+  const lv = getLevel(S.xp);
+  const certHTML = `
+    <!DOCTYPE html><html><head><title>VentSim AI — Participation Certificate</title>
+    <style>
+      body{font-family:'Times New Roman',serif;background:#fff;color:#111;margin:0;padding:40px;}
+      .cert{max-width:700px;margin:auto;border:3px double #1a3a6e;padding:50px;text-align:center;}
+      .cert-logo{font-size:1.1rem;color:#1a3a6e;letter-spacing:2px;text-transform:uppercase;margin-bottom:30px;}
+      .cert-title{font-size:2rem;font-weight:bold;color:#1a3a6e;margin-bottom:10px;}
+      .cert-sub{font-size:1rem;color:#555;margin-bottom:30px;}
+      .cert-name{font-size:1.6rem;font-weight:bold;border-bottom:2px solid #1a3a6e;display:inline-block;padding:0 30px 6px;margin:10px 0 30px;}
+      .cert-body{font-size:.95rem;line-height:1.9;color:#333;margin-bottom:30px;}
+      .cert-xp{background:#f0f7ff;border:1px solid #1a3a6e;border-radius:8px;padding:12px;margin:20px 0;font-size:.9rem;}
+      .cert-sig{display:flex;justify-content:space-around;margin-top:50px;font-size:.85rem;}
+      .cert-sig div{text-align:center;}
+      .cert-sig .line{border-top:1px solid #111;width:180px;margin:0 auto 6px;}
+      .cert-footer{font-size:.7rem;color:#888;margin-top:30px;border-top:1px solid #ddd;padding-top:14px;}
+      @media print{body{padding:0;}}
+    </style></head><body>
+    <div class="cert">
+      <div class="cert-logo">Universiti Malaya · Faculty of Education · 2026</div>
+      <div class="cert-title">Certificate of Participation</div>
+      <div class="cert-sub">This is to certify that</div>
+      <div class="cert-name">Participant ${name}</div>
+      <div class="cert-body">
+        has successfully completed the<br>
+        <strong>VentSim AI — Clinical Simulation Session</strong><br>
+        as part of the research study:<br><br>
+        <em>"Effect of Generative AI-Driven Standardized Patient Simulation on ICU Nurses' Clinical Decision-Making and Technology Acceptance in Mechanical Ventilation Management"</em><br><br>
+        Session Date: ${date}
+      </div>
+      <div class="cert-xp">
+        Achievement Level: <strong>${lv.icon} ${lv.name}</strong> · Total XP: <strong>${S.xp} points</strong><br>
+        <small>Based on Kolb's Experiential Learning Cycle engagement</small>
+      </div>
+      <div class="cert-sig">
+        <div>
+          <div class="line"></div>
+          Samir Alnasseri<br>PhD Candidate · Universiti Malaya<br>samir.alnasseri@gmail.com<br>+968 9944245
+        </div>
+        <div>
+          <div class="line"></div>
+          Dr. Noor Hanita Binti Zaini<br>Main Supervisor<br>Universiti Malaya
+        </div>
+      </div>
+      <div class="cert-footer">
+        This certificate is issued for research participation record only. It does not constitute a formal academic award.<br>
+        VentSim AI Platform · Universiti Malaya · 2026
+      </div>
+    </div>
+    </body></html>`;
+  const w = window.open('','_blank','width=800,height:700');
+  w.document.write(certHTML);
+  w.document.close();
+  w.print();
+}
+
+// ── CONSOLE PROTECTION ──
+(function(){
+  // Disable right-click
+  document.addEventListener('contextmenu',e=>e.preventDefault());
+  // Disable F12, Ctrl+Shift+I, Ctrl+U
+  document.addEventListener('keydown',e=>{
+    if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key))||(e.ctrlKey&&e.key==='U')){
+      e.preventDefault();
+      return false;
+    }
+  });
+  // DevTools detection — freeze if opened
+  let devOpen=false;
+  const threshold=160;
+  setInterval(()=>{
+    if(window.outerWidth-window.innerWidth>threshold||window.outerHeight-window.innerHeight>threshold){
+      if(!devOpen){
+        devOpen=true;
+        document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#050d14;color:#ff5252;font-family:monospace;font-size:1.2rem;text-align:center;padding:40px;">⚠️ Developer tools detected.<br>Please close DevTools to continue.<br><br><small>This platform is part of a research study.<br>Tampering may compromise data integrity.</small></div>';
+      }
+    } else { devOpen=false; }
+  },1000);
+  // Console warning message
+  console.log('%c⛔ STOP!','color:red;font-size:2rem;font-weight:bold;');
+  console.log('%cThis is a research platform. Any modification of this interface may compromise study data integrity and violates research ethics. If you have a technical problem, please contact: samir.alnasseri@gmail.com','color:#ff5252;font-size:1rem;');
+})();
 </script>
 </body>
 </html>
