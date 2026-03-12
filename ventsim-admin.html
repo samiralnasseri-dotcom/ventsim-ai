@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VentSim AI — Researcher Admin Panel</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap');
+:root{--bg:#050d14;--bg2:#081520;--panel:#0a1a27;--border:#0e2a3f;--border2:#1a3a55;--cyan:#00e5ff;--green:#00e676;--amber:#ffd740;--red:#ff5252;--purple:#ce93d8;--text:#e0f2f1;--text2:#90a4ae;--text3:#546e7a;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+.hdr{background:rgba(5,13,20,.98);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:12px;}
+.hlogo{font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--cyan);}
+.hbadge{margin-left:auto;background:rgba(255,82,82,.1);border:1px solid rgba(255,82,82,.3);color:var(--red);font-family:var(--mono);font-size:.65rem;padding:4px 10px;border-radius:4px;}
+.wrap{max-width:900px;margin:0 auto;padding:30px 20px;}
+.login-box{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:30px;max-width:400px;margin:80px auto;}
+.login-title{font-size:1.2rem;font-weight:600;margin-bottom:6px;color:var(--cyan);}
+.login-sub{font-size:.82rem;color:var(--text2);margin-bottom:20px;}
+.finp{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;color:var(--text);font-family:var(--mono);font-size:.85rem;outline:none;margin-bottom:12px;}
+.finp:focus{border-color:var(--cyan);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--mono);font-size:.75rem;font-weight:600;padding:10px 20px;border-radius:6px;border:none;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn-p{background:linear-gradient(135deg,var(--cyan),#00b8d4);color:#000;width:100%;}
+.btn-p:hover{opacity:.9;}
+.btn-g{background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.3);color:var(--green);}
+.btn-g:hover{background:rgba(0,230,118,.2);}
+.btn-r{background:rgba(255,82,82,.1);border:1px solid rgba(255,82,82,.3);color:var(--red);}
+.btn-r:hover{background:rgba(255,82,82,.2);}
+.btn-a{background:rgba(255,215,64,.1);border:1px solid rgba(255,215,64,.3);color:var(--amber);}
+.btn-a:hover{background:rgba(255,215,64,.2);}
+.btn-sm{padding:6px 12px;font-size:.68rem;}
+.err{color:var(--red);font-size:.75rem;font-family:var(--mono);margin-top:4px;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px;}
+.card-title{font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.stat{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:14px;text-align:center;}
+.stat-val{font-family:var(--mono);font-size:1.8rem;font-weight:600;margin-bottom:4px;}
+.stat-lbl{font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
+.id-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;}
+.id-chip{background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:6px 10px;font-family:var(--mono);font-size:.72rem;display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.id-chip.completed{border-color:rgba(0,230,118,.3);background:rgba(0,230,118,.05);}
+.id-chip.in_progress{border-color:rgba(255,215,64,.3);background:rgba(255,215,64,.05);}
+.id-chip.pending{border-color:var(--border2);color:var(--text3);}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.dot-green{background:var(--green);}
+.dot-amber{background:var(--amber);}
+.dot-grey{background:var(--text3);}
+.phase-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.reset-row{display:flex;gap:8px;margin-top:12px;}
+.reset-row .finp{margin:0;flex:1;}
+.msg{font-family:var(--mono);font-size:.78rem;padding:8px 12px;border-radius:4px;margin-top:10px;}
+.msg-ok{background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);color:var(--green);}
+.msg-err{background:rgba(255,82,82,.08);border:1px solid rgba(255,82,82,.2);color:var(--red);}
+.hidden{display:none;}
+.logout{font-family:var(--mono);font-size:.68rem;color:var(--text3);cursor:pointer;margin-left:12px;}
+.logout:hover{color:var(--red);}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hlogo">⚕ VentSim AI</div>
+  <span style="font-size:.75rem;color:var(--text2);font-family:var(--mono);">Researcher Admin Panel</span>
+  <div class="hbadge">RESTRICTED ACCESS</div>
+  <span class="logout hidden" id="logout-btn" onclick="logout()">⏻ Logout</span>
+</div>
+
+<!-- LOGIN -->
+<div id="login-view">
+  <div class="login-box">
+    <div class="login-title">🔐 Admin Login</div>
+    <div class="login-sub">This panel is for the researcher only. Do not share this page with participants.</div>
+    <input class="finp" type="password" id="admin-key-inp" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="err" id="login-err"></div>
+    <button class="btn btn-p" onclick="doLogin()">LOGIN</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard-view" class="hidden">
+<div class="wrap">
+
+  <!-- SUMMARY STATS -->
+  <div class="card">
+    <div class="card-title">📊 Study Progress</div>
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-val" id="stat-completed" style="color:var(--green);">—</div><div class="stat-lbl">Completed</div></div>
+      <div class="stat"><div class="stat-val" id="stat-inprogress" style="color:var(--amber);">—</div><div class="stat-lbl">In Progress</div></div>
+      <div class="stat"><div class="stat-val" id="stat-pending" style="color:var(--text3);">—</div><div class="stat-lbl">Pending</div></div>
+    </div>
+    <button class="btn btn-g btn-sm" onclick="loadStatus()">🔄 Refresh Status</button>
+  </div>
+
+  <!-- PHASE CONTROL -->
+  <div class="card">
+    <div class="card-title">⚙️ Phase Control</div>
+    <div style="font-size:.8rem;color:var(--text2);margin-bottom:12px;">Control which participant groups can access the platform.</div>
+    <div class="phase-btns">
+      <button class="btn btn-g btn-sm" onclick="setPhase('control')">Phase 1 — Control Only</button>
+      <button class="btn btn-g btn-sm" onclick="setPhase('intervention')">Phase 2 — Intervention Only</button>
+      <button class="btn btn-p btn-sm" onclick="setPhase('both')">Both Groups Active</button>
+      <button class="btn btn-r btn-sm" onclick="setPhase('locked')">🔒 Lock All</button>
+    </div>
+    <div class="msg hidden" id="phase-msg"></div>
+  </div>
+
+  <!-- RESET PARTICIPANT -->
+  <div class="card">
+    <div class="card-title">🔓 Reset Participant ID</div>
+    <div style="font-size:.8rem;color:var(--text2);margin-bottom:8px;">Use this if a participant had a technical problem and needs to restart. Their previous data will remain in Google Sheets.</div>
+    <div class="reset-row">
+      <input class="finp" type="text" id="reset-pid-inp" placeholder="e.g. P012" style="text-transform:uppercase;">
+      <button class="btn btn-a" onclick="doReset()">UNLOCK ID</button>
+    </div>
+    <div class="msg hidden" id="reset-msg"></div>
+  </div>
+
+  <!-- ID STATUS GRID -->
+  <div class="card">
+    <div class="card-title">👥 Participant Status</div>
+    <div style="display:flex;gap:16px;font-size:.72rem;color:var(--text3);margin-bottom:12px;font-family:var(--mono);">
+      <span><span class="dot dot-green" style="display:inline-block;margin-right:4px;"></span>Completed</span>
+      <span><span class="dot dot-amber" style="display:inline-block;margin-right:4px;"></span>In Progress</span>
+      <span><span class="dot dot-grey" style="display:inline-block;margin-right:4px;"></span>Pending</span>
+    </div>
+    <div id="id-grid" class="id-grid"></div>
+  </div>
+
+</div>
+</div>
+
+<script>
+const WORKER = 'https://ventsim-worker.samir-alnasseri.workers.dev';
+let ADMIN_KEY = '';
+
+const ALL_IDS = [
+  ...Array.from({length:45},(_,i)=>'P'+(i+1).toString().padStart(3,'0')),
+  ...Array.from({length:45},(_,i)=>'P'+(i+46).toString().padStart(3,'0')),
+  ...Array.from({length:20},(_,i)=>'PP'+(i+1).toString().padStart(2,'0'))
+];
+
+async function doLogin(){
+  const key = document.getElementById('admin-key-inp').value.trim();
+  if(!key){ document.getElementById('login-err').textContent='Please enter the admin password.'; return; }
+  // Test the key against worker
+  try{
+    const r = await fetch(WORKER+'/admin/status',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Admin-Key':key},
+      body:JSON.stringify({})
+    });
+    if(r.status===401){ document.getElementById('login-err').textContent='Incorrect password.'; return; }
+    ADMIN_KEY = key;
+    document.getElementById('login-view').classList.add('hidden');
+    document.getElementById('dashboard-view').classList.remove('hidden');
+    document.getElementById('logout-btn').classList.remove('hidden');
+    const data = await r.json();
+    renderStatus(data);
+  }catch(e){
+    document.getElementById('login-err').textContent='Could not connect to server. Check your connection.';
+  }
+}
+
+async function loadStatus(){
+  try{
+    const r = await fetch(WORKER+'/admin/status',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
+      body:JSON.stringify({})
+    });
+    const data = await r.json();
+    renderStatus(data);
+  }catch(e){ alert('Failed to load status.'); }
+}
+
+function renderStatus(data){
+  if(data.summary){
+    document.getElementById('stat-completed').textContent = data.summary.completed;
+    document.getElementById('stat-inprogress').textContent = data.summary.inProgress;
+    document.getElementById('stat-pending').textContent = data.summary.pending;
+  }
+  const details = data.details || {};
+  const grid = document.getElementById('id-grid');
+  grid.innerHTML = ALL_IDS.map(id => {
+    const s = details[id];
+    const status = s ? s.status : 'pending';
+    const dotClass = status==='completed'?'dot-green':status==='in_progress'?'dot-amber':'dot-grey';
+    return `<div class="id-chip ${status}">
+      <span class="dot ${dotClass}"></span>
+      <span>${id}</span>
+      ${status==='completed'?`<button class="btn btn-r" style="padding:2px 6px;font-size:.6rem;" onclick="quickReset('${id}')">↺</button>`:''}
+    </div>`;
+  }).join('');
+}
+
+async function quickReset(pid){
+  if(!confirm('Reset '+pid+'? They will be able to log in again.')) return;
+  await resetPid(pid);
+}
+
+async function doReset(){
+  const pid = document.getElementById('reset-pid-inp').value.trim().toUpperCase();
+  if(!pid){ showMsg('reset-msg','Please enter a participant ID.','err'); return; }
+  await resetPid(pid);
+}
+
+async function resetPid(pid){
+  try{
+    const r = await fetch(WORKER+'/admin/reset',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
+      body:JSON.stringify({pid})
+    });
+    const data = await r.json();
+    if(data.success){
+      showMsg('reset-msg', data.message, 'ok');
+      loadStatus();
+    } else {
+      showMsg('reset-msg', data.message||'Failed.', 'err');
+    }
+  }catch(e){ showMsg('reset-msg','Connection error.','err'); }
+}
+
+async function setPhase(phase){
+  try{
+    const r = await fetch(WORKER+'/admin/phase',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
+      body:JSON.stringify({phase})
+    });
+    const data = await r.json();
+    showMsg('phase-msg', data.message||'Done.', data.success?'ok':'err');
+  }catch(e){ showMsg('phase-msg','Connection error.','err'); }
+}
+
+function showMsg(id, text, type){
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg msg-'+(type==='ok'?'ok':'err');
+  el.classList.remove('hidden');
+  setTimeout(()=>el.classList.add('hidden'), 4000);
+}
+
+function logout(){
+  ADMIN_KEY='';
+  document.getElementById('login-view').classList.remove('hidden');
+  document.getElementById('dashboard-view').classList.add('hidden');
+  document.getElementById('logout-btn').classList.add('hidden');
+  document.getElementById('admin-key-inp').value='';
+}
+</script>
+</body>
+</html>
