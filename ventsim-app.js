@@ -37,7 +37,9 @@ const S = {
 ═══════════════════════════════════════════ */
 function show(id){
   document.querySelectorAll('.sc').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  var el=document.getElementById(id);
+  if(!el){console.error('Screen not found:',id);return;}
+  el.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function setProg(pct){ document.getElementById('prog-bar').style.width=pct+'%'; }
@@ -70,7 +72,7 @@ async function _realStartSession(){
   if(!pid){ document.getElementById('pid-err').textContent='Please enter your participant number.'; return; }
   // TEST mode — always start fresh, never resume
   if(window._testMode){
-    localStorage.removeItem('ventsim_'+pid);
+    if(pid==='TEST'||pid==='DEMO') localStorage.removeItem('ventsim_'+pid);
     loader(false);
     S.pid=pid; S.group='intervention';
     S.date=document.getElementById('ses-date').value||new Date().toISOString().split('T')[0];
