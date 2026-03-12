@@ -364,8 +364,11 @@ canvas.wc.active{display:block;}
         </div>
       </div>
       <script data-cfasync="false">
+      function show(id){document.querySelectorAll('.sc').forEach(function(s){s.classList.remove('active');});var el=document.getElementById(id);if(el){el.classList.add('active');}window.scrollTo({top:0,behavior:'smooth'});}
+      function setProg(pct){var b=document.getElementById('prog-bar');if(b)b.style.width=pct+'%';}
+      </script>
       <button class="btn btn-p btn-w" onclick="show('consent-sc');setProg(5)">▶ BEGIN STUDY PARTICIPATION</button>
-      <div class="contact-footer">For enquiries: <a href="/cdn-cgi/l/email-protection#7003111d19025e111c1e110303150219565346444b171d11191c5e131f1d">samir.alnasseri&#64;gmail.com</a> · <a href="tel:+9689944245">+968 9944245</a></div>
+      <div class="contact-footer">For enquiries: <a href="mailto:samir.alnasseri&#64;gmail.com">samir.alnasseri&#64;gmail.com</a> · <a href="tel:+9689944245">+968 9944245</a></div>
     </div>
   </div>
 </div>
