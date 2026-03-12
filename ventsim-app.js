@@ -938,6 +938,36 @@ function startSim(){
 /* ═══════════════════════════════════════════
    DEBRIEF
 ═══════════════════════════════════════════ */
+// Populate researcher email spans safely via JS (avoids Cloudflare obfuscation)
+document.addEventListener('DOMContentLoaded', function(){
+  const e = ['s','a','m','i','r','.','a','l','n','a','s','s','e','r','i','@','g','m','a','i','l','.','c','o','m'].join('');
+  document.querySelectorAll('.researcher-email').forEach(function(el){
+    el.innerHTML = '<a href="mailto:'+e+'" style="color:var(--cyan);text-decoration:none;">'+e+'</a>';
+  });
+});
+
+function renderMarkdown(text){
+  if(!text) return '';
+  return text
+    // Headers ## and ###
+    .replace(/^### (.+)$/gm, '<h4 style="color:var(--cyan);font-family:var(--sans);margin:14px 0 6px;">$1</h4>')
+    .replace(/^## (.+)$/gm, '<h3 style="color:var(--cyan);font-family:var(--sans);margin:16px 0 8px;">$1</h3>')
+    .replace(/^# (.+)$/gm, '<h3 style="color:var(--cyan);font-family:var(--sans);margin:16px 0 8px;">$1</h3>')
+    // Bold **text**
+    .replace(/\*\*([^*]+)\*\*/g, '<strong style="color:var(--text);">$1</strong>')
+    // Bullet points - item
+    .replace(/^[-•]\s+(.+)$/gm, '<div style="display:flex;gap:8px;margin:4px 0;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><span>$1</span></div>')
+    // Numbered lists
+    .replace(/^\d+\.\s+(.+)$/gm, '<div style="display:flex;gap:8px;margin:4px 0;padding-left:4px;"><span style="color:var(--amber);flex-shrink:0;">◆</span><span>$1</span></div>')
+    // Double newlines = paragraph break
+    .replace(/\n\n/g, '</p><p style="margin:10px 0;">')
+    // Single newlines
+    .replace(/\n/g, '<br>')
+    // Wrap in paragraph
+    .replace(/^/, '<p style="margin:0;">')
+    .replace(/$/, '</p>');
+}
+
 async function loadDebrief(){
   const preMCQ=S.data.preMCQScore||0;
   const postMCQ=S.data.postMCQScore||0;
@@ -970,7 +1000,8 @@ Keep total length under 220 words. Be warm, evidence-based, and specific to mech
   try{
     const r=await fetch(WORKER_URL+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:S.pid,max_tokens:300,messages:[{role:'user',content:debPrompt}]})});
     const j=await r.json();
-    document.getElementById('deb-fb').textContent=j?.content?.[0]?.text||'Your performance data has been recorded. Thank you for your participation in this research study.';
+    const txt=j?.content?.[0]?.text||'Your performance data has been recorded. Thank you for your participation in this research study.';
+    document.getElementById('deb-fb').innerHTML=renderMarkdown(txt);
   }catch(e){
     document.getElementById('deb-fb').textContent='Simulation complete. Correct decisions: '+S.sim.correct+'/'+S.sim.total+'. Your MCQ score changed from '+preMCQ+' to '+postMCQ+'. All data has been recorded. Thank you for your participation.';
   }
