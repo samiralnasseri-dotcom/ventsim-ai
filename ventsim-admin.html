@@ -6,73 +6,102 @@
 <title>VentSim AI — Researcher Admin Panel</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap');
-:root{--bg:#050d14;--bg2:#081520;--panel:#0a1a27;--border:#0e2a3f;--border2:#1a3a55;--cyan:#00e5ff;--green:#00e676;--amber:#ffd740;--red:#ff5252;--purple:#ce93d8;--text:#e0f2f1;--text2:#90a4ae;--text3:#546e7a;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;}
+:root{--bg:#050d14;--bg2:#081520;--panel:#0a1a27;--border:#0e2a3f;--border2:#1a3a55;--cyan:#00e5ff;--green:#00e676;--amber:#ffd740;--red:#ff5252;--purple:#ce93d8;--blue:#82b1ff;--text:#e0f2f1;--text2:#90a4ae;--text3:#546e7a;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
-.hdr{background:rgba(5,13,20,.98);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:12px;}
-.hlogo{font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--cyan);}
-.hbadge{margin-left:auto;background:rgba(255,82,82,.1);border:1px solid rgba(255,82,82,.3);color:var(--red);font-family:var(--mono);font-size:.65rem;padding:4px 10px;border-radius:4px;}
-.wrap{max-width:900px;margin:0 auto;padding:30px 20px;}
+.hdr{background:rgba(5,13,20,.98);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+.hlogo{font-family:var(--mono);font-size:.95rem;font-weight:600;color:var(--cyan);}
+.hbadge{background:rgba(255,82,82,.1);border:1px solid rgba(255,82,82,.3);color:var(--red);font-family:var(--mono);font-size:.62rem;padding:3px 8px;border-radius:3px;}
+.nav{display:flex;gap:4px;margin-left:auto;}
+.nav-btn{background:transparent;border:1px solid var(--border2);color:var(--text3);font-family:var(--mono);font-size:.65rem;padding:5px 10px;border-radius:4px;cursor:pointer;transition:all .2s;}
+.nav-btn.active,.nav-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.05);}
+.logout{font-family:var(--mono);font-size:.65rem;color:var(--text3);cursor:pointer;padding:5px 10px;border:1px solid var(--border);border-radius:4px;}
+.logout:hover{color:var(--red);border-color:var(--red);}
+.wrap{max-width:960px;margin:0 auto;padding:24px 20px;}
 .login-box{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:30px;max-width:400px;margin:80px auto;}
-.login-title{font-size:1.2rem;font-weight:600;margin-bottom:6px;color:var(--cyan);}
-.login-sub{font-size:.82rem;color:var(--text2);margin-bottom:20px;}
-.finp{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;color:var(--text);font-family:var(--mono);font-size:.85rem;outline:none;margin-bottom:12px;}
+.login-title{font-size:1.1rem;font-weight:600;margin-bottom:6px;color:var(--cyan);}
+.login-sub{font-size:.8rem;color:var(--text2);margin-bottom:20px;line-height:1.6;}
+.finp{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:9px 13px;color:var(--text);font-family:var(--mono);font-size:.82rem;outline:none;margin-bottom:10px;}
 .finp:focus{border-color:var(--cyan);}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--mono);font-size:.75rem;font-weight:600;padding:10px 20px;border-radius:6px;border:none;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--mono);font-size:.72rem;font-weight:600;padding:9px 18px;border-radius:5px;border:none;cursor:pointer;transition:all .2s;text-transform:uppercase;}
 .btn-p{background:linear-gradient(135deg,var(--cyan),#00b8d4);color:#000;width:100%;}
-.btn-p:hover{opacity:.9;}
 .btn-g{background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.3);color:var(--green);}
-.btn-g:hover{background:rgba(0,230,118,.2);}
 .btn-r{background:rgba(255,82,82,.1);border:1px solid rgba(255,82,82,.3);color:var(--red);}
-.btn-r:hover{background:rgba(255,82,82,.2);}
 .btn-a{background:rgba(255,215,64,.1);border:1px solid rgba(255,215,64,.3);color:var(--amber);}
-.btn-a:hover{background:rgba(255,215,64,.2);}
-.btn-sm{padding:6px 12px;font-size:.68rem;}
-.err{color:var(--red);font-size:.75rem;font-family:var(--mono);margin-top:4px;}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px;}
-.card-title{font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.btn-b{background:rgba(130,177,255,.1);border:1px solid rgba(130,177,255,.3);color:var(--blue);}
+.btn-c{background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.3);color:var(--cyan);}
+.btn:hover{opacity:.85;transform:translateY(-1px);}
+.btn-sm{padding:5px 10px;font-size:.62rem;}
+.btn-w{width:100%;}
+.err{color:var(--red);font-size:.73rem;font-family:var(--mono);margin-top:4px;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:14px;}
+.card-title{font-family:var(--mono);font-size:.7rem;font-weight:600;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .card-title::after{content:'';flex:1;height:1px;background:var(--border);}
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
-.stat{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:14px;text-align:center;}
-.stat-val{font-family:var(--mono);font-size:1.8rem;font-weight:600;margin-bottom:4px;}
-.stat-lbl{font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
-.id-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;}
-.id-chip{background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:6px 10px;font-family:var(--mono);font-size:.72rem;display:flex;align-items:center;justify-content:space-between;gap:6px;}
-.id-chip.completed{border-color:rgba(0,230,118,.3);background:rgba(0,230,118,.05);}
-.id-chip.in_progress{border-color:rgba(255,215,64,.3);background:rgba(255,215,64,.05);}
-.id-chip.pending{border-color:var(--border2);color:var(--text3);}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+@media(max-width:600px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+.stat{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:12px;text-align:center;}
+.stat-val{font-family:var(--mono);font-size:1.6rem;font-weight:600;margin-bottom:3px;}
+.stat-lbl{font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
+.id-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:5px;}
+.id-chip{background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:5px 8px;font-family:var(--mono);font-size:.68rem;display:flex;align-items:center;gap:5px;cursor:default;}
+.id-chip.completed{border-color:rgba(0,230,118,.3);background:rgba(0,230,118,.04);}
+.id-chip.in_progress{border-color:rgba(255,215,64,.3);background:rgba(255,215,64,.04);}
+.id-chip.pending{opacity:.5;}
 .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 .dot-green{background:var(--green);}
 .dot-amber{background:var(--amber);}
 .dot-grey{background:var(--text3);}
 .phase-btns{display:flex;gap:8px;flex-wrap:wrap;}
-.reset-row{display:flex;gap:8px;margin-top:12px;}
+.reset-row{display:flex;gap:8px;margin-top:10px;}
 .reset-row .finp{margin:0;flex:1;}
-.msg{font-family:var(--mono);font-size:.78rem;padding:8px 12px;border-radius:4px;margin-top:10px;}
+.msg{font-family:var(--mono);font-size:.75rem;padding:7px 11px;border-radius:4px;margin-top:8px;}
 .msg-ok{background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);color:var(--green);}
 .msg-err{background:rgba(255,82,82,.08);border:1px solid rgba(255,82,82,.2);color:var(--red);}
 .hidden{display:none;}
-.logout{font-family:var(--mono);font-size:.68rem;color:var(--text3);cursor:pointer;margin-left:12px;}
-.logout:hover{color:var(--red);}
+.tab-content{display:none;}.tab-content.active{display:block;}
+.score-table{width:100%;border-collapse:collapse;font-size:.75rem;}
+.score-table th{font-family:var(--mono);font-size:.62rem;color:var(--text3);text-align:left;padding:6px 10px;border-bottom:1px solid var(--border);letter-spacing:.5px;text-transform:uppercase;}
+.score-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--mono);}
+.score-table tr:hover td{background:rgba(0,229,255,.03);}
+.gain-pos{color:var(--green);}
+.gain-neg{color:var(--red);}
+.gain-neu{color:var(--text3);}
+.audit-row{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:.75rem;}
+.audit-time{font-family:var(--mono);font-size:.65rem;color:var(--text3);white-space:nowrap;min-width:140px;}
+.audit-action{color:var(--text2);}
+.audit-pid{color:var(--cyan);font-family:var(--mono);}
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:600px){.analytics-grid{grid-template-columns:1fr;}}
+.bar-wrap{margin-bottom:8px;}
+.bar-label{display:flex;justify-content:space-between;font-size:.72rem;color:var(--text2);margin-bottom:3px;}
+.bar-track{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width .6s ease;}
+.section-hdr{font-family:var(--mono);font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border);}
 </style>
 </head>
 <body>
 
 <div class="hdr">
   <div class="hlogo">⚕ VentSim AI</div>
-  <span style="font-size:.75rem;color:var(--text2);font-family:var(--mono);">Researcher Admin Panel</span>
-  <div class="hbadge">RESTRICTED ACCESS</div>
-  <span class="logout hidden" id="logout-btn" onclick="logout()">⏻ Logout</span>
+  <span class="hbadge">RESEARCHER ONLY</span>
+  <div class="nav hidden" id="nav">
+    <button class="nav-btn active" onclick="switchTab('overview')">Overview</button>
+    <button class="nav-btn" onclick="switchTab('scores')">Live Scores</button>
+    <button class="nav-btn" onclick="switchTab('analytics')">Analytics</button>
+    <button class="nav-btn" onclick="switchTab('manage')">Manage</button>
+    <button class="nav-btn" onclick="switchTab('audit')">Audit Log</button>
+  </div>
+  <button class="logout hidden" id="logout-btn" onclick="logout()">⏻ Exit</button>
 </div>
 
 <!-- LOGIN -->
 <div id="login-view">
   <div class="login-box">
-    <div class="login-title">🔐 Admin Login</div>
+    <div class="login-title">🔐 Researcher Login</div>
     <div class="login-sub">This panel is for the researcher only. Do not share this page with participants.</div>
     <input class="finp" type="password" id="admin-key-inp" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
     <div class="err" id="login-err"></div>
-    <button class="btn btn-p" onclick="doLogin()">LOGIN</button>
+    <button class="btn btn-p" onclick="doLogin()">LOGIN →</button>
   </div>
 </div>
 
@@ -80,50 +109,139 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div id="dashboard-view" class="hidden">
 <div class="wrap">
 
-  <!-- SUMMARY STATS -->
-  <div class="card">
-    <div class="card-title">📊 Study Progress</div>
-    <div class="stat-grid">
-      <div class="stat"><div class="stat-val" id="stat-completed" style="color:var(--green);">—</div><div class="stat-lbl">Completed</div></div>
-      <div class="stat"><div class="stat-val" id="stat-inprogress" style="color:var(--amber);">—</div><div class="stat-lbl">In Progress</div></div>
-      <div class="stat"><div class="stat-val" id="stat-pending" style="color:var(--text3);">—</div><div class="stat-lbl">Pending</div></div>
+  <!-- OVERVIEW TAB -->
+  <div class="tab-content active" id="tab-overview">
+    <div class="card">
+      <div class="card-title">📊 Study Progress</div>
+      <div class="stat-grid">
+        <div class="stat"><div class="stat-val" id="stat-completed" style="color:var(--green);">—</div><div class="stat-lbl">Completed</div></div>
+        <div class="stat"><div class="stat-val" id="stat-inprogress" style="color:var(--amber);">—</div><div class="stat-lbl">In Progress</div></div>
+        <div class="stat"><div class="stat-val" id="stat-pending" style="color:var(--text3);">—</div><div class="stat-lbl">Pending</div></div>
+        <div class="stat"><div class="stat-val" id="stat-pct" style="color:var(--cyan);">—</div><div class="stat-lbl">Complete %</div></div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-g btn-sm" onclick="loadStatus()">🔄 Refresh</button>
+        <button class="btn btn-b btn-sm" onclick="exportCSV()">📥 Export CSV</button>
+      </div>
     </div>
-    <button class="btn btn-g btn-sm" onclick="loadStatus()">🔄 Refresh Status</button>
+
+    <div class="card">
+      <div class="card-title">👥 Participant Status Grid</div>
+      <div style="display:flex;gap:16px;font-size:.7rem;color:var(--text3);margin-bottom:10px;font-family:var(--mono);">
+        <span><span class="dot dot-green" style="display:inline-block;margin-right:4px;vertical-align:middle;"></span>Completed</span>
+        <span><span class="dot dot-amber" style="display:inline-block;margin-right:4px;vertical-align:middle;"></span>In Progress</span>
+        <span><span class="dot dot-grey" style="display:inline-block;margin-right:4px;vertical-align:middle;"></span>Pending</span>
+      </div>
+      <div class="section-hdr">Control Group (P001–P045)</div>
+      <div class="id-grid" id="grid-control"></div>
+      <div class="section-hdr" style="margin-top:14px;">Intervention Group (P046–P090)</div>
+      <div class="id-grid" id="grid-intervention"></div>
+      <div class="section-hdr" style="margin-top:14px;">Pilot Group (PP01–PP20)</div>
+      <div class="id-grid" id="grid-pilot"></div>
+    </div>
   </div>
 
-  <!-- PHASE CONTROL -->
-  <div class="card">
-    <div class="card-title">⚙️ Phase Control</div>
-    <div style="font-size:.8rem;color:var(--text2);margin-bottom:12px;">Control which participant groups can access the platform.</div>
-    <div class="phase-btns">
-      <button class="btn btn-g btn-sm" onclick="setPhase('control')">Phase 1 — Control Only</button>
-      <button class="btn btn-g btn-sm" onclick="setPhase('intervention')">Phase 2 — Intervention Only</button>
-      <button class="btn btn-p btn-sm" onclick="setPhase('both')">Both Groups Active</button>
-      <button class="btn btn-r btn-sm" onclick="setPhase('locked')">🔒 Lock All</button>
+  <!-- LIVE SCORES TAB -->
+  <div class="tab-content" id="tab-scores">
+    <div class="card">
+      <div class="card-title">📈 Live Score Monitor</div>
+      <div style="font-size:.78rem;color:var(--text2);margin-bottom:12px;">Scores update from Google Sheets. Click Refresh to get latest data.</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <button class="btn btn-g btn-sm" onclick="loadScores()">🔄 Refresh Scores</button>
+        <button class="btn btn-b btn-sm" onclick="exportScoresCSV()">📥 Export Scores CSV</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="score-table">
+          <thead>
+            <tr>
+              <th>ID</th><th>Group</th><th>Pre MCQ</th><th>Post MCQ</th><th>MCQ Gain</th>
+              <th>Pre CDMNS</th><th>Post CDMNS</th><th>CDMNS Gain</th>
+              <th>Sim Accuracy</th><th>Completed</th>
+            </tr>
+          </thead>
+          <tbody id="scores-tbody">
+            <tr><td colspan="10" style="text-align:center;color:var(--text3);padding:20px;">Click Refresh Scores to load data</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div class="msg hidden" id="phase-msg"></div>
   </div>
 
-  <!-- RESET PARTICIPANT -->
-  <div class="card">
-    <div class="card-title">🔓 Reset Participant ID</div>
-    <div style="font-size:.8rem;color:var(--text2);margin-bottom:8px;">Use this if a participant had a technical problem and needs to restart. Their previous data will remain in Google Sheets.</div>
-    <div class="reset-row">
-      <input class="finp" type="text" id="reset-pid-inp" placeholder="e.g. P012" style="text-transform:uppercase;">
-      <button class="btn btn-a" onclick="doReset()">UNLOCK ID</button>
+  <!-- ANALYTICS TAB -->
+  <div class="tab-content" id="tab-analytics">
+    <div class="card">
+      <div class="card-title">⏱️ Session Analytics</div>
+      <div class="analytics-grid">
+        <div>
+          <div style="font-size:.75rem;color:var(--text2);margin-bottom:10px;">Completion Rate by Group</div>
+          <div class="bar-wrap">
+            <div class="bar-label"><span>Control</span><span id="bar-control-lbl">—</span></div>
+            <div class="bar-track"><div class="bar-fill" id="bar-control" style="background:var(--blue);width:0%"></div></div>
+          </div>
+          <div class="bar-wrap" style="margin-top:10px;">
+            <div class="bar-label"><span>Intervention</span><span id="bar-int-lbl">—</span></div>
+            <div class="bar-track"><div class="bar-fill" id="bar-int" style="background:var(--cyan);width:0%"></div></div>
+          </div>
+          <div class="bar-wrap" style="margin-top:10px;">
+            <div class="bar-label"><span>Pilot</span><span id="bar-pilot-lbl">—</span></div>
+            <div class="bar-track"><div class="bar-fill" id="bar-pilot" style="background:var(--purple);width:0%"></div></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--text2);margin-bottom:10px;">Average Scores by Group</div>
+          <div id="avg-scores" style="font-size:.75rem;color:var(--text2);line-height:2;">Click Refresh to load</div>
+        </div>
+      </div>
     </div>
-    <div class="msg hidden" id="reset-msg"></div>
+    <div class="card">
+      <div class="card-title">📉 Drop-off Analysis</div>
+      <div id="dropoff-content" style="font-size:.78rem;color:var(--text2);">Click Refresh Scores in Live Scores tab first.</div>
+    </div>
   </div>
 
-  <!-- ID STATUS GRID -->
-  <div class="card">
-    <div class="card-title">👥 Participant Status</div>
-    <div style="display:flex;gap:16px;font-size:.72rem;color:var(--text3);margin-bottom:12px;font-family:var(--mono);">
-      <span><span class="dot dot-green" style="display:inline-block;margin-right:4px;"></span>Completed</span>
-      <span><span class="dot dot-amber" style="display:inline-block;margin-right:4px;"></span>In Progress</span>
-      <span><span class="dot dot-grey" style="display:inline-block;margin-right:4px;"></span>Pending</span>
+  <!-- MANAGE TAB -->
+  <div class="tab-content" id="tab-manage">
+    <div class="card">
+      <div class="card-title">⚙️ Phase Control</div>
+      <div style="font-size:.78rem;color:var(--text2);margin-bottom:12px;">Control which participant groups can access the platform.</div>
+      <div class="phase-btns">
+        <button class="btn btn-b btn-sm" onclick="setPhase('control')">Phase 1 — Control Only</button>
+        <button class="btn btn-c btn-sm" onclick="setPhase('intervention')">Phase 2 — Intervention Only</button>
+        <button class="btn btn-g btn-sm" onclick="setPhase('both')">✅ Both Groups Active</button>
+        <button class="btn btn-r btn-sm" onclick="setPhase('locked')">🔒 Lock All</button>
+      </div>
+      <div class="msg hidden" id="phase-msg"></div>
     </div>
-    <div id="id-grid" class="id-grid"></div>
+
+    <div class="card">
+      <div class="card-title">🔓 Reset Participant ID</div>
+      <div style="font-size:.78rem;color:var(--text2);margin-bottom:10px;">Use if a participant had a technical problem. Previous data stays in Google Sheets.</div>
+      <div class="reset-row">
+        <input class="finp" type="text" id="reset-pid-inp" placeholder="e.g. P012" style="text-transform:uppercase;">
+        <button class="btn btn-a" onclick="doReset()">UNLOCK ID</button>
+      </div>
+      <div class="msg hidden" id="reset-msg"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🖨️ Print ID Cards</div>
+      <div style="font-size:.78rem;color:var(--text2);margin-bottom:12px;">Print participant ID cards for physical distribution.</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-b btn-sm" onclick="printIDCards('control')">Print Control Cards (P001–P045)</button>
+        <button class="btn btn-c btn-sm" onclick="printIDCards('intervention')">Print Intervention Cards (P046–P090)</button>
+        <button class="btn btn-a btn-sm" onclick="printIDCards('pilot')">Print Pilot Cards (PP01–PP20)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIT LOG TAB -->
+  <div class="tab-content" id="tab-audit">
+    <div class="card">
+      <div class="card-title">📋 Audit Log</div>
+      <div style="font-size:.78rem;color:var(--text2);margin-bottom:12px;">All researcher actions are recorded here for research integrity documentation.</div>
+      <button class="btn btn-b btn-sm" onclick="exportAuditLog()" style="margin-bottom:12px;">📥 Export Audit Log</button>
+      <div id="audit-log"></div>
+    </div>
   </div>
 
 </div>
@@ -131,13 +249,34 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
 <script>
 const WORKER = 'https://ventsim-worker.samir-alnasseri.workers.dev';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxlOp_9TrmWy40PZmCpMZZN5QFLR3Z9pkoz39AJlECBGMS6JDA7BY5jcPIG58STb03z/exec';
 let ADMIN_KEY = '';
+let auditLog = JSON.parse(localStorage.getItem('ventsim_audit') || '[]');
+let lastScoresData = [];
 
-const ALL_IDS = [
-  ...Array.from({length:45},(_,i)=>'P'+(i+1).toString().padStart(3,'0')),
-  ...Array.from({length:45},(_,i)=>'P'+(i+46).toString().padStart(3,'0')),
-  ...Array.from({length:20},(_,i)=>'PP'+(i+1).toString().padStart(2,'0'))
-];
+const CONTROL_IDS = Array.from({length:45},(_,i)=>'P'+(i+1).toString().padStart(3,'0'));
+const INT_IDS = Array.from({length:45},(_,i)=>'P'+(i+46).toString().padStart(3,'0'));
+const PILOT_IDS = Array.from({length:20},(_,i)=>'PP'+(i+1).toString().padStart(2,'0'));
+const ALL_IDS = [...CONTROL_IDS, ...INT_IDS, ...PILOT_IDS];
+
+function addAudit(action, detail){
+  const entry = { time: new Date().toISOString(), action, detail };
+  auditLog.unshift(entry);
+  if(auditLog.length > 200) auditLog = auditLog.slice(0,200);
+  localStorage.setItem('ventsim_audit', JSON.stringify(auditLog));
+  renderAudit();
+}
+
+function renderAudit(){
+  const el = document.getElementById('audit-log');
+  if(!auditLog.length){ el.innerHTML='<div style="color:var(--text3);font-size:.75rem;">No actions recorded yet.</div>'; return; }
+  el.innerHTML = auditLog.map(e=>`
+    <div class="audit-row">
+      <span class="audit-time">${new Date(e.time).toLocaleString()}</span>
+      <span class="audit-action">${e.action} — </span>
+      <span class="audit-pid">${e.detail}</span>
+    </div>`).join('');
+}
 
 async function doLogin(){
   const key = document.getElementById('admin-key-inp').value.trim();
@@ -145,8 +284,7 @@ async function doLogin(){
   document.getElementById('login-err').textContent='Connecting...';
   try{
     const r = await fetch(WORKER+'/admin/phase',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Admin-Key':key},
+      method:'POST', headers:{'Content-Type':'application/json','X-Admin-Key':key},
       body:JSON.stringify({phase:'both'})
     });
     if(r.status===401){ document.getElementById('login-err').textContent='Incorrect password.'; return; }
@@ -154,43 +292,137 @@ async function doLogin(){
     document.getElementById('login-err').textContent='';
     document.getElementById('login-view').classList.add('hidden');
     document.getElementById('dashboard-view').classList.remove('hidden');
+    document.getElementById('nav').classList.remove('hidden');
     document.getElementById('logout-btn').classList.remove('hidden');
+    addAudit('LOGIN', 'Researcher logged in');
     loadStatus();
+    renderAudit();
   }catch(e){
-    document.getElementById('login-err').textContent='Could not connect to server. Check your connection.';
+    document.getElementById('login-err').textContent='Could not connect. Check your connection.';
   }
 }
 
 async function loadStatus(){
   try{
     const r = await fetch(WORKER+'/admin/status',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
+      method:'POST', headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
       body:JSON.stringify({})
     });
     const data = await r.json();
     renderStatus(data);
-  }catch(e){ alert('Failed to load status.'); }
+    updateAnalytics(data);
+  }catch(e){ console.error('Status load failed',e); }
 }
 
 function renderStatus(data){
-  if(data.summary){
-    document.getElementById('stat-completed').textContent = data.summary.completed;
-    document.getElementById('stat-inprogress').textContent = data.summary.inProgress;
-    document.getElementById('stat-pending').textContent = data.summary.pending;
-  }
   const details = data.details || {};
-  const grid = document.getElementById('id-grid');
-  grid.innerHTML = ALL_IDS.map(id => {
+  const completed = data.summary?.completed || 0;
+  const inProgress = data.summary?.inProgress || 0;
+  const total = ALL_IDS.length;
+  const pending = total - completed - inProgress;
+  const pct = Math.round((completed/total)*100);
+
+  document.getElementById('stat-completed').textContent = completed;
+  document.getElementById('stat-inprogress').textContent = inProgress;
+  document.getElementById('stat-pending').textContent = pending;
+  document.getElementById('stat-pct').textContent = pct+'%';
+
+  renderGrid('grid-control', CONTROL_IDS, details);
+  renderGrid('grid-intervention', INT_IDS, details);
+  renderGrid('grid-pilot', PILOT_IDS, details);
+}
+
+function renderGrid(elId, ids, details){
+  document.getElementById(elId).innerHTML = ids.map(id => {
     const s = details[id];
     const status = s ? s.status : 'pending';
     const dotClass = status==='completed'?'dot-green':status==='in_progress'?'dot-amber':'dot-grey';
-    return `<div class="id-chip ${status}">
-      <span class="dot ${dotClass}"></span>
-      <span>${id}</span>
-      ${status==='completed'?`<button class="btn btn-r" style="padding:2px 6px;font-size:.6rem;" onclick="quickReset('${id}')">↺</button>`:''}
-    </div>`;
+    const resetBtn = status==='completed'?`<button class="btn btn-r" style="padding:1px 5px;font-size:.55rem;margin-left:auto;" onclick="quickReset('${id}')">↺</button>`:'';
+    return `<div class="id-chip ${status}"><span class="dot ${dotClass}"></span><span>${id}</span>${resetBtn}</div>`;
   }).join('');
+}
+
+function updateAnalytics(data){
+  const details = data.details || {};
+  const cComp = CONTROL_IDS.filter(id=>details[id]?.status==='completed').length;
+  const iComp = INT_IDS.filter(id=>details[id]?.status==='completed').length;
+  const pComp = PILOT_IDS.filter(id=>details[id]?.status==='completed').length;
+
+  const cPct = Math.round((cComp/CONTROL_IDS.length)*100);
+  const iPct = Math.round((iComp/INT_IDS.length)*100);
+  const pPct = Math.round((pComp/PILOT_IDS.length)*100);
+
+  document.getElementById('bar-control').style.width = cPct+'%';
+  document.getElementById('bar-control-lbl').textContent = cComp+'/'+CONTROL_IDS.length+' ('+cPct+'%)';
+  document.getElementById('bar-int').style.width = iPct+'%';
+  document.getElementById('bar-int-lbl').textContent = iComp+'/'+INT_IDS.length+' ('+iPct+'%)';
+  document.getElementById('bar-pilot').style.width = pPct+'%';
+  document.getElementById('bar-pilot-lbl').textContent = pComp+'/'+PILOT_IDS.length+' ('+pPct+'%)';
+}
+
+async function loadScores(){
+  const tbody = document.getElementById('scores-tbody');
+  tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text3);padding:20px;">Loading...</td></tr>';
+  try{
+    const r = await fetch(SHEETS_URL+'?action=getAll');
+    const data = await r.json();
+    lastScoresData = data.rows || [];
+    renderScores(lastScoresData);
+    updateDropoff(lastScoresData);
+    updateAvgScores(lastScoresData);
+  }catch(e){
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--red);padding:20px;">Could not load scores. Check Google Sheets connection.</td></tr>';
+  }
+}
+
+function renderScores(rows){
+  const tbody = document.getElementById('scores-tbody');
+  if(!rows.length){ tbody.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--text3);padding:20px;">No data yet.</td></tr>'; return; }
+  tbody.innerHTML = rows.map(r=>{
+    const mcqGain = (r.postMCQ||0)-(r.preMCQ||0);
+    const cdmnsGain = (r.postCDMNS||0)-(r.preCDMNS||0);
+    const gainClass = g => g>0?'gain-pos':g<0?'gain-neg':'gain-neu';
+    return `<tr>
+      <td style="color:var(--cyan);">${r.pid||'—'}</td>
+      <td>${r.group||'—'}</td>
+      <td>${r.preMCQ??'—'}</td><td>${r.postMCQ??'—'}</td>
+      <td class="${gainClass(mcqGain)}">${r.postMCQ!=null?(mcqGain>=0?'+':'')+mcqGain:'—'}</td>
+      <td>${r.preCDMNS??'—'}</td><td>${r.postCDMNS??'—'}</td>
+      <td class="${gainClass(cdmnsGain)}">${r.postCDMNS!=null?(cdmnsGain>=0?'+':'')+cdmnsGain:'—'}</td>
+      <td>${r.simAccuracy!=null?r.simAccuracy+'%':'—'}</td>
+      <td style="font-size:.65rem;color:var(--text3);">${r.timestamp?new Date(r.timestamp).toLocaleDateString():'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function updateAvgScores(rows){
+  if(!rows.length){ document.getElementById('avg-scores').innerHTML='No data yet.'; return; }
+  const avg = (arr,key) => { const v=arr.filter(r=>r[key]!=null).map(r=>r[key]); return v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length*10)/10:'—'; };
+  const ctrl = rows.filter(r=>r.group==='control');
+  const intv = rows.filter(r=>r.group==='intervention');
+  document.getElementById('avg-scores').innerHTML = `
+    <div style="margin-bottom:6px;color:var(--blue);font-family:var(--mono);font-size:.65rem;">CONTROL (n=${ctrl.length})</div>
+    <div>MCQ Pre→Post: ${avg(ctrl,'preMCQ')} → ${avg(ctrl,'postMCQ')}</div>
+    <div>CDMNS Pre→Post: ${avg(ctrl,'preCDMNS')} → ${avg(ctrl,'postCDMNS')}</div>
+    <div style="margin-top:10px;margin-bottom:6px;color:var(--cyan);font-family:var(--mono);font-size:.65rem;">INTERVENTION (n=${intv.length})</div>
+    <div>MCQ Pre→Post: ${avg(intv,'preMCQ')} → ${avg(intv,'postMCQ')}</div>
+    <div>CDMNS Pre→Post: ${avg(intv,'preCDMNS')} → ${avg(intv,'postCDMNS')}</div>`;
+}
+
+function updateDropoff(rows){
+  const total = rows.length;
+  const withPost = rows.filter(r=>r.postMCQ!=null).length;
+  const withSim = rows.filter(r=>r.simAccuracy!=null).length;
+  const completed = rows.filter(r=>r.postCDMNS!=null).length;
+  document.getElementById('dropoff-content').innerHTML = `
+    <div class="bar-wrap"><div class="bar-label"><span>Started (logged in)</span><span>${total}</span></div>
+    <div class="bar-track"><div class="bar-fill" style="background:var(--blue);width:100%"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Completed Pre-test</span><span>${withPost} (${total?Math.round(withPost/total*100):0}%)</span></div>
+    <div class="bar-track"><div class="bar-fill" style="background:var(--cyan);width:${total?withPost/total*100:0}%"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Completed Simulation</span><span>${withSim} (${total?Math.round(withSim/total*100):0}%)</span></div>
+    <div class="bar-track"><div class="bar-fill" style="background:var(--green);width:${total?withSim/total*100:0}%"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Fully Completed</span><span>${completed} (${total?Math.round(completed/total*100):0}%)</span></div>
+    <div class="bar-track"><div class="bar-fill" style="background:var(--amber);width:${total?completed/total*100:0}%"></div></div></div>`;
 }
 
 async function quickReset(pid){
@@ -207,13 +439,13 @@ async function doReset(){
 async function resetPid(pid){
   try{
     const r = await fetch(WORKER+'/admin/reset',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
+      method:'POST', headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
       body:JSON.stringify({pid})
     });
     const data = await r.json();
     if(data.success){
       showMsg('reset-msg', data.message, 'ok');
+      addAudit('RESET', pid+' — ID unlocked by researcher');
       loadStatus();
     } else {
       showMsg('reset-msg', data.message||'Failed.', 'err');
@@ -224,13 +456,79 @@ async function resetPid(pid){
 async function setPhase(phase){
   try{
     const r = await fetch(WORKER+'/admin/phase',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
+      method:'POST', headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
       body:JSON.stringify({phase})
     });
     const data = await r.json();
     showMsg('phase-msg', data.message||'Done.', data.success?'ok':'err');
+    addAudit('PHASE CHANGE', 'Phase set to: '+phase);
   }catch(e){ showMsg('phase-msg','Connection error.','err'); }
+}
+
+function exportCSV(){
+  const rows = [['ID','Group','Status']];
+  ALL_IDS.forEach(id=>{
+    const chip = document.querySelector(`.id-chip[data-id="${id}"]`);
+    rows.push([id, id.startsWith('PP')?'Pilot':parseInt(id.slice(1))<=45?'Control':'Intervention','—']);
+  });
+  downloadCSV(rows,'ventsim_status_'+today()+'.csv');
+  addAudit('EXPORT', 'Status CSV exported');
+}
+
+function exportScoresCSV(){
+  if(!lastScoresData.length){ alert('Load scores first.'); return; }
+  const keys = ['pid','group','preMCQ','postMCQ','preCDMNS','postCDMNS','simAccuracy','timestamp'];
+  const rows = [keys, ...lastScoresData.map(r=>keys.map(k=>r[k]??''))];
+  downloadCSV(rows,'ventsim_scores_'+today()+'.csv');
+  addAudit('EXPORT', 'Scores CSV exported');
+}
+
+function exportAuditLog(){
+  const rows = [['Time','Action','Detail'], ...auditLog.map(e=>[e.time,e.action,e.detail])];
+  downloadCSV(rows,'ventsim_audit_'+today()+'.csv');
+}
+
+function downloadCSV(rows, filename){
+  const csv = rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download = filename;
+  a.click();
+}
+
+function printIDCards(group){
+  const ids = group==='control'?CONTROL_IDS:group==='intervention'?INT_IDS:PILOT_IDS;
+  const color = group==='control'?'#1a3a6e':group==='intervention'?'#006064':'#4a148c';
+  const label = group==='control'?'Control Group':group==='intervention'?'Intervention Group':'Pilot Group';
+  const url = 'https://ventsim-ai.netlify.app/ventsim-intervention.html';
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>VentSim ID Cards</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#f5f5f5;padding:20px;}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:900px;margin:auto;}
+    .card{background:#fff;border:2px solid ${color};border-radius:8px;padding:16px;text-align:center;page-break-inside:avoid;}
+    .card-top{background:${color};color:#fff;margin:-16px -16px 12px;padding:8px;border-radius:6px 6px 0 0;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+    .card-id{font-size:28px;font-weight:bold;color:${color};font-family:monospace;margin:8px 0;}
+    .card-study{font-size:9px;color:#555;line-height:1.5;margin-bottom:8px;}
+    .card-url{font-size:8px;color:#333;background:#f0f0f0;padding:4px;border-radius:3px;word-break:break-all;}
+    .card-warn{font-size:8px;color:#999;margin-top:8px;font-style:italic;}
+    @media print{body{padding:0;background:#fff;}.no-print{display:none;}}
+  </style></head><body>
+  <div class="no-print" style="text-align:center;margin-bottom:20px;">
+    <button onclick="window.print()" style="padding:10px 24px;background:${color};color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px;">🖨️ Print Cards</button>
+  </div>
+  <div class="grid">
+  ${ids.map(id=>`
+    <div class="card">
+      <div class="card-top">VentSim AI · ${label}</div>
+      <div class="card-id">${id}</div>
+      <div class="card-study">PhD Research Study<br>Universiti Malaya 2026<br>Samir Alnasseri</div>
+      <div class="card-url">${url}</div>
+      <div class="card-warn">Confidential — Do not share</div>
+    </div>`).join('')}
+  </div></body></html>`);
+  w.document.close();
+  addAudit('PRINT', group+' ID cards printed ('+ids.length+' cards)');
 }
 
 function showMsg(id, text, type){
@@ -241,10 +539,21 @@ function showMsg(id, text, type){
   setTimeout(()=>el.classList.add('hidden'), 4000);
 }
 
+function switchTab(tab){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function today(){ return new Date().toISOString().split('T')[0]; }
+
 function logout(){
+  addAudit('LOGOUT','Researcher logged out');
   ADMIN_KEY='';
   document.getElementById('login-view').classList.remove('hidden');
   document.getElementById('dashboard-view').classList.add('hidden');
+  document.getElementById('nav').classList.add('hidden');
   document.getElementById('logout-btn').classList.add('hidden');
   document.getElementById('admin-key-inp').value='';
 }
