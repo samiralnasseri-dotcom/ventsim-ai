@@ -363,8 +363,12 @@ canvas.wc.active{display:block;}
           <div><span style="color:var(--text3);font-family:var(--mono);font-size:.68rem;">ESTIMATED TIME</span><br>~90 minutes</div>
         </div>
       </div>
+      <script>
+      function show(id){document.querySelectorAll('.sc').forEach(function(s){s.classList.remove('active');});var el=document.getElementById(id);if(el){el.classList.add('active');}window.scrollTo({top:0,behavior:'smooth'});}
+      function setProg(pct){var b=document.getElementById('prog-bar');if(b)b.style.width=pct+'%';}
+      </script>
       <button class="btn btn-p btn-w" onclick="show('consent-sc');setProg(5)">▶ BEGIN STUDY PARTICIPATION</button>
-      <div class="contact-footer">For enquiries: <a href="mailto:samir.alnasseri&#64;gmail.com">samir.alnasseri&#64;gmail.com</a> · <a href="tel:+9689944245">+968 9944245</a></div>
+      <div class="contact-footer">For enquiries: <a href="/cdn-cgi/l/email-protection#7003111d19025e111c1e110303150219565346444b171d11191c5e131f1d">samir.alnasseri&#64;gmail.com</a> · <a href="tel:+9689944245">+968 9944245</a></div>
     </div>
   </div>
 </div>
@@ -396,7 +400,7 @@ canvas.wc.active{display:block;}
       <h4>Ethics Approval</h4>
       <p>This study has been approved by the Universiti Malaya Research Ethics Committee (UMREC) and the Ministry of Health Oman.</p>
       <h4>Contact</h4>
-      <p>For questions: Samir Alnasseri — <strong><a href="mailto:samir.alnasseri&#64;gmail.com">samir.alnasseri&#64;gmail.com</a></strong> · <strong>+968 9944245</strong></p>
+      <p>For questions: Samir Alnasseri — <strong><a href="/cdn-cgi/l/email-protection#acdfcdc1c5de82cdc0c2cddfdfc9dec58a8f9a9897cbc1cdc5c082cfc3c1">samir.alnasseri&#64;gmail.com</a></strong> · <strong>+968 9944245</strong></p>
     </div>
     <label class="consent-check">
       <input type="checkbox" id="consent-cb" onchange="checkConsent()">
@@ -405,7 +409,7 @@ canvas.wc.active{display:block;}
     <div class="ferr" id="c-err"></div>
     <br>
     <button class="btn btn-p btn-w" onclick="goConsent()">CONFIRM CONSENT & CONTINUE ▶</button>
-    <div class="contact-footer">Enquiries: <a href="mailto:samir.alnasseri&#64;gmail.com">samir.alnasseri&#64;gmail.com</a> · <a href="tel:+9689944245">+968 9944245</a></div>
+    <div class="contact-footer">Enquiries: <a href="/cdn-cgi/l/email-protection#96e5f7fbffe4b8f7faf8f7e5e5f3e4ffb0b5a0a2adf1fbf7fffab8f5f9fb">samir.alnasseri&#64;gmail.com</a> · <a href="tel:+9689944245">+968 9944245</a></div>
   </div></div>
 </div>
 
@@ -444,7 +448,7 @@ canvas.wc.active{display:block;}
       <div class="ferr" id="login-err"></div>
     </div>
     <button class="btn btn-p btn-w" onclick="startSession()">▶ BEGIN SESSION</button>
-    <div class="contact-footer">Problems? <a href="mailto:samir.alnasseri&#64;gmail.com">samir.alnasseri&#64;gmail.com</a> · <a href="tel:+9689944245">+968 9944245</a></div>
+    <div class="contact-footer">Problems? <a href="/cdn-cgi/l/email-protection#0f7c6e62667d216e63616e7c7c6a7d66292c393b3468626e6663216c6062">samir.alnasseri&#64;gmail.com</a> · <a href="tel:+9689944245">+968 9944245</a></div>
   </div></div>
 </div>
 
@@ -836,7 +840,7 @@ canvas.wc.active{display:block;}
     <div class="contact-box" style="margin-top:16px;">
       <div style="margin-bottom:6px;color:var(--text);font-weight:500;">Research Team Contact</div>
       Samir Alnasseri · PhD Candidate · Universiti Malaya<br>
-      <a href="mailto:samir.alnasseri&#64;gmail.com">samir.alnasseri&#64;gmail.com</a> ·
+      <a href="/cdn-cgi/l/email-protection#6714060a0e1549060b0906141402150e414451535c000a060e0b4904080a">samir.alnasseri&#64;gmail.com</a> ·
       <a href="tel:+9689944245">+968 9944245</a>
     </div>
 
@@ -849,7 +853,7 @@ canvas.wc.active{display:block;}
 </div>
 
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var consentChecked=false;
 function checkConsent(){ consentChecked=document.getElementById('consent-cb').checked; }
 function goConsent(){
@@ -1986,16 +1990,4 @@ function printCertificate(){
   document.addEventListener('contextmenu',e=>e.preventDefault());
   // Disable F12, Ctrl+Shift+I, Ctrl+U
   document.addEventListener('keydown',e=>{
-    if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key))||(e.ctrlKey&&e.key==='U')){
-      e.preventDefault();
-      return false;
-    }
-  });
-  // DevTools detection — freeze if opened
-  let devOpen=false;
-  const threshold=160;
-  setInterval(()=>{
-    if(window.outerWidth-window.innerWidth>threshold||window.outerHeight-window.innerHeight>threshold){
-      if(!devOpen){
-        devOpen=true;
-     
+    if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J',
