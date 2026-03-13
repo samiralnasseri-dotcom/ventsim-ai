@@ -157,7 +157,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <tr>
               <th>ID</th><th>Group</th><th>Pre MCQ</th><th>Post MCQ</th><th>MCQ Gain</th>
               <th>Pre CDMNS</th><th>Post CDMNS</th><th>CDMNS Gain</th>
-              <th>Sim Accuracy</th><th>Completed</th>
+              <th>Sim Accuracy</th><th>Session Min</th><th>Hints</th><th>⚠️ Flags</th><th>Completed</th>
             </tr>
           </thead>
           <tbody id="scores-tbody">
@@ -397,6 +397,16 @@ function renderScores(rows){
     const mcqGain = (r.postMCQ||0)-(r.preMCQ||0);
     const cdmnsGain = (r.postCDMNS||0)-(r.preCDMNS||0);
     const gainClass = g => g>0?'gain-pos':g<0?'gain-neg':'gain-neu';
+    const flags = r.timing?.flags||{};
+    const hints = r.timing?.hints_used_total??'—';
+    const sessionMin = r.timing?.total_session_sec ? Math.round(r.timing.total_session_sec/60)+'m' : '—';
+    const flagList = [];
+    if(flags.fast_premcq) flagList.push('🚩Pre-MCQ<1m');
+    if(flags.fast_precdmns) flagList.push('🚩Pre-CDMNS<2m');
+    if(flags.fast_postmcq) flagList.push('🚩Post-MCQ<1m');
+    if(flags.fast_postcdmns) flagList.push('🚩Post-CDMNS<2m');
+    if(flags.fast_tam) flagList.push('🚩TAM<1m');
+    const flagStr = flagList.length ? `<span style="color:var(--red);font-size:.65rem;">${flagList.join(' ')}</span>` : '<span style="color:var(--green);font-size:.65rem;">✓ OK</span>';
     return `<tr>
       <td style="color:var(--cyan);">${r.pid||'—'}</td>
       <td>${r.group||'—'}</td>
@@ -405,6 +415,9 @@ function renderScores(rows){
       <td>${r.preCDMNS??'—'}</td><td>${r.postCDMNS??'—'}</td>
       <td class="${gainClass(cdmnsGain)}">${r.postCDMNS!=null?(cdmnsGain>=0?'+':'')+cdmnsGain:'—'}</td>
       <td>${r.simAccuracy!=null?r.simAccuracy+'%':'—'}</td>
+      <td>${sessionMin}</td>
+      <td>${hints}</td>
+      <td>${flagStr}</td>
       <td style="font-size:.65rem;color:var(--text3);">${r.timestamp?new Date(r.timestamp).toLocaleDateString():'—'}</td>
     </tr>`;
   }).join('');
