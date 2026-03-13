@@ -22,7 +22,7 @@ const WORKER_URL = 'https://ventsim-worker.samir-alnasseri.workers.dev';
    STATE
 ═══════════════════════════════════════════ */
 const S = {
-  pid:'', group:'intervention', date:'', sessionId:'', startTime:0,
+  pid:'', group:'control', date:'', sessionId:'', startTime:0,
   consentDone:false, savedSession:null,
   data:{ demo:{}, preMCQ:{}, postMCQ:{}, preCDMNS:{}, postCDMNS:{}, tam:{},
          preMCQScore:0, postMCQScore:0 },
@@ -327,7 +327,7 @@ function selTAM(qi,val,el){
 }
 function submitTAM(){
   if(Object.keys(S.data.tam).length<19){ document.getElementById('tam-err').textContent='Please rate all 19 items.'; return; }
-  show('aisam-sc'); setProg(93); buildAISAM(); saveLocal();
+  loadDebrief(); show('deb-sc'); setProg(96); saveLocal();
 }
 
 // ── AI-SAM (Sindermann et al., 2021) — Intervention group only ──
@@ -867,24 +867,9 @@ function fallbackPostDecision(isCorrect){
 function cleanMsgs(msgs){ return msgs.map(m=>({role:m.role, content:m.content})); }
 
 async function sendMsg(){
-  const inp=document.getElementById('chat-inp');
-  const txt=inp.value.trim();
-  if(!txt) return;
-  addMsg('usr',txt);
-  S.chat.history.push({role:'user',content:txt, timestamp:new Date().toISOString()});
-  inp.value='';
-  // Kolb: Reflective Observation — award XP for first 3 reflections per scenario
-  const userMsgs = S.chat.history.filter(m=>m.role==='user').length;
-  if(userMsgs<=3) addXP(KOLB_XP.reflective.pts, KOLB_XP.reflective.label);
-  showTyping();
-  try{
-    const msgs=cleanMsgs(S.chat.history.slice(-10));
-    const r=await fetch(WORKER_URL+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:S.pid,max_tokens:130,system:S.chat.scenarioSystem,messages:msgs})});
-    const j=await r.json(); hideTyping();
-    const reply=j?.content?.[0]?.text||`What does the patient's data tell you about the next step?`;
-    addMsg('ai',reply); S.chat.history.push({role:'assistant',content:reply});
-  }catch(e){ hideTyping(); addMsg('ai',`What pattern do you notice in the clinical data right now?`); }
+  // Control group — no AI chat
 }
+
 
 function chatKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
 
@@ -1130,8 +1115,8 @@ async function finish(){
   }
 
   const record={
-    session_id:S.sessionId, participant_id:S.pid, group:'intervention',
-    version:'intervention-v1', session_date:S.date,
+    session_id:S.sessionId, participant_id:S.pid, group:'control',
+    version:'control-v1', session_date:S.date,
     timestamp:new Date().toISOString(),
     demographics:S.data.demo,
     pre_mcq_score:S.data.preMCQScore, pre_mcq_raw:S.data.preMCQ,
