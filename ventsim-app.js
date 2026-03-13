@@ -582,6 +582,15 @@ function showNextHint(){
 
 function loadScenario(idx){
   const sc=SCENARIOS[idx];
+  // Save previous scenario chat log before resetting
+  if(!S.sim.scenarioChatLogs) S.sim.scenarioChatLogs = {};
+  if(idx > 0 && S.chat.history.length > 0){
+    S.sim.scenarioChatLogs[idx-1] = S.chat.history.map(m=>({
+      role: m.role,
+      content: m.content,
+      timestamp: m.timestamp || null
+    }));
+  }
   S.sim.scenario=idx; S.sim.step=0;
   S.chat.history=[];
   window._hintLevel=0;
@@ -775,7 +784,7 @@ async function sendMsg(){
   const txt=inp.value.trim();
   if(!txt) return;
   addMsg('usr',txt);
-  S.chat.history.push({role:'user',content:txt});
+  S.chat.history.push({role:'user',content:txt, timestamp:new Date().toISOString()});
   inp.value='';
   // Kolb: Reflective Observation — award XP for first 3 reflections per scenario
   const userMsgs = S.chat.history.filter(m=>m.role==='user').length;
@@ -928,6 +937,13 @@ function endSim(){
   if(waveAnimFrame) cancelAnimationFrame(waveAnimFrame);
   S.sim.endTime=Date.now();
   S.sim.durationSec=Math.floor((S.sim.endTime-S.sim.startTime)/1000);
+  // Save final scenario chat log
+  if(!S.sim.scenarioChatLogs) S.sim.scenarioChatLogs = {};
+  if(S.chat.history.length > 0){
+    S.sim.scenarioChatLogs[S.sim.scenario] = S.chat.history.map(m=>({
+      role: m.role, content: m.content, timestamp: m.timestamp||null
+    }));
+  }
   buildMCQ('mcq-post-cont','postMCQ');
   show('postmcq-sc'); setProg(75); saveLocal();
 }
@@ -1017,6 +1033,15 @@ async function finish(){
   const preCDMNS=S.data.preCDMNS||{};
   const postCDMNS=S.data.postCDMNS||{};
   const acc=S.sim.total>0?Math.round((S.sim.correct/S.sim.total)*100):0;
+  // Build per-scenario chat logs
+  const chatLogs = {};
+  if(S.sim.scenarioChatLogs){
+    Object.keys(S.sim.scenarioChatLogs).forEach(scIdx => {
+      const sc = SCENARIOS[parseInt(scIdx)];
+      chatLogs['scenario_'+(parseInt(scIdx)+1)+'_'+sc.id] = S.sim.scenarioChatLogs[scIdx];
+    });
+  }
+
   const record={
     session_id:S.sessionId, participant_id:S.pid, group:'intervention',
     version:'intervention-v1', session_date:S.date,
@@ -1034,6 +1059,12 @@ async function finish(){
       accuracy_pct:acc, decisions:S.sim.decisions,
       duration_sec:S.sim.durationSec||0,
       duration_min:parseFloat(((S.sim.durationSec||0)/60).toFixed(1))
+    },
+    ai_chat_logs: chatLogs,
+    ai_chat_summary: {
+      total_user_messages: Object.values(chatLogs).reduce((a,sc)=>a+(sc.filter(m=>m.role==='user').length),0),
+      total_ai_messages: Object.values(chatLogs).reduce((a,sc)=>a+(sc.filter(m=>m.role==='assistant').length),0),
+      scenarios_with_chat: Object.values(chatLogs).filter(sc=>sc.some(m=>m.role==='user')).length
     }
   };
 

@@ -88,6 +88,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <button class="nav-btn active" onclick="switchTab('overview')">Overview</button>
     <button class="nav-btn" onclick="switchTab('scores')">Live Scores</button>
     <button class="nav-btn" onclick="switchTab('analytics')">Analytics</button>
+    <button class="nav-btn" onclick="switchTab('chatlogs')">Chat Logs</button>
     <button class="nav-btn" onclick="switchTab('manage')">Manage</button>
     <button class="nav-btn" onclick="switchTab('audit')">Audit Log</button>
   </div>
@@ -231,6 +232,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <button class="btn btn-c btn-sm" onclick="printIDCards('intervention')">Print Intervention Cards (P046–P090)</button>
         <button class="btn btn-a btn-sm" onclick="printIDCards('pilot')">Print Pilot Cards (PP01–PP20)</button>
       </div>
+    </div>
+  </div>
+
+  <!-- CHAT LOGS TAB -->
+  <div class="tab-content" id="tab-chatlogs">
+    <div class="card">
+      <div class="card-title">💬 AI Chat Logs</div>
+      <div style="font-size:.78rem;color:var(--text2);margin-bottom:12px;">View full AI conversation transcripts per participant. Useful for qualitative analysis of clinical reasoning.</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+        <input class="finp" type="text" id="chat-pid-inp" placeholder="Enter participant ID e.g. P001" style="max-width:240px;margin:0;">
+        <button class="btn btn-c btn-sm" onclick="loadChatLog()">Load Chat Log</button>
+        <button class="btn btn-b btn-sm" onclick="exportAllChats()">📥 Export All Chats CSV</button>
+      </div>
+      <div id="chat-log-view" style="font-size:.78rem;color:var(--text3);">Enter a participant ID above to view their chat transcript.</div>
     </div>
   </div>
 
@@ -544,6 +559,63 @@ function switchTab(tab){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
   event.target.classList.add('active');
+}
+
+function loadChatLog(){
+  const pid = document.getElementById('chat-pid-inp').value.trim().toUpperCase();
+  if(!pid){ alert('Please enter a participant ID.'); return; }
+  // Load from localStorage (if same browser) or from saved final record
+  const stored = localStorage.getItem('ventsim_final_'+pid);
+  if(stored){
+    const data = JSON.parse(stored);
+    renderChatLog(pid, data.ai_chat_logs||{});
+    addAudit('VIEW CHAT', 'Viewed chat logs for '+pid);
+  } else {
+    document.getElementById('chat-log-view').innerHTML = `<div style="color:var(--amber);">No chat log found for ${pid} in this browser. Chat logs are stored in Google Sheets under the ai_chat_logs field.</div>`;
+  }
+}
+
+function renderChatLog(pid, chatLogs){
+  const el = document.getElementById('chat-log-view');
+  if(!Object.keys(chatLogs).length){ el.innerHTML='<div style="color:var(--text3);">No chat data recorded for this participant.</div>'; return; }
+  el.innerHTML = Object.entries(chatLogs).map(([scKey, msgs])=>`
+    <div style="margin-bottom:20px;">
+      <div style="font-family:var(--mono);font-size:.68rem;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border);">
+        📋 ${scKey.replace(/_/g,' ')} — ${msgs.length} messages
+      </div>
+      ${msgs.map(m=>`
+        <div style="display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;">
+          <span style="font-family:var(--mono);font-size:.62rem;padding:2px 6px;border-radius:3px;white-space:nowrap;flex-shrink:0;
+            background:${m.role==='user'?'rgba(0,230,118,.1)':'rgba(0,229,255,.1)'};
+            color:${m.role==='user'?'var(--green)':'var(--cyan)'};">
+            ${m.role==='user'?'NURSE':'AI'}
+          </span>
+          <div style="color:var(--text2);font-size:.78rem;line-height:1.6;">${m.content}</div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function exportAllChats(){
+  const rows = [['Participant ID','Scenario','Role','Message','Timestamp']];
+  // Collect from all stored final records
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith('ventsim_final_')){
+      try{
+        const data = JSON.parse(localStorage.getItem(key));
+        const pid = data.participant_id||'';
+        const logs = data.ai_chat_logs||{};
+        Object.entries(logs).forEach(([scKey, msgs])=>{
+          msgs.forEach(m=>{
+            rows.push([pid, scKey, m.role, m.content, m.timestamp||'']);
+          });
+        });
+      }catch(e){}
+    }
+  }
+  if(rows.length===1){ alert('No chat data found in this browser.'); return; }
+  downloadCSV(rows,'ventsim_chat_logs_'+today()+'.csv');
+  addAudit('EXPORT', 'All chat logs exported to CSV');
 }
 
 function today(){ return new Date().toISOString().split('T')[0]; }
