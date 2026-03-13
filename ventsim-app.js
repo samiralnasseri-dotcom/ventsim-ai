@@ -767,7 +767,7 @@ async function aiPostDecision(dec, optIdx, isCorrect){
   S.chat.history.push({role:'user', content:`I chose: ${chosen}`});
   showTyping();
   try{
-    const r=await fetch(WORKER_URL+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:S.pid,max_tokens:120,system:S.chat.scenarioSystem,messages:[...S.chat.history,{role:'user',content:prompt}]})});
+    const r=await fetch(WORKER_URL+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:S.pid,max_tokens:120,system:S.chat.scenarioSystem,messages:[...S.chat.history.map(m=>({role:m.role,content:m.content})),{role:'user',content:prompt}]})});
     const j=await r.json(); hideTyping();
     const txt=j?.content?.[0]?.text||fallbackPostDecision(isCorrect);
     addMsg('ai',txt); S.chat.history.push({role:'assistant',content:txt});
@@ -791,7 +791,7 @@ async function sendMsg(){
   if(userMsgs<=3) addXP(KOLB_XP.reflective.pts, KOLB_XP.reflective.label);
   showTyping();
   try{
-    const msgs=S.chat.history.slice(-10);
+    const msgs=S.chat.history.slice(-10).map(m=>({role:m.role,content:m.content}));
     const r=await fetch(WORKER_URL+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:S.pid,max_tokens:130,system:S.chat.scenarioSystem,messages:msgs})});
     const j=await r.json(); hideTyping();
     const reply=j?.content?.[0]?.text||`What does the patient's data tell you about the next step?`;
