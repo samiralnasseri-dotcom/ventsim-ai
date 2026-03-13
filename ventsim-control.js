@@ -330,40 +330,6 @@ function submitTAM(){
   loadDebrief(); show('deb-sc'); setProg(96); saveLocal();
 }
 
-// ── AI-SAM (Sindermann et al., 2021) — Intervention group only ──
-const AISAM_ITEMS = [
-  "I would like to use AI systems like the one in this simulation regularly.",
-  "I think AI systems like this one are useful for my professional development.",
-  "I feel comfortable interacting with AI systems in a clinical learning environment.",
-  "I trust AI systems like the one used in this simulation to support my decisions.",
-  "I am willing to follow guidance from AI systems in educational settings.",
-  "Overall, I have a positive attitude toward using AI in clinical simulation training."
-];
-
-function buildAISAM(){
-  const cont = document.getElementById('aisam-cont');
-  if(!cont || cont.innerHTML) return;
-  cont.innerHTML = '';
-  AISAM_ITEMS.forEach((item, idx)=>{
-    const row = document.createElement('div');
-    row.className = 'lk-row'; row.id = 'lk-aisam-'+idx;
-    row.innerHTML = `<div class="lk-q"><span class="lk-qn">${idx+1}.</span>${item}</div><div class="lk-opts">${[1,2,3,4,5].map(v=>`<button class="lk-opt" title="${['Strongly Disagree','Disagree','Neutral','Agree','Strongly Agree'][v-1]}" onclick="selAISAM(${idx},${v},this)">${v}</button>`).join('')}</div>`;
-    cont.appendChild(row);
-  });
-}
-
-function selAISAM(qi, val, el){
-  document.querySelectorAll('#lk-aisam-'+qi+' .lk-opt').forEach(b=>b.classList.remove('sel'));
-  el.classList.add('sel');
-  if(!S.data.aisam) S.data.aisam = {};
-  S.data.aisam[qi] = val;
-  document.getElementById('lk-aisam-'+qi).classList.add('answered');
-}
-
-function submitAISAM(){
-  if(!S.data.aisam || Object.keys(S.data.aisam).length < 6){
-    document.getElementById('aisam-err').textContent='Please rate all 6 items.'; return;
-  }
   loadDebrief(); show('deb-sc'); setProg(96); saveLocal();
 }
 }
