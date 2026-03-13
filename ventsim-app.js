@@ -1190,26 +1190,28 @@ function printCertificate(){
 
 // ── CONSOLE PROTECTION ──
 (function(){
-  // Researcher bypass — SAMIR ID or ?dev=1 in URL skips all protection
-  const isResearcher = window._testMode || new URLSearchParams(window.location.search).get('dev')==='1';
-  if(isResearcher) return;
+  // Researcher bypass — ?dev=1 in URL skips all protection immediately
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('dev')==='1') return;
+  // Dynamic check — also bypasses after SAMIR/TEST/DEMO login
+  const isResearcher = () => window._testMode || (window.S && ['SAMIR','TEST','DEMO'].includes(window.S.pid));
 
   // Disable right-click
-  document.addEventListener('contextmenu',e=>e.preventDefault());
+  document.addEventListener('contextmenu',e=>{ if(!isResearcher()) e.preventDefault(); });
   // Disable F12, Ctrl+Shift+I, Ctrl+U
   document.addEventListener('keydown',e=>{
+    if(isResearcher()) return;
     if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key))||(e.ctrlKey&&e.key==='U')){
-      e.preventDefault();
-      return false;
+      e.preventDefault(); return false;
     }
   });
   // DevTools detection — freeze if opened
   let devOpen=false;
   const threshold=160;
   setInterval(()=>{
+    if(isResearcher()){ devOpen=false; return; }
     if(window.outerWidth-window.innerWidth>threshold||window.outerHeight-window.innerHeight>threshold){
       if(!devOpen){
-        devOpen=true;
         devOpen=true;
         document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#050d14;color:#ff5252;font-family:monospace;font-size:1.2rem;text-align:center;padding:40px;">⚠️ DevTools detected. Please close to continue.</div>';
       }
