@@ -366,7 +366,6 @@ function submitAISAM(){
   }
   loadDebrief(); show('deb-sc'); setProg(96); saveLocal();
 }
-}
 
 /* ═══════════════════════════════════════════
    SIMULATION ENGINE
