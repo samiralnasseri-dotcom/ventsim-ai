@@ -1043,12 +1043,17 @@ function startSim(){
    DEBRIEF
 ═══════════════════════════════════════════ */
 // Populate researcher email spans safely via JS (avoids Cloudflare obfuscation)
-document.addEventListener('DOMContentLoaded', function(){
+function populateEmails(){
   const e = ['s','a','m','i','r','.','a','l','n','a','s','s','e','r','i','@','g','m','a','i','l','.','c','o','m'].join('');
   document.querySelectorAll('.researcher-email').forEach(function(el){
     el.innerHTML = '<a href="mailto:'+e+'" style="color:var(--cyan);text-decoration:none;">'+e+'</a>';
   });
-});
+}
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', populateEmails);
+} else {
+  populateEmails();
+}
 
 function renderMarkdown(text){
   if(!text) return '';
