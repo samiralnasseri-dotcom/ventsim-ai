@@ -722,22 +722,7 @@ FORMAT RULES:
 }
 
 function aiOpenScenario(sc){
-  const encouragements = [
-    `You're doing great — let's tackle this together. `,
-    `Building on your last scenario — you've got this. `,
-    `Halfway through — your reasoning is developing well. `,
-    `Final scenario — show everything you've learned. `
-  ];
-  const enc = encouragements[S.sim.scenario] || '';
-  const opens = {
-    'SC1': `You're taking over care of Mr. Al-Rashidi. Before anything else — what do those ventilator waveforms tell you about how this patient is interacting with the machine?`,
-    'SC2': `Ms. Al-Balushi just desaturated from 97% to 78% in three minutes during repositioning. What's the very first thing going through your mind right now?`,
-    'SC3': `Looking at Mr. Al-Farsi's ventilator settings and his IBW — is there anything that stands out to you before we go further?`,
-    'SC4': `Mrs. Al-Zaabi has been improving and the team is considering extubation. What would you want to assess before even considering a spontaneous breathing trial?`
-  };
-  const msg = enc + (opens[sc.id] || `You're now caring for this patient. What is your initial clinical impression from the data in front of you?`);
-  addMsg('ai', msg);
-  S.chat.history.push({role:'assistant', content:msg});
+  // Control group — no AI opening message
 }
 
 function loadDecision(stepIdx){
@@ -760,18 +745,8 @@ function loadDecision(stepIdx){
 }
 
 function aiPreDecision(dec, stepIdx){
-  const questions=[
-    `You've addressed that. Now — ${dec.prompt.toLowerCase().replace('?','.')} What's your clinical reasoning here?`,
-    `Good — the patient's condition is evolving. What does the current data suggest you should focus on now?`,
-    `Before you choose — what would you expect to happen to this patient's physiology with each of those options?`
-  ];
-  const q=questions[Math.min(stepIdx-1, questions.length-1)];
+  // Control group — no AI, just show decision point marker
   addMsg('sys', '— Decision Point '+(stepIdx+1)+' —');
-  // Small delay then AI prompts
-  setTimeout(()=>{
-    addMsg('ai', q);
-    S.chat.history.push({role:'assistant',content:q});
-  }, 500);
 }
 
 function makeDecision(optIdx, btn, dec){
@@ -792,31 +767,25 @@ function makeDecision(optIdx, btn, dec){
     else if(oi===optIdx && !isCorrect) b.classList.add('incorrect');
   });
 
-  // AI responds to the decision after a short pause
+  // Control group — show explanation immediately, no AI wait
   setTimeout(()=>aiPostDecision(dec, optIdx, isCorrect), 600);
 
   S.sim.step++;
   const sc=SCENARIOS[S.sim.scenario];
-  setTimeout(()=>loadDecision(S.sim.step), 4500);
+  setTimeout(()=>loadDecision(S.sim.step), 2000);
   saveLocal();
 }
 
 async function aiPostDecision(dec, optIdx, isCorrect){
-  const chosen=dec.opts[optIdx].t;
-  const prompt=`The nurse just chose: "${chosen}". This is ${isCorrect?'the correct clinical approach':'not the optimal choice'}. 
-  
-  Clinical context for this decision: ${dec.exp}
-  
-  Your task: WITHOUT saying correct or incorrect, ask one Socratic question that helps the nurse reflect on the REASONING behind this decision and its expected clinical consequences. If the choice was wrong, guide gently toward understanding why the optimal choice would be better. Keep it to 2-3 sentences maximum.`;
-
-  S.chat.history.push({role:'user', content:`I chose: ${chosen}`});
-  showTyping();
-  try{
-    const r=await fetch(WORKER_URL+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:S.pid,max_tokens:120,system:S.chat.scenarioSystem,messages:[...cleanMsgs(S.chat.history),{role:'user',content:prompt}]})});
-    const j=await r.json(); hideTyping();
-    const txt=j?.content?.[0]?.text||fallbackPostDecision(isCorrect);
-    addMsg('ai',txt); S.chat.history.push({role:'assistant',content:txt});
-  }catch(e){ hideTyping(); addMsg('ai',fallbackPostDecision(isCorrect)); }
+  // Control group — no AI, show clinical explanation only
+  const expDiv = document.getElementById('sdeb-area');
+  if(expDiv){
+    expDiv.style.display='block';
+    expDiv.innerHTML=`<div style="background:${isCorrect?'rgba(0,230,118,.08)':'rgba(255,82,82,.08)'};border:1px solid ${isCorrect?'rgba(0,230,118,.3)':'rgba(255,82,82,.3)'};border-radius:6px;padding:12px;margin-top:10px;font-size:.8rem;color:var(--text2);line-height:1.7;">
+      <span style="font-family:var(--mono);font-size:.65rem;color:${isCorrect?'var(--green)':'var(--red)'};">${isCorrect?'✓ CORRECT':'✗ REVIEW'}</span><br>
+      ${dec.exp}
+    </div>`;
+  }
 }
 function fallbackPostDecision(isCorrect){
   return isCorrect
@@ -837,6 +806,7 @@ function chatKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg
 
 function addMsg(type,txt){
   const c=document.getElementById('msgs');
+  if(!c) return; // Control group — no chat panel
   const d=document.createElement('div'); d.className='msg '+type;
   if(type==='sys'){
     d.innerHTML=`<div class="mb">${txt}</div>`; c.appendChild(d);
