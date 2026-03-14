@@ -768,25 +768,29 @@ function makeDecision(optIdx, btn, dec){
     else if(oi===optIdx && !isCorrect) b.classList.add('incorrect');
   });
 
-  // Control group — show explanation immediately, no AI wait
-  setTimeout(()=>aiPostDecision(dec, optIdx, isCorrect), 600);
+  // Control group — show explanation, participant clicks NEXT to advance
+  setTimeout(()=>aiPostDecision(dec, optIdx, isCorrect), 400);
 
   S.sim.step++;
-  const sc=SCENARIOS[S.sim.scenario];
-  setTimeout(()=>loadDecision(S.sim.step), 2000);
   saveLocal();
 }
 
 async function aiPostDecision(dec, optIdx, isCorrect){
-  // Control group — no AI, show clinical explanation only
+  // Control group — show clinical explanation with manual next button
   const expDiv = document.getElementById('sdeb-area');
   if(expDiv){
     expDiv.style.display='block';
-    expDiv.innerHTML=`<div style="background:${isCorrect?'rgba(0,230,118,.08)':'rgba(255,82,82,.08)'};border:1px solid ${isCorrect?'rgba(0,230,118,.3)':'rgba(255,82,82,.3)'};border-radius:6px;padding:12px;margin-top:10px;font-size:.8rem;color:var(--text2);line-height:1.7;">
-      <span style="font-family:var(--mono);font-size:.65rem;color:${isCorrect?'var(--green)':'var(--red)'};">${isCorrect?'✓ CORRECT':'✗ REVIEW'}</span><br>
+    expDiv.innerHTML=`<div style="background:${isCorrect?'rgba(0,230,118,.08)':'rgba(255,82,82,.08)'};border:1px solid ${isCorrect?'rgba(0,230,118,.3)':'rgba(255,82,82,.3)'};border-radius:6px;padding:14px;margin-top:12px;font-size:.8rem;color:var(--text2);line-height:1.8;">
+      <span style="font-family:var(--mono);font-size:.65rem;color:${isCorrect?'var(--green)':'var(--red)'};">${isCorrect?'✓ CORRECT':'✗ REVIEW'}</span><br><br>
       ${dec.exp}
+      <br><br>
+      <button class="btn btn-p" style="width:100%;margin-top:4px;" onclick="advanceDecision()">NEXT ▶</button>
     </div>`;
   }
+}
+
+function advanceDecision(){
+  loadDecision(S.sim.step);
 }
 function fallbackPostDecision(isCorrect){
   return isCorrect
