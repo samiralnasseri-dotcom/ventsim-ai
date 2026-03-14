@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VentSim — Clinical Simulation Study | Universiti Malaya 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap');
+:root{--bg:#050d14;--bg2:#081520;--panel:#0a1a27;--border:#0e2a3f;--border2:#1a3a55;--cyan:#00e5ff;--green:#00e676;--amber:#ffd740;--red:#ff5252;--text:#e0f2f1;--text2:#90a4ae;--text3:#546e7a;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.box{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:36px 32px;width:100%;max-width:420px;margin:20px;}
+.logo{font-family:var(--sans);font-size:2rem;font-weight:800;color:var(--cyan);letter-spacing:-1px;margin-bottom:4px;}
+.tagline{font-family:var(--mono);font-size:.65rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:24px;}
+.label{font-size:.75rem;color:var(--text2);margin-bottom:8px;}
+.inp{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:12px 16px;color:var(--text);font-family:var(--mono);font-size:1rem;outline:none;text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:12px;}
+.inp:focus{border-color:var(--cyan);}
+.btn{width:100%;background:linear-gradient(135deg,var(--cyan),#00b8d4);color:#000;font-family:var(--mono);font-size:.8rem;font-weight:700;padding:13px;border:none;border-radius:6px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
+.btn:hover{opacity:.9;}
+.err{color:var(--red);font-family:var(--mono);font-size:.73rem;margin-top:6px;min-height:18px;text-align:center;}
+.loading{display:none;text-align:center;font-family:var(--mono);font-size:.75rem;color:var(--cyan);margin-top:10px;}
+.info{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text3);text-align:center;line-height:1.8;}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">VentSim</div>
+  <div class="tagline">Clinical Simulation · ICU Nursing · UM 2026</div>
+  <div class="label">Enter your Participant ID</div>
+  <input class="inp" type="text" id="pid-inp" placeholder="e.g. P001" maxlength="6" onkeydown="if(event.key==='Enter') goStudy()" autocomplete="off" autocorrect="off" spellcheck="false">
+  <button class="btn" onclick="goStudy()">BEGIN STUDY ▶</button>
+  <div class="err" id="err-msg"></div>
+  <div class="loading" id="loading">Verifying ID...</div>
+  <div class="info">
+    Universiti Malaya · PhD Research Study 2026<br>
+    Samir Alnasseri · 24085855
+  </div>
+</div>
+
+<script>
+const WORKER = 'https://ventsim-worker.samir-alnasseri.workers.dev';
+const TEST_IDS = ['TEST','DEMO','SAMIR'];
+
+async function goStudy(){
+  const pid = document.getElementById('pid-inp').value.trim().toUpperCase();
+  const err = document.getElementById('err-msg');
+  const loading = document.getElementById('loading');
+  err.textContent = '';
+
+  if(!pid){ err.textContent = 'Please enter your participant ID.'; return; }
+
+  // Test IDs — go to intervention for testing
+  if(TEST_IDS.includes(pid)){
+    redirect(pid, 'intervention');
+    return;
+  }
+
+  // Validate with worker
+  loading.style.display = 'block';
+  try{
+    const r = await fetch(WORKER+'/validate', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({pid})
+    });
+    const j = await r.json();
+    loading.style.display = 'none';
+
+    if(!j.valid){
+      err.textContent = j.message || 'Invalid participant ID.';
+      return;
+    }
+    redirect(pid, j.group);
+  }catch(e){
+    loading.style.display = 'none';
+    err.textContent = 'Connection error. Please check your internet and try again.';
+  }
+}
+
+function redirect(pid, group){
+  // Store PID in sessionStorage so the platform can pick it up
+  sessionStorage.setItem('ventsim_pid', pid);
+  sessionStorage.setItem('ventsim_group', group);
+
+  // Redirect to correct platform — URL never revealed to participant
+  if(group === 'control'){
+    window.location.href = 'ventsim-control.html?pid=' + encodeURIComponent(pid);
+  } else {
+    window.location.href = 'ventsim-intervention.html?pid=' + encodeURIComponent(pid);
+  }
+}
+</script>
+</body>
+</html>

@@ -1,5 +1,16 @@
 var consentChecked=false;
 function checkConsent(){ consentChecked=document.getElementById('consent-cb').checked; }
+
+// Auto-fill PID from URL parameter (passed from ventsim-study.html)
+window.addEventListener('DOMContentLoaded', function(){
+  const params = new URLSearchParams(window.location.search);
+  const pid = params.get('pid');
+  if(pid){
+    const el = document.getElementById('pid');
+    if(el){ el.value = pid.toUpperCase(); }
+  }
+});
+
 function goConsent(){
   if(!consentChecked){var e=document.getElementById('c-err');if(e)e.textContent='Please tick the consent box to continue.';return;}
   show('login-sc');setProg(12);
