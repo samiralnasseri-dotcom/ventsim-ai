@@ -833,8 +833,6 @@ function makeDecision(optIdx, btn, dec){
   setTimeout(()=>aiPostDecision(dec, optIdx, isCorrect), 600);
 
   S.sim.step++;
-  const sc=SCENARIOS[S.sim.scenario];
-  setTimeout(()=>loadDecision(S.sim.step), 4500);
   saveLocal();
 }
 
@@ -854,6 +852,16 @@ async function aiPostDecision(dec, optIdx, isCorrect){
     const txt=j?.content?.[0]?.text||fallbackPostDecision(isCorrect);
     addMsg('ai',txt); S.chat.history.push({role:'assistant',content:txt});
   }catch(e){ hideTyping(); addMsg('ai',fallbackPostDecision(isCorrect)); }
+  // Show NEXT button after AI responds
+  const expDiv = document.getElementById('sdeb-area');
+  if(expDiv){
+    expDiv.style.display='block';
+    expDiv.innerHTML=`<button class="btn btn-p" style="width:100%;margin-top:8px;" onclick="advanceDecision()">NEXT ▶</button>`;
+  }
+}
+
+function advanceDecision(){
+  loadDecision(S.sim.step);
 }
 function fallbackPostDecision(isCorrect){
   return isCorrect
