@@ -674,8 +674,9 @@ function loadScenario(idx){
   // History
   document.getElementById('hx-box').textContent=sc.hx;
 
-  // Clear chat
-  document.getElementById('msgs').innerHTML='';
+  // Clear chat (intervention only — control has no chat panel)
+  const msgsEl = document.getElementById('msgs');
+  if(msgsEl) msgsEl.innerHTML='';
   S.chat.scenarioSystem = buildSystemPrompt(sc);
 
   // Load first decision
@@ -821,6 +822,7 @@ function addMsg(type,txt){
 }
 function showTyping(){
   const c=document.getElementById('msgs');
+  if(!c) return;
   const d=document.createElement('div'); d.className='msg ai'; d.id='typing-ind';
   const av=document.createElement('div'); av.className='mav ai'; av.textContent='AI';
   const b=document.createElement('div'); b.className='mb';
