@@ -78,15 +78,14 @@ async function goStudy(){
 }
 
 function redirect(pid, group){
-  // Store PID in sessionStorage so the platform can pick it up
   sessionStorage.setItem('ventsim_pid', pid);
   sessionStorage.setItem('ventsim_group', group);
-
-  // Redirect to correct platform — URL never revealed to participant
+  const params = new URLSearchParams(window.location.search);
+  const dev = params.get('dev')==='1' ? '&dev=1' : '';
   if(group === 'control'){
-    window.location.href = 'ventsim-control.html?pid=' + encodeURIComponent(pid);
+    window.location.href = 'ventsim-control.html?pid=' + encodeURIComponent(pid) + dev;
   } else {
-    window.location.href = 'ventsim-intervention.html?pid=' + encodeURIComponent(pid);
+    window.location.href = 'ventsim-intervention.html?pid=' + encodeURIComponent(pid) + dev;
   }
 }
 </script>
