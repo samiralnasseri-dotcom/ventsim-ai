@@ -330,10 +330,6 @@ function submitTAM(){
   loadDebrief(); show('deb-sc'); setProg(96); saveLocal();
 }
 
-  loadDebrief(); show('deb-sc'); setProg(96); saveLocal();
-}
-}
-
 /* ═══════════════════════════════════════════
    SIMULATION ENGINE
 ═══════════════════════════════════════════ */
