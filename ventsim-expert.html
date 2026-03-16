@@ -476,7 +476,7 @@ async function submitExpert(){
   try{
     await fetch(SHEETS_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
   }catch(e){}
-  document.getElementById('sum-scenario').textContent = scCVI');
+  document.getElementById('sum-scenario').textContent = scCVI;
   document.getElementById('sum-mcq').textContent = mcqCVI;
   document.getElementById('sum-usability').textContent = usabilityCVI;
   show('sc-thanks');
