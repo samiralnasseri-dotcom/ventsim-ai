@@ -12,10 +12,10 @@ const VALID_IDS = new Set([
   'PP01','PP02','PP03','PP04','PP05','PP06','PP07','PP08','PP09','PP10',
   'PP11','PP12','PP13','PP14','PP15','PP16','PP17','PP18','PP19','PP20',
   'PP21','PP22','PP23','PP24',
-  'TEST','DEMO','SAMIR'
+  'TEST','DEMO','SAMIR','EXPERT'
 ]);
 
-const TEST_IDS = new Set(['TEST','DEMO','SAMIR']);
+const TEST_IDS = new Set(['TEST','DEMO','SAMIR','EXPERT']);
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',

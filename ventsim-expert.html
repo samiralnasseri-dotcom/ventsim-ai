@@ -229,14 +229,14 @@ select.finp{cursor:pointer;}
       </div>
     </div>
     <div style="font-size:.78rem;color:var(--text3);margin-top:16px;">
-      For enquiries: samir.alnasseri@gmail.com · +968 9944245<br>
+      For enquiries: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7300121e1a015d121f1d12000016011a33141e121a1f5d101c1e">[email&#160;protected]</a> · +968 9944245<br>
       Universiti Malaya PhD Research Study 2026
     </div>
   </div>
 </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const WORKER = 'https://ventsim-worker.samir-alnasseri.workers.dev';
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxlOp_9TrmWy40PZmCpMZZN5QFLR3Z9pkoz39AJlECBGMS6JDA7BY5jcPIG58STb03z/exec';
 
@@ -244,28 +244,40 @@ let E = { name:'', role:'', years:'', institution:'', ratings:{}, comments:{}, r
 
 // ── SCENARIOS ──
 const SCENARIOS = [
-  { id:'SC1', title:'Patient-Ventilator Dyssynchrony', items:[
+  { id:'SC1', title:'Patient-Ventilator Dyssynchrony',
+    context:'Mr. Al-Rashidi, 58M, Post-op Day 3 following emergency laparotomy. Background COPD (GOLD III). Currently sedated (RASS -1). Nurse reports increasing patient-triggered breaths not matching ventilator cycles. SpO₂ 91%, HR 108, RR 28.',
+    params:'Mode: AC/VC | TV: 550 mL | RR: 14 | PEEP: 5 | FiO₂: 55% | PIP: 38 | I:E 1:2',
+    items:[
     'The clinical scenario accurately represents patient-ventilator dyssynchrony as encountered in ICU practice.',
     'The patient history and demographics are realistic and appropriate for an Omani ICU setting.',
     'The ventilator parameters presented are clinically accurate for this scenario.',
     'The decision options reflect genuine clinical choices an ICU nurse would face.',
     'The clinical explanations provided after each decision are evidence-based and educationally appropriate.'
   ]},
-  { id:'SC2', title:'Acute Desaturation — DOPE', items:[
+  { id:'SC2', title:'Acute Desaturation — DOPE',
+    context:'Ms. Al-Balushi, 44F, intubated 18 hours ago for Type 2 respiratory failure secondary to CAP. ETT 7.5mm at 22cm lip. RASS -2. SpO₂ suddenly dropped from 97% to 78% during repositioning for pressure area care.',
+    params:'Mode: AC/VC | TV: 420 mL | RR: 18 | PEEP: 8 | FiO₂: 100% | PIP: 52 | SpO₂: 78% | HR: 132',
+    items:[
     'The DOPE mnemonic framework is accurately and appropriately applied in this scenario.',
     'The scenario realistically represents acute desaturation following patient repositioning.',
     'The sequence of clinical events is logical and educationally sound.',
     'The decision options are clinically appropriate and discriminating.',
     'The scenario adequately covers the key competencies for managing acute ETT complications.'
   ]},
-  { id:'SC3', title:'ARDS Lung Protective Ventilation', items:[
+  { id:'SC3', title:'ARDS Lung Protective Ventilation',
+    context:'Mr. Al-Farsi, 51M, ARDS Day 2 secondary to severe sepsis. IBW 72kg. ABG: pH 7.28, PaO₂ 62 mmHg, PaCO₂ 58 mmHg on FiO₂ 80%. P/F ratio: 77.5. Current settings flagged as potentially non-compliant with ARDSNet protocol.',
+    params:'Mode: AC/VC | TV: 650 mL (9 mL/kg IBW — exceeds ARDSNet) | RR: 18 | PEEP: 10 | FiO₂: 80% | Plat: 34 cmH₂O',
+    items:[
     'The ARDSNet protocol parameters are accurately represented in this scenario.',
     'The scenario appropriately challenges nurses on lung protective ventilation principles.',
     'The patient data (ABG, P/F ratio, ventilator settings) is clinically realistic.',
     'The decision options reflect current evidence-based ARDS management.',
     'The scenario is at an appropriate difficulty level for ICU nurses.'
   ]},
-  { id:'SC4', title:'Weaning Readiness & SBT', items:[
+  { id:'SC4', title:'Weaning Readiness & SBT',
+    context:'Mrs. Al-Zaabi, 67F, ARDS Day 7, showing improvement. FiO₂ reduced to 40%, PEEP 6. Spontaneous breathing efforts noted. Team considering extubation. Nurse must assess weaning readiness and conduct SBT evaluation.',
+    params:'Mode: SIMV | TV: 480 mL | RR set: 10 | PEEP: 6 | FiO₂: 40% | SpO₂: 96% | PS: 10 cmH₂O | RSBI: 78',
+    items:[
     'The weaning readiness criteria presented are consistent with current clinical guidelines.',
     'The spontaneous breathing trial (SBT) protocol is accurately represented.',
     'The scenario appropriately assesses nurses\' ability to evaluate extubation readiness.',
@@ -340,9 +352,8 @@ function buildScenarioItems(){
     card.className = 'card';
     card.innerHTML = `<div class="card-title">📋 ${sc.id}: ${sc.title}</div>
       <div class="scenario-box" style="margin-bottom:14px;">
-        <strong>Scenario Overview:</strong> Please review the full scenario by accessing the platform at 
-        <a href="https://ventsim2.pages.dev/ventsim-study.html" target="_blank" style="color:var(--cyan);">ventsim2.pages.dev/ventsim-study.html</a> 
-        (use ID: EXPERT for preview access)
+        <strong>Clinical Context:</strong> ${sc.context}<br><br>
+        <strong>Key Parameters:</strong> ${sc.params}
       </div>`;
     sc.items.forEach((item,ii)=>{
       const key = `sc${si}_${ii}`;
@@ -451,12 +462,4 @@ async function submitExpert(){
   try{
     await fetch(SHEETS_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
   }catch(e){}
-  document.getElementById('sum-scenario').textContent = scCVI;
-  document.getElementById('sum-mcq').textContent = mcqCVI;
-  document.getElementById('sum-usability').textContent = usabilityCVI;
-  show('sc-thanks');
-  document.getElementById('prog').style.width='100%';
-}
-</script>
-</body>
-</html>
+  document.getElementById('sum-scenario').textContent = scCV
