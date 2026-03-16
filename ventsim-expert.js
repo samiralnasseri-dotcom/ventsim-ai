@@ -1,5 +1,24 @@
 
-var E = {name:'', role:'', years:'', inst:'', ratings:{}, comments:{}, rec:''};
+var EXPERT_KEYS = {
+  'EXPERT01': '4IIU',
+  'EXPERT02': '38LK',
+  'EXPERT03': 'SJQR',
+  'EXPERT04': 'RL8M',
+  'EXPERT05': '3TGT',
+  'EXPERT06': 'OO79',
+  'EXPERT07': 'ZXSZ',
+  'EXPERT08': 'I2CK',
+  'EXPERT09': 'AGVP',
+  'EXPERT10': 'K0PD'
+};
+
+var E = {id:'', name:'', role:'', years:'', inst:'', ratings:{}, comments:{}, rec:''};
+
+// Validate URL key on load
+var URL_PARAMS = new URLSearchParams(window.location.search);
+var URL_ID = (URL_PARAMS.get('id') || '').toUpperCase();
+var URL_KEY = (URL_PARAMS.get('key') || '').toUpperCase();
+var VALID_ACCESS = URL_ID && URL_KEY && EXPERT_KEYS[URL_ID] === URL_KEY;
 var SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxlOp_9TrmWy40PZmCpMZZN5QFLR3Z9pkoz39AJlECBGMS6JDA7BY5jcPIG58STb03z/exec';
 
 var SCENARIOS = [
@@ -314,6 +333,29 @@ function returnFromPlatform(){
 }
 
 window.addEventListener('DOMContentLoaded', function(){
+  // Validate URL key
+  if(!VALID_ACCESS){
+    // Check if returning from platform with sessionStorage
+    var profile = sessionStorage.getItem('expert_profile');
+    var savedId = profile ? JSON.parse(profile).id : '';
+    var savedKey = sessionStorage.getItem('expert_key');
+    if(!savedKey || !savedId || EXPERT_KEYS[savedId] !== savedKey){
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#050d14;color:#ff5252;font-family:monospace;text-align:center;padding:40px;"><div><div style="font-size:2rem;margin-bottom:16px;">🔒</div><div style="font-size:1.1rem;margin-bottom:8px;">Invalid or Missing Access Link</div><div style="font-size:.8rem;color:#546e7a;">Please use the personal link provided to you by the researcher.<br>Contact: samir.alnasseri@gmail.com</div></div></div>';
+      return;
+    }
+  } else {
+    // Valid URL access - save to sessionStorage for return trip
+    sessionStorage.setItem('expert_key', URL_KEY);
+  }
+
+  // Pre-fill expert ID if in URL
+  var idSelect = document.getElementById('exp-id');
+  if(idSelect && URL_ID){
+    idSelect.value = URL_ID;
+    idSelect.disabled = true;
+    idSelect.style.opacity = '0.6';
+  }
+
   // Check if returning from platform
   var returning = sessionStorage.getItem('expert_from_review');
   var profile = sessionStorage.getItem('expert_profile');
