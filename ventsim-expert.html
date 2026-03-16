@@ -75,6 +75,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   <div class="card">
     <div class="card-title">Expert Profile</div>
     <div style="font-size:.72rem;color:var(--text3);margin-bottom:10px;">Name is optional. All responses are confidential.</div>
+    <label style="font-size:.75rem;color:var(--text2);">Expert ID <span style="color:var(--red);">*</span></label>
+    <select class="finp" id="exp-id">
+      <option value="">Select your Expert ID...</option>
+      <option>EXPERT01</option>
+      <option>EXPERT02</option>
+      <option>EXPERT03</option>
+      <option>EXPERT04</option>
+      <option>EXPERT05</option>
+      <option>EXPERT06</option>
+      <option>EXPERT07</option>
+      <option>EXPERT08</option>
+      <option>EXPERT09</option>
+      <option>EXPERT10</option>
+    </select>
     <label style="font-size:.75rem;color:var(--text2);">Full Name (optional)</label>
     <input class="finp" type="text" id="exp-name" placeholder="Leave blank to remain anonymous">
     <label style="font-size:.75rem;color:var(--text2);">Professional Role *</label>
@@ -101,6 +115,28 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <div class="ferr" id="exp-err"></div>
     <br>
     <button class="btn btn-p" id="begin-btn">BEGIN REVIEW</button>
+  </div>
+</div></div>
+</div>
+
+<!-- REDIRECT -->
+<div class="sc" id="sc-redirect">
+<div class="wrap"><div style="max-width:600px;margin:40px auto;text-align:center;">
+  <div style="font-size:3rem;margin-bottom:16px;">🚀</div>
+  <div class="stitle">Ready to <span class="hl">Begin</span></div>
+  <div class="ssub">You will now experience VentSim AI exactly as a participant would. Please complete the full platform — all scenarios, assessments, and questionnaires. When you finish, you will be automatically returned here to complete your expert ratings.</div>
+  <div class="card" style="text-align:left;">
+    <div class="card-title">Instructions</div>
+    <div style="font-size:.82rem;color:var(--text2);line-height:2;">
+      1. Click the button below to open the platform<br>
+      2. Use ID: <span style="color:var(--amber);font-family:var(--mono);font-size:.9rem;">EXPERT</span><br>
+      3. Complete the entire session as a participant would<br>
+      4. You will be returned here automatically when done
+    </div>
+  </div>
+  <button class="btn btn-p" onclick="goToPlatform()" style="margin-top:8px;">OPEN PLATFORM AS PARTICIPANT</button>
+  <div style="margin-top:12px;">
+    <button class="btn" style="background:transparent;border:1px solid var(--border2);color:var(--text3);font-size:.68rem;" onclick="skipToPlatform()">Skip — I have already completed the platform</button>
   </div>
 </div></div>
 </div>
@@ -172,6 +208,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 </div>
 </div>
 
+<!-- WAITING -->
+<div class="sc" id="sc-waiting">
+<div class="wrap"><div style="max-width:600px;margin:40px auto;text-align:center;">
+  <div style="font-size:3rem;margin-bottom:16px;">⏳</div>
+  <div class="stitle">Platform <span class="hl">Open</span></div>
+  <div class="ssub">The platform has been opened in a new tab. Please complete it fully, then return to this tab to complete your expert ratings.</div>
+  <button class="btn btn-p" onclick="returnFromPlatform()" style="margin-top:8px;">I HAVE COMPLETED THE PLATFORM</button>
+</div></div>
+</div>
+
 <!-- THANKS -->
 <div class="sc" id="sc-thanks">
 <div class="wrap"><div style="max-width:600px;margin:40px auto;text-align:center;">
@@ -187,267 +233,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     </div>
     <div style="font-size:.75rem;color:var(--text2);">CVI >= 0.78 indicates acceptable content validity (Lynn, 1986).</div>
   </div>
-  <div style="font-size:.75rem;color:var(--text3);margin-top:16px;">samir.alnasseri@gmail.com | +968 9944245 | Universiti Malaya 2026</div>
+  <div style="font-size:.75rem;color:var(--text3);margin-top:16px;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0675676b6f7428676a6867757563746f46616b676f6a2865696b">[email&#160;protected]</a> | +968 9944245 | Universiti Malaya 2026</div>
 </div></div>
 </div>
 
-<script>
-var E = {name:'', role:'', years:'', inst:'', ratings:{}, comments:{}, rec:''};
-var SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxlOp_9TrmWy40PZmCpMZZN5QFLR3Z9pkoz39AJlECBGMS6JDA7BY5jcPIG58STb03z/exec';
-
-var SCENARIOS = [
-  {id:'SC1', title:'Patient-Ventilator Dyssynchrony',
-   context:'Mr. Al-Rashidi, 58M, Post-op Day 3 after emergency laparotomy. Background COPD GOLD III. RASS -1. Increasing patient-triggered breaths not matching ventilator cycles. SpO2 91%, HR 108.',
-   params:'Mode: AC/VC | TV: 550 mL | RR: 14 | PEEP: 5 | FiO2: 55% | PIP: 38 cmH2O',
-   items:['The scenario accurately represents patient-ventilator dyssynchrony as encountered in ICU practice.',
-          'The patient history and demographics are realistic for an Omani ICU setting.',
-          'The ventilator parameters presented are clinically accurate for this scenario.',
-          'The decision options reflect genuine clinical choices an ICU nurse would face.',
-          'The clinical explanations after each decision are evidence-based and educationally appropriate.']},
-  {id:'SC2', title:'Acute Desaturation - DOPE',
-   context:'Ms. Al-Balushi, 44F, intubated 18 hours ago for Type 2 respiratory failure. ETT 7.5mm at 22cm lip. SpO2 dropped from 97% to 78% during repositioning.',
-   params:'Mode: AC/VC | TV: 420 mL | RR: 18 | PEEP: 8 | FiO2: 100% | SpO2: 78% | HR: 132',
-   items:['The DOPE mnemonic framework is accurately applied in this scenario.',
-          'The scenario realistically represents acute desaturation following repositioning.',
-          'The sequence of clinical events is logical and educationally sound.',
-          'The decision options are clinically appropriate and discriminating.',
-          'The scenario adequately covers key competencies for managing acute ETT complications.']},
-  {id:'SC3', title:'ARDS Lung Protective Ventilation',
-   context:'Mr. Al-Farsi, 51M, ARDS Day 2 secondary to sepsis. IBW 72kg. ABG: pH 7.28, PaO2 62 mmHg, PaCO2 58 mmHg. P/F ratio 77.5. Settings appear non-compliant with ARDSNet.',
-   params:'Mode: AC/VC | TV: 650 mL (9 mL/kg IBW) | RR: 18 | PEEP: 10 | FiO2: 80% | Plat: 34 cmH2O',
-   items:['The ARDSNet protocol parameters are accurately represented.',
-          'The scenario appropriately challenges nurses on lung protective ventilation.',
-          'The patient data (ABG, P/F ratio, ventilator settings) is clinically realistic.',
-          'The decision options reflect current evidence-based ARDS management.',
-          'The scenario is at an appropriate difficulty level for ICU nurses.']},
-  {id:'SC4', title:'Weaning Readiness and SBT',
-   context:'Mrs. Al-Zaabi, 67F, ARDS Day 7, showing improvement. FiO2 40%, PEEP 6. Spontaneous breathing efforts noted. Team considering extubation. RSBI: 78.',
-   params:'Mode: SIMV | RR set: 10 | PEEP: 6 | FiO2: 40% | SpO2: 96% | PS: 10 cmH2O | RSBI: 78',
-   items:['The weaning readiness criteria presented are consistent with current clinical guidelines.',
-          'The SBT protocol is accurately represented.',
-          'The scenario appropriately assesses nurses ability to evaluate extubation readiness.',
-          'The decision options reflect genuine clinical judgment required for weaning.',
-          'The scenario adequately covers key competencies for ventilator liberation.']}
-];
-
-var MCQ_ITEMS = [
-  'In volume-controlled ventilation, which parameter directly determines the tidal volume delivered?',
-  'A patient on AC/VC mode has a set rate of 14 breaths/min but is triggering 22 breaths/min. This is best described as:',
-  'The ARDSNet protocol recommends a tidal volume of:',
-  'Which of the following BEST indicates patient-ventilator dyssynchrony?',
-  'During a spontaneous breathing trial, which finding would indicate failure?',
-  'In ARDS management, the primary goal of PEEP titration is to:',
-  'A patient peak inspiratory pressure suddenly increases from 28 to 48 cmH2O. The FIRST action should be:',
-  'The P/F ratio is used to assess:',
-  'Which ventilator mode allows the patient to breathe spontaneously at any point in the respiratory cycle?',
-  'Auto-PEEP is MOST likely to occur in patients with:',
-  'The plateau pressure reflects:',
-  'In pressure support ventilation, the clinician directly sets:',
-  'Which finding during a spontaneous breathing trial indicates readiness for extubation?',
-  'The DOPE mnemonic for acute desaturation stands for:',
-  'A patient with ARDS has a PaO2 of 55 mmHg on FiO2 0.60. The P/F ratio is:',
-  'Which of the following is a sign of over-distension on pressure-volume loop?',
-  'Intrinsic PEEP can be measured by:',
-  'In a patient with COPD on mechanical ventilation, which strategy reduces air trapping?',
-  'The primary indication for lung protective ventilation is:',
-  'Which parameter should be monitored to detect ventilator-induced lung injury?'
-];
-
-var USABILITY_ITEMS = [
-  'The platform interface is visually clear and easy to navigate.',
-  'The patient information in each scenario is well-organised and easy to read.',
-  'The ventilator waveform displays are realistic and clinically meaningful.',
-  'The Clinical Compass reference panel provides useful clinical information.',
-  'The AI mentor Socratic questioning approach is appropriate for clinical education.',
-  'The MCQ and CDMNS instruments are clearly presented and easy to complete.',
-  'The TAM questionnaire items are clear and appropriate for this context.',
-  'The overall flow of the platform is logical.',
-  'The platform is appropriate for use on mobile devices and tablets.',
-  'The time required to complete the platform (approximately 90 minutes) is reasonable.'
-];
-
-function showSc(id){
-  document.querySelectorAll('.sc').forEach(function(s){s.classList.remove('active');});
-  document.getElementById(id).classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function switchSec(id){
-  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active');});
-  document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
-  document.getElementById('sec-'+id).classList.add('active');
-  document.getElementById('tab-'+id).classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-  var map = {scenarios:25,mcq:50,usability:75,overall:90};
-  document.getElementById('prog').style.width = (map[id]||25)+'%';
-}
-
-function setCVI(key, val, btn){
-  E.ratings[key] = val;
-  var parent = btn.closest('.cvi-item');
-  if(parent){
-    parent.querySelectorAll('.cvi-opt').forEach(function(b){
-      b.classList.remove('sel-1','sel-2','sel-3','sel-4');
-    });
-  }
-  btn.classList.add('sel-'+val);
-}
-
-function setRec(val, btn){
-  E.rec = val;
-  document.getElementById('rec-btns').querySelectorAll('.cvi-opt').forEach(function(b){
-    b.style.borderColor='';b.style.color='';
-  });
-  btn.style.borderColor='var(--cyan)';
-  btn.style.color='var(--cyan)';
-}
-
-function makeCVIItem(key, text, commentKey){
-  var div = document.createElement('div');
-  div.className = 'cvi-item';
-  var q = document.createElement('div');
-  q.className = 'cvi-q';
-  q.textContent = text;
-  div.appendChild(q);
-  var scale = document.createElement('div');
-  scale.className = 'cvi-scale';
-  var labels = ['1 - Not relevant','2 - Somewhat relevant','3 - Relevant','4 - Highly relevant'];
-  labels.forEach(function(lbl, i){
-    var btn = document.createElement('button');
-    btn.className = 'cvi-opt';
-    btn.textContent = lbl;
-    var val = i+1;
-    var k = key;
-    btn.onclick = function(){ setCVI(k, val, btn); };
-    scale.appendChild(btn);
-  });
-  div.appendChild(scale);
-  var ta = document.createElement('textarea');
-  ta.className = 'cvi-comment';
-  ta.placeholder = 'Optional comment...';
-  var ck = commentKey;
-  ta.addEventListener('input', function(){ E.comments[ck] = ta.value; });
-  div.appendChild(ta);
-  return div;
-}
-
-function buildAll(){
-  // Scenarios
-  var scCont = document.getElementById('scenario-cont');
-  scCont.innerHTML = '';
-  SCENARIOS.forEach(function(sc, si){
-    var card = document.createElement('div');
-    card.className = 'card';
-    var title = document.createElement('div');
-    title.className = 'card-title';
-    title.textContent = sc.id + ': ' + sc.title;
-    card.appendChild(title);
-    var box = document.createElement('div');
-    box.className = 'scenario-box';
-    box.innerHTML = '<strong style="color:var(--text);">Clinical Context:</strong> ' + sc.context + '<br><br><strong style="color:var(--text);">Parameters:</strong> ' + sc.params;
-    card.appendChild(box);
-    sc.items.forEach(function(item, ii){
-      card.appendChild(makeCVIItem('sc'+si+'_'+ii, item, 'sc'+si+'_c'+ii));
-    });
-    scCont.appendChild(card);
-  });
-
-  // MCQ
-  var mcqCont = document.getElementById('mcq-cont');
-  mcqCont.innerHTML = '';
-  var mcqCard = document.createElement('div');
-  mcqCard.className = 'card';
-  var mcqTitle = document.createElement('div');
-  mcqTitle.className = 'card-title';
-  mcqTitle.textContent = 'MCQ Items - Rate for Relevance and Clarity';
-  mcqCard.appendChild(mcqTitle);
-  MCQ_ITEMS.forEach(function(item, i){
-    mcqCard.appendChild(makeCVIItem('mcq_'+i, 'Item '+(i+1)+': '+item, 'mcq_c'+i));
-  });
-  mcqCont.appendChild(mcqCard);
-
-  // Usability
-  var useCont = document.getElementById('usability-cont');
-  useCont.innerHTML = '';
-  var useCard = document.createElement('div');
-  useCard.className = 'card';
-  var useTitle = document.createElement('div');
-  useTitle.className = 'card-title';
-  useTitle.textContent = 'Platform Usability and Face Validity';
-  useCard.appendChild(useTitle);
-  USABILITY_ITEMS.forEach(function(item, i){
-    useCard.appendChild(makeCVIItem('use_'+i, item, 'use_c'+i));
-  });
-  useCont.appendChild(useCard);
-
-  // Overall
-  var overallCont = document.getElementById('overall-cont');
-  overallCont.innerHTML = '';
-  var overallItems = [
-    'The VentSim AI platform is appropriate for assessing ICU nurses clinical decision-making in mechanical ventilation.',
-    'The platform is suitable for use with ICU nurses in Oman without significant cultural modifications.'
-  ];
-  overallItems.forEach(function(item, i){
-    overallCont.appendChild(makeCVIItem('overall_'+i, item, 'overall_c'+i));
-  });
-}
-
-function calcCVI(prefix){
-  var keys = Object.keys(E.ratings).filter(function(k){ return k.indexOf(prefix) === 0; });
-  if(keys.length === 0) return 'N/A';
-  var relevant = keys.filter(function(k){ return E.ratings[k] >= 3; }).length;
-  return (relevant / keys.length).toFixed(2);
-}
-
-function startExpert(){
-  var name = document.getElementById('exp-name').value.trim() || 'Anonymous';
-  var role = document.getElementById('exp-role').value;
-  var years = document.getElementById('exp-years').value;
-  var inst = document.getElementById('exp-inst').value.trim();
-  if(!role || !years || !inst){
-    document.getElementById('exp-err').textContent = 'Please complete all required fields.';
-    return;
-  }
-  E.name = name; E.role = role; E.years = years; E.inst = inst;
-  document.getElementById('exp-hdr').textContent = role + ' | ' + years;
-  buildAll();
-  showSc('sc-review');
-  document.getElementById('prog').style.width = '25%';
-}
-
-async function submitExpert(){
-  if(!E.rec){
-    document.getElementById('submit-err').textContent = 'Please select your recommendation.';
-    return;
-  }
-  var scCVI = calcCVI('sc');
-  var mcqCVI = calcCVI('mcq');
-  var useCVI = calcCVI('use');
-  var payload = {
-    type: 'expert_validation',
-    timestamp: new Date().toISOString(),
-    expert: {name: E.name, role: E.role, years: E.years, institution: E.inst},
-    ratings: E.ratings,
-    comments: E.comments,
-    recommendation: E.rec,
-    strengths: document.getElementById('strengths-txt').value,
-    improvements: document.getElementById('improve-txt').value,
-    cvi: {scenarios: scCVI, mcq: mcqCVI, usability: useCVI}
-  };
-  try{
-    await fetch(SHEETS_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
-  }catch(e){}
-  document.getElementById('sum-sc').textContent = scCVI;
-  document.getElementById('sum-mcq').textContent = mcqCVI;
-  document.getElementById('sum-use').textContent = useCVI;
-  showSc('sc-thanks');
-  document.getElementById('prog').style.width = '100%';
-}
-
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('begin-btn').addEventListener('click', startExpert);
-  document.getElementById('submit-btn').addEventListener('click', submitExpert);
-});
-</script>
+<script src="ventsim-expert.js"></script>
 </body>
 </html>
