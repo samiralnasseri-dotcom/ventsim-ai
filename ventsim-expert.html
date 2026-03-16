@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VentSim AI — Expert Validation Panel | Universiti Malaya 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap');
+:root{--bg:#050d14;--bg2:#081520;--panel:#0a1a27;--border:#0e2a3f;--border2:#1a3a55;--cyan:#00e5ff;--green:#00e676;--amber:#ffd740;--red:#ff5252;--purple:#ce93d8;--text:#e0f2f1;--text2:#90a4ae;--text3:#546e7a;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+.hdr{background:rgba(5,13,20,.98);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+.hlogo{font-family:var(--mono);font-size:.9rem;font-weight:600;color:var(--cyan);}
+.hbadge{background:rgba(206,147,216,.1);border:1px solid rgba(206,147,216,.3);color:var(--purple);font-family:var(--mono);font-size:.62rem;padding:3px 8px;border-radius:3px;}
+.wrap{max-width:900px;margin:0 auto;padding:24px 20px;}
+.sc{display:none;} .sc.active{display:block;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px;}
+.card-title{font-family:var(--mono);font-size:.7rem;font-weight:600;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.stitle{font-size:1.5rem;font-weight:700;margin-bottom:6px;} .hl{color:var(--cyan);}
+.ssub{font-size:.85rem;color:var(--text2);margin-bottom:20px;line-height:1.7;}
+.badge{font-family:var(--mono);font-size:.62rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.finp{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;color:var(--text);font-family:var(--sans);font-size:.85rem;outline:none;margin-bottom:10px;}
+.finp:focus{border-color:var(--cyan);}
+select.finp{cursor:pointer;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--mono);font-size:.75rem;font-weight:600;padding:10px 20px;border-radius:6px;border:none;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn-p{background:linear-gradient(135deg,var(--cyan),#00b8d4);color:#000;width:100%;}
+.btn-p:hover{opacity:.9;}
+.btn-g{background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.3);color:var(--green);}
+.btn-sm{padding:6px 14px;font-size:.68rem;}
+.ferr{color:var(--red);font-size:.73rem;font-family:var(--mono);margin-top:4px;min-height:16px;}
+
+/* CVI Rating */
+.cvi-item{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:14px;margin-bottom:10px;}
+.cvi-q{font-size:.82rem;color:var(--text);margin-bottom:10px;line-height:1.6;}
+.cvi-scale{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.cvi-opt{background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:.72rem;padding:6px 14px;border-radius:4px;cursor:pointer;transition:all .2s;}
+.cvi-opt:hover{border-color:var(--cyan);color:var(--cyan);}
+.cvi-opt.sel-1{background:rgba(255,82,82,.15);border-color:var(--red);color:var(--red);}
+.cvi-opt.sel-2{background:rgba(255,215,64,.15);border-color:var(--amber);color:var(--amber);}
+.cvi-opt.sel-3{background:rgba(130,177,255,.15);border-color:#82b1ff;color:#82b1ff;}
+.cvi-opt.sel-4{background:rgba(0,230,118,.15);border-color:var(--green);color:var(--green);}
+.cvi-comment{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:4px;padding:8px 10px;color:var(--text2);font-family:var(--sans);font-size:.78rem;outline:none;resize:vertical;min-height:50px;margin-top:6px;}
+.cvi-comment:focus{border-color:var(--cyan);}
+.cvi-label{font-size:.65rem;color:var(--text3);font-family:var(--mono);}
+
+/* Nav */
+.nav-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:20px;}
+.nav-tab{background:transparent;border:1px solid var(--border2);color:var(--text3);font-family:var(--mono);font-size:.65rem;padding:6px 12px;border-radius:4px;cursor:pointer;transition:all .2s;}
+.nav-tab.active,.nav-tab:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.05);}
+.section-content{display:none;} .section-content.active{display:block;}
+
+/* Progress */
+.prog-bar{height:3px;background:var(--border);position:fixed;top:0;left:0;right:0;z-index:200;}
+.prog-fill{height:100%;background:var(--cyan);transition:width .4s ease;}
+
+/* Scenario display */
+.scenario-box{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:14px;margin-bottom:14px;font-size:.8rem;line-height:1.8;color:var(--text2);}
+.scenario-box strong{color:var(--text);}
+.vitals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0;}
+.vital{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:8px;text-align:center;}
+.vital-val{font-family:var(--mono);font-size:1rem;color:var(--cyan);font-weight:600;}
+.vital-lbl{font-size:.62rem;color:var(--text3);text-transform:uppercase;}
+
+/* Summary */
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.summary-box{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:14px;text-align:center;}
+.summary-val{font-family:var(--mono);font-size:1.6rem;font-weight:600;margin-bottom:4px;}
+.summary-lbl{font-size:.65rem;color:var(--text3);text-transform:uppercase;}
+</style>
+</head>
+<body>
+
+<div class="prog-bar"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+
+<div class="hdr">
+  <div class="hlogo">⚕ VentSim AI</div>
+  <span class="hbadge">EXPERT VALIDATION</span>
+  <span style="margin-left:auto;font-family:var(--mono);font-size:.68rem;color:var(--text3);" id="expert-name-hdr"></span>
+</div>
+
+<!-- S1: WELCOME -->
+<div class="sc active" id="sc-welcome">
+<div class="wrap">
+  <div style="max-width:600px;margin:40px auto;">
+    <div class="badge">EXPERT VALIDATION PANEL</div>
+    <div class="stitle">VentSim AI<br><span class="hl">Expert Review</span></div>
+    <div class="ssub">Thank you for participating in the content and face validity review of VentSim AI. Your expert input will be used to calculate the Content Validity Index (CVI) and refine the platform before the main study.</div>
+    <div class="card">
+      <div class="card-title">📋 Instructions</div>
+      <div style="font-size:.82rem;color:var(--text2);line-height:1.9;">
+        You will be asked to rate each item using a <strong style="color:var(--text);">4-point relevance scale:</strong><br>
+        <span style="color:var(--red);">1 — Not relevant</span><br>
+        <span style="color:var(--amber);">2 — Somewhat relevant (needs major revision)</span><br>
+        <span style="color:#82b1ff;">3 — Relevant (needs minor revision)</span><br>
+        <span style="color:var(--green);">4 — Highly relevant (no revision needed)</span><br><br>
+        You may also provide written comments for each item. The review covers:<br>
+        ① Clinical Scenarios (4 scenarios)<br>
+        ② MCQ Knowledge Items (20 items)<br>
+        ③ Platform Usability & Face Validity<br>
+        ④ Overall Recommendations
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">👤 Expert Profile</div>
+      <label style="font-size:.75rem;color:var(--text2);">Full Name</label>
+      <input class="finp" type="text" id="exp-name" placeholder="Dr. / Prof. / Mr. / Ms.">
+      <label style="font-size:.75rem;color:var(--text2);">Professional Role</label>
+      <select class="finp" id="exp-role">
+        <option value="">Select role...</option>
+        <option>ICU Consultant Physician</option>
+        <option>ICU Specialist Nurse</option>
+        <option>Nursing Education Expert</option>
+        <option>Clinical Simulation Expert</option>
+        <option>Respiratory Therapist</option>
+        <option>Other</option>
+      </select>
+      <label style="font-size:.75rem;color:var(--text2);">Years of Experience</label>
+      <select class="finp" id="exp-years">
+        <option value="">Select...</option>
+        <option>1–5 years</option>
+        <option>6–10 years</option>
+        <option>11–15 years</option>
+        <option>16–20 years</option>
+        <option>More than 20 years</option>
+      </select>
+      <label style="font-size:.75rem;color:var(--text2);">Institution / Hospital</label>
+      <input class="finp" type="text" id="exp-inst" placeholder="e.g. Royal Hospital, Muscat">
+      <div class="ferr" id="exp-err"></div>
+      <br>
+      <button class="btn btn-p" onclick="startExpert()">BEGIN REVIEW ▶</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- S2: MAIN REVIEW -->
+<div class="sc" id="sc-review">
+<div class="wrap">
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchSection('scenarios')">① Scenarios</button>
+    <button class="nav-tab" onclick="switchSection('mcq')">② MCQ Items</button>
+    <button class="nav-tab" onclick="switchSection('usability')">③ Usability</button>
+    <button class="nav-tab" onclick="switchSection('overall')">④ Overall</button>
+  </div>
+
+  <!-- SECTION 1: SCENARIOS -->
+  <div class="section-content active" id="sec-scenarios">
+    <div class="stitle" style="font-size:1.2rem;">Clinical <span class="hl">Scenarios</span></div>
+    <div class="ssub">Please rate each scenario for clinical accuracy, educational relevance, and appropriateness for ICU nurses in Oman.</div>
+    <div id="scenario-items"></div>
+    <button class="btn btn-g btn-sm" onclick="switchSection('mcq');updateProgress()">NEXT: MCQ Items ▶</button>
+  </div>
+
+  <!-- SECTION 2: MCQ -->
+  <div class="section-content" id="sec-mcq">
+    <div class="stitle" style="font-size:1.2rem;">MCQ <span class="hl">Knowledge Items</span></div>
+    <div class="ssub">Rate each MCQ item for relevance to mechanical ventilation competency, clarity of wording, and appropriateness of difficulty level.</div>
+    <div id="mcq-items"></div>
+    <button class="btn btn-g btn-sm" onclick="switchSection('usability');updateProgress()">NEXT: Usability ▶</button>
+  </div>
+
+  <!-- SECTION 3: USABILITY -->
+  <div class="section-content" id="sec-usability">
+    <div class="stitle" style="font-size:1.2rem;">Platform <span class="hl">Usability</span></div>
+    <div class="ssub">Rate the overall face validity and usability of the VentSim AI platform.</div>
+    <div id="usability-items"></div>
+    <button class="btn btn-g btn-sm" onclick="switchSection('overall');updateProgress()">NEXT: Overall ▶</button>
+  </div>
+
+  <!-- SECTION 4: OVERALL -->
+  <div class="section-content" id="sec-overall">
+    <div class="stitle" style="font-size:1.2rem;">Overall <span class="hl">Recommendations</span></div>
+    <div class="ssub">Please provide your overall assessment and any additional recommendations.</div>
+    <div class="card">
+      <div class="card-title">Overall Platform Assessment</div>
+      <div class="cvi-item">
+        <div class="cvi-q">Overall, the VentSim AI platform is appropriate for assessing and developing ICU nurses' clinical decision-making in mechanical ventilation management.</div>
+        <div class="cvi-scale" id="overall-rating"></div>
+        <textarea class="cvi-comment" id="overall-comment" placeholder="Additional comments..."></textarea>
+      </div>
+      <div class="cvi-item">
+        <div class="cvi-q">The platform is suitable for use with ICU nurses in Oman without significant cultural or contextual modifications.</div>
+        <div class="cvi-scale" id="cultural-rating"></div>
+        <textarea class="cvi-comment" id="cultural-comment" placeholder="Suggestions for cultural adaptation..."></textarea>
+      </div>
+      <div class="cvi-item">
+        <div class="cvi-q" style="color:var(--text);">What are the main strengths of this platform?</div>
+        <textarea class="cvi-comment" id="strengths-comment" placeholder="Please describe the main strengths..." style="min-height:80px;"></textarea>
+      </div>
+      <div class="cvi-item">
+        <div class="cvi-q" style="color:var(--text);">What are the main areas for improvement?</div>
+        <textarea class="cvi-comment" id="improvements-comment" placeholder="Please describe areas for improvement..." style="min-height:80px;"></textarea>
+      </div>
+      <div class="cvi-item">
+        <div class="cvi-q" style="color:var(--text);">Do you recommend this platform for use in the main study?</div>
+        <div style="display:flex;gap:10px;margin-top:8px;">
+          <button class="cvi-opt" id="rec-yes" onclick="setRec('yes')">✅ Yes, as is</button>
+          <button class="cvi-opt" id="rec-minor" onclick="setRec('minor')">🔧 Yes, with minor revisions</button>
+          <button class="cvi-opt" id="rec-major" onclick="setRec('major')">⚠️ Yes, with major revisions</button>
+          <button class="cvi-opt" id="rec-no" onclick="setRec('no')">❌ No</button>
+        </div>
+      </div>
+    </div>
+    <div class="ferr" id="submit-err"></div>
+    <button class="btn btn-p" onclick="submitExpert()">SUBMIT REVIEW ▶</button>
+  </div>
+
+</div>
+</div>
+
+<!-- S3: THANK YOU -->
+<div class="sc" id="sc-thanks">
+<div class="wrap">
+  <div style="max-width:600px;margin:40px auto;text-align:center;">
+    <div style="font-size:3rem;margin-bottom:16px;">🏆</div>
+    <div class="stitle">Thank You!</div>
+    <div class="ssub">Your expert review has been submitted successfully. Your input is invaluable for ensuring the validity and quality of VentSim AI before the main study.</div>
+    <div class="card">
+      <div class="card-title">📊 Your CVI Summary</div>
+      <div class="summary-grid">
+        <div class="summary-box"><div class="summary-val" id="sum-scenario" style="color:var(--cyan);">—</div><div class="summary-lbl">Scenario CVI</div></div>
+        <div class="summary-box"><div class="summary-val" id="sum-mcq" style="color:var(--green);">—</div><div class="summary-lbl">MCQ CVI</div></div>
+        <div class="summary-box"><div class="summary-val" id="sum-usability" style="color:var(--amber);">—</div><div class="summary-lbl">Usability CVI</div></div>
+      </div>
+      <div style="font-size:.78rem;color:var(--text2);line-height:1.8;">
+        CVI ≥ 0.78 indicates acceptable content validity (Lynn, 1986).<br>
+        Results will be shared with you upon study completion.
+      </div>
+    </div>
+    <div style="font-size:.78rem;color:var(--text3);margin-top:16px;">
+      For enquiries: samir.alnasseri@gmail.com · +968 9944245<br>
+      Universiti Malaya PhD Research Study 2026
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const WORKER = 'https://ventsim-worker.samir-alnasseri.workers.dev';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxlOp_9TrmWy40PZmCpMZZN5QFLR3Z9pkoz39AJlECBGMS6JDA7BY5jcPIG58STb03z/exec';
+
+let E = { name:'', role:'', years:'', institution:'', ratings:{}, comments:{}, recommendation:'' };
+
+// ── SCENARIOS ──
+const SCENARIOS = [
+  { id:'SC1', title:'Patient-Ventilator Dyssynchrony', items:[
+    'The clinical scenario accurately represents patient-ventilator dyssynchrony as encountered in ICU practice.',
+    'The patient history and demographics are realistic and appropriate for an Omani ICU setting.',
+    'The ventilator parameters presented are clinically accurate for this scenario.',
+    'The decision options reflect genuine clinical choices an ICU nurse would face.',
+    'The clinical explanations provided after each decision are evidence-based and educationally appropriate.'
+  ]},
+  { id:'SC2', title:'Acute Desaturation — DOPE', items:[
+    'The DOPE mnemonic framework is accurately and appropriately applied in this scenario.',
+    'The scenario realistically represents acute desaturation following patient repositioning.',
+    'The sequence of clinical events is logical and educationally sound.',
+    'The decision options are clinically appropriate and discriminating.',
+    'The scenario adequately covers the key competencies for managing acute ETT complications.'
+  ]},
+  { id:'SC3', title:'ARDS Lung Protective Ventilation', items:[
+    'The ARDSNet protocol parameters are accurately represented in this scenario.',
+    'The scenario appropriately challenges nurses on lung protective ventilation principles.',
+    'The patient data (ABG, P/F ratio, ventilator settings) is clinically realistic.',
+    'The decision options reflect current evidence-based ARDS management.',
+    'The scenario is at an appropriate difficulty level for ICU nurses.'
+  ]},
+  { id:'SC4', title:'Weaning Readiness & SBT', items:[
+    'The weaning readiness criteria presented are consistent with current clinical guidelines.',
+    'The spontaneous breathing trial (SBT) protocol is accurately represented.',
+    'The scenario appropriately assesses nurses\' ability to evaluate extubation readiness.',
+    'The decision options reflect genuine clinical judgment required for weaning.',
+    'The scenario adequately covers the key competencies for ventilator liberation.'
+  ]}
+];
+
+// ── MCQ ITEMS ──
+const MCQ_ITEMS = [
+  'In volume-controlled ventilation, which parameter directly determines the tidal volume delivered?',
+  'A patient on AC/VC mode has a set rate of 14 breaths/min but is triggering 22 breaths/min. This is best described as:',
+  'The ARDSNet protocol recommends a tidal volume of:',
+  'Which of the following BEST indicates patient-ventilator dyssynchrony?',
+  'During a spontaneous breathing trial, which finding would indicate failure?',
+  'In ARDS management, the primary goal of PEEP titration is to:',
+  'A patient\'s peak inspiratory pressure suddenly increases from 28 to 48 cmH₂O. The FIRST action should be:',
+  'The P/F ratio is used to assess:',
+  'Which ventilator mode allows the patient to breathe spontaneously at any point in the respiratory cycle?',
+  'Auto-PEEP is MOST likely to occur in patients with:',
+  'The plateau pressure reflects:',
+  'In pressure support ventilation (PSV), the clinician directly sets:',
+  'Which finding during a spontaneous breathing trial indicates readiness for extubation?',
+  'The DOPE mnemonic for acute desaturation stands for:',
+  'A patient with ARDS has a PaO₂ of 55 mmHg on FiO₂ 0.60. The P/F ratio is:',
+  'Which of the following is a sign of over-distension on pressure-volume loop?',
+  'Intrinsic PEEP can be measured by:',
+  'In a patient with COPD on mechanical ventilation, which strategy reduces air trapping?',
+  'The primary indication for lung protective ventilation is:',
+  'Which parameter should be monitored to detect ventilator-induced lung injury (VILI)?'
+];
+
+// ── USABILITY ITEMS ──
+const USABILITY_ITEMS = [
+  'The platform interface is visually clear and easy to navigate.',
+  'The patient information presented in each scenario is well-organised and easy to read.',
+  'The ventilator waveform displays are realistic and clinically meaningful.',
+  'The Clinical Compass reference panel provides useful clinical information.',
+  'The AI mentor\'s Socratic questioning approach is appropriate for clinical education.',
+  'The MCQ and CDMNS instruments are clearly presented and easy to complete.',
+  'The TAM questionnaire items are clear and appropriate for this context.',
+  'The overall flow of the platform (pre-test → simulation → post-test) is logical.',
+  'The platform is appropriate for use on mobile devices and tablets.',
+  'The time required to complete the platform (~90 minutes) is reasonable.'
+];
+
+function show(id){ document.querySelectorAll('.sc').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+function updateProgress(){ const tabs=['scenarios','mcq','usability','overall']; const active=tabs.findIndex(t=>document.getElementById('sec-'+t).classList.contains('active')); document.getElementById('prog').style.width=((active+1)/tabs.length*100)+'%'; }
+function switchSection(id){ document.querySelectorAll('.section-content').forEach(s=>s.classList.remove('active')); document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active')); document.getElementById('sec-'+id).classList.add('active'); document.querySelector(`.nav-tab[onclick*="${id}"]`).classList.add('active'); updateProgress(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function startExpert(){
+  const name=document.getElementById('exp-name').value.trim();
+  const role=document.getElementById('exp-role').value;
+  const years=document.getElementById('exp-years').value;
+  const inst=document.getElementById('exp-inst').value.trim();
+  if(!name||!role||!years||!inst){ document.getElementById('exp-err').textContent='Please complete all fields.'; return; }
+  E.name=name; E.role=role; E.years=years; E.institution=inst;
+  document.getElementById('expert-name-hdr').textContent=name+' · '+role;
+  buildScenarioItems();
+  buildMCQItems();
+  buildUsabilityItems();
+  buildOverallRatings();
+  show('sc-review');
+  document.getElementById('prog').style.width='25%';
+}
+
+function buildScenarioItems(){
+  const cont = document.getElementById('scenario-items');
+  cont.innerHTML = '';
+  SCENARIOS.forEach((sc,si)=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<div class="card-title">📋 ${sc.id}: ${sc.title}</div>
+      <div class="scenario-box" style="margin-bottom:14px;">
+        <strong>Scenario Overview:</strong> Please review the full scenario by accessing the platform at 
+        <a href="https://ventsim2.pages.dev/ventsim-study.html" target="_blank" style="color:var(--cyan);">ventsim2.pages.dev/ventsim-study.html</a> 
+        (use ID: EXPERT for preview access)
+      </div>`;
+    sc.items.forEach((item,ii)=>{
+      const key = `sc${si}_${ii}`;
+      card.innerHTML += buildCVIItem(key, item, `sc${si}_comment_${ii}`);
+    });
+    cont.appendChild(card);
+  });
+}
+
+function buildMCQItems(){
+  const cont = document.getElementById('mcq-items');
+  cont.innerHTML = '';
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = '<div class="card-title">❓ MCQ Items — Rate each for Relevance & Clarity</div>';
+  MCQ_ITEMS.forEach((item,i)=>{
+    const key = `mcq_${i}`;
+    card.innerHTML += buildCVIItem(key, `Item ${i+1}: ${item}`, `mcq_comment_${i}`);
+  });
+  cont.appendChild(card);
+}
+
+function buildUsabilityItems(){
+  const cont = document.getElementById('usability-items');
+  cont.innerHTML = '';
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = '<div class="card-title">💻 Platform Usability & Face Validity</div>';
+  USABILITY_ITEMS.forEach((item,i)=>{
+    const key = `usability_${i}`;
+    card.innerHTML += buildCVIItem(key, item, `usability_comment_${i}`);
+  });
+  cont.appendChild(card);
+}
+
+function buildOverallRatings(){
+  buildRatingBtns('overall-rating','overall');
+  buildRatingBtns('cultural-rating','cultural');
+}
+
+function buildCVIItem(key, text, commentKey){
+  return `<div class="cvi-item">
+    <div class="cvi-q">${text}</div>
+    <div class="cvi-scale">
+      <button class="cvi-opt" onclick="setCVI('${key}',1,this)">1 — Not relevant</button>
+      <button class="cvi-opt" onclick="setCVI('${key}',2,this)">2 — Somewhat relevant</button>
+      <button class="cvi-opt" onclick="setCVI('${key}',3,this)">3 — Relevant</button>
+      <button class="cvi-opt" onclick="setCVI('${key}',4,this)">4 — Highly relevant</button>
+    </div>
+    <textarea class="cvi-comment" data-key="${commentKey}" placeholder="Optional comment..." onchange="E.comments['${commentKey}']=this.value"></textarea>
+  </div>`;
+}
+
+function buildRatingBtns(containerId, key){
+  const cont = document.getElementById(containerId);
+  if(!cont) return;
+  cont.innerHTML = '';
+  [1,2,3,4].forEach(v=>{
+    const btn = document.createElement('button');
+    btn.className = 'cvi-opt';
+    btn.textContent = ['1 — Not relevant','2 — Somewhat relevant','3 — Relevant','4 — Highly relevant'][v-1];
+    btn.onclick = ()=>setCVI(key,v,btn);
+    cont.appendChild(btn);
+  });
+}
+
+function setCVI(key, val, btn){
+  E.ratings[key] = val;
+  const parent = btn.closest('.cvi-item')||btn.closest('.card');
+  if(parent) parent.querySelectorAll('.cvi-opt').forEach(b=>{ b.classList.remove('sel-1','sel-2','sel-3','sel-4'); });
+  btn.classList.add('sel-'+val);
+}
+
+function setRec(val){
+  E.recommendation = val;
+  ['yes','minor','major','no'].forEach(v=>{ const b=document.getElementById('rec-'+v); if(b) b.style.borderColor=''; });
+  const btn = document.getElementById('rec-'+val);
+  if(btn) btn.style.cssText += ';border-color:var(--cyan);color:var(--cyan);';
+}
+
+function calcCVI(prefix, total){
+  let sum=0, count=0;
+  for(let i=0;i<total;i++){
+    const keys = Object.keys(E.ratings).filter(k=>k.startsWith(prefix));
+    keys.forEach(k=>{ if(E.ratings[k]>=3){ sum++; } count++; });
+  }
+  const relevant = Object.keys(E.ratings).filter(k=>k.startsWith(prefix) && E.ratings[k]>=3).length;
+  const total2 = Object.keys(E.ratings).filter(k=>k.startsWith(prefix)).length;
+  return total2>0 ? (relevant/total2).toFixed(2) : '—';
+}
+
+async function submitExpert(){
+  if(!E.recommendation){ document.getElementById('submit-err').textContent='Please select your overall recommendation.'; return; }
+  const scCVI = calcCVI('sc',20);
+  const mcqCVI = calcCVI('mcq',20);
+  const usabilityCVI = calcCVI('usability',10);
+  const payload = {
+    type:'expert_validation',
+    timestamp:new Date().toISOString(),
+    expert:{ name:E.name, role:E.role, years:E.years, institution:E.institution },
+    ratings:E.ratings,
+    comments:E.comments,
+    recommendation:E.recommendation,
+    cvi_summary:{ scenarios:scCVI, mcq:mcqCVI, usability:usabilityCVI }
+  };
+  try{
+    await fetch(SHEETS_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+  }catch(e){}
+  document.getElementById('sum-scenario').textContent = scCVI;
+  document.getElementById('sum-mcq').textContent = mcqCVI;
+  document.getElementById('sum-usability').textContent = usabilityCVI;
+  show('sc-thanks');
+  document.getElementById('prog').style.width='100%';
+}
+</script>
+</body>
+</html>
