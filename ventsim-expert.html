@@ -350,14 +350,18 @@ function buildScenarioItems(){
   SCENARIOS.forEach((sc,si)=>{
     const card = document.createElement('div');
     card.className = 'card';
-    card.innerHTML = `<div class="card-title">📋 ${sc.id}: ${sc.title}</div>
-      <div class="scenario-box" style="margin-bottom:14px;">
-        <strong>Clinical Context:</strong> ${sc.context}<br><br>
-        <strong>Key Parameters:</strong> ${sc.params}
-      </div>`;
+    const title = document.createElement('div');
+    title.className = 'card-title';
+    title.textContent = `📋 ${sc.id}: ${sc.title}`;
+    card.appendChild(title);
+    const box = document.createElement('div');
+    box.className = 'scenario-box';
+    box.style.marginBottom = '14px';
+    box.innerHTML = `<strong>Clinical Context:</strong> ${sc.context}<br><br><strong>Key Parameters:</strong> ${sc.params}`;
+    card.appendChild(box);
     sc.items.forEach((item,ii)=>{
       const key = `sc${si}_${ii}`;
-      card.innerHTML += buildCVIItem(key, item, `sc${si}_comment_${ii}`);
+      card.appendChild(buildCVIItem(key, item, `sc${si}_comment_${ii}`));
     });
     cont.appendChild(card);
   });
@@ -368,10 +372,12 @@ function buildMCQItems(){
   cont.innerHTML = '';
   const card = document.createElement('div');
   card.className = 'card';
-  card.innerHTML = '<div class="card-title">❓ MCQ Items — Rate each for Relevance & Clarity</div>';
+  const title = document.createElement('div');
+  title.className = 'card-title';
+  title.textContent = '❓ MCQ Items — Rate each for Relevance & Clarity';
+  card.appendChild(title);
   MCQ_ITEMS.forEach((item,i)=>{
-    const key = `mcq_${i}`;
-    card.innerHTML += buildCVIItem(key, `Item ${i+1}: ${item}`, `mcq_comment_${i}`);
+    card.appendChild(buildCVIItem(`mcq_${i}`, `Item ${i+1}: ${item}`, `mcq_comment_${i}`));
   });
   cont.appendChild(card);
 }
@@ -381,10 +387,12 @@ function buildUsabilityItems(){
   cont.innerHTML = '';
   const card = document.createElement('div');
   card.className = 'card';
-  card.innerHTML = '<div class="card-title">💻 Platform Usability & Face Validity</div>';
+  const title = document.createElement('div');
+  title.className = 'card-title';
+  title.textContent = '💻 Platform Usability & Face Validity';
+  card.appendChild(title);
   USABILITY_ITEMS.forEach((item,i)=>{
-    const key = `usability_${i}`;
-    card.innerHTML += buildCVIItem(key, item, `usability_comment_${i}`);
+    card.appendChild(buildCVIItem(`usability_${i}`, item, `usability_comment_${i}`));
   });
   cont.appendChild(card);
 }
@@ -395,16 +403,21 @@ function buildOverallRatings(){
 }
 
 function buildCVIItem(key, text, commentKey){
-  return `<div class="cvi-item">
-    <div class="cvi-q">${text}</div>
+  const div = document.createElement('div');
+  div.className = 'cvi-item';
+  div.innerHTML = `<div class="cvi-q">${text}</div>
     <div class="cvi-scale">
       <button class="cvi-opt" onclick="setCVI('${key}',1,this)">1 — Not relevant</button>
       <button class="cvi-opt" onclick="setCVI('${key}',2,this)">2 — Somewhat relevant</button>
       <button class="cvi-opt" onclick="setCVI('${key}',3,this)">3 — Relevant</button>
       <button class="cvi-opt" onclick="setCVI('${key}',4,this)">4 — Highly relevant</button>
-    </div>
-    <textarea class="cvi-comment" data-key="${commentKey}" placeholder="Optional comment..." onchange="E.comments['${commentKey}']=this.value"></textarea>
-  </div>`;
+    </div>`;
+  const ta = document.createElement('textarea');
+  ta.className = 'cvi-comment';
+  ta.placeholder = 'Optional comment...';
+  ta.addEventListener('change', function(){ E.comments[commentKey] = this.value; });
+  div.appendChild(ta);
+  return div;
 }
 
 function buildRatingBtns(containerId, key){
