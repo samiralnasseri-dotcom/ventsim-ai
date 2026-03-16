@@ -116,7 +116,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   </div>
   <div class="sec active" id="sec-scenarios">
     <div class="stitle" style="font-size:1.1rem;margin-bottom:6px;">Clinical <span class="hl">Scenarios</span></div>
-    <div class="ssub">Rate each scenario for clinical accuracy and educational relevance.</div>
+    <div class="ssub">Rate each scenario for clinical accuracy and educational relevance. You may also access the live platform using ID: <span style="color:var(--amber);font-family:var(--mono);">EXPERT</span> at <a href="https://ventsim2.pages.dev/ventsim-study.html" target="_blank" style="color:var(--cyan);">ventsim2.pages.dev/ventsim-study.html</a></div>
     <div id="scenario-cont"></div>
     <button class="btn btn-g" onclick="switchSec('mcq')">NEXT: MCQ Items</button>
   </div>
@@ -128,7 +128,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   </div>
   <div class="sec" id="sec-usability">
     <div class="stitle" style="font-size:1.1rem;margin-bottom:6px;">Platform <span class="hl">Usability</span></div>
-    <div class="ssub">Rate the face validity and usability of the VentSim AI platform.</div>
+    <div class="ssub">Please access and explore the platform before rating. Use the link below to view it.</div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Access the Platform</div>
+      <div style="font-size:.82rem;color:var(--text2);line-height:1.9;margin-bottom:12px;">
+        Please open the platform in a new tab and explore it using the test ID below before completing this section.
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:12px;font-family:var(--mono);font-size:.78rem;">
+        <div style="color:var(--text3);font-size:.65rem;text-transform:uppercase;margin-bottom:6px;">Platform URL</div>
+        <a href="https://ventsim2.pages.dev/ventsim-study.html" target="_blank" style="color:var(--cyan);">https://ventsim2.pages.dev/ventsim-study.html</a>
+        <div style="color:var(--text3);font-size:.65rem;text-transform:uppercase;margin-top:10px;margin-bottom:6px;">Test Participant ID</div>
+        <span style="color:var(--amber);font-size:1rem;letter-spacing:2px;">EXPERT</span>
+      </div>
+    </div>
     <div id="usability-cont"></div>
     <button class="btn btn-g" onclick="switchSec('overall')">NEXT: Overall</button>
   </div>
