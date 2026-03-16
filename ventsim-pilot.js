@@ -85,7 +85,6 @@ const SKIP_MAP = [
   { id:'postmcq-sc',   label:'Post-MCQ',     next:()=>{ skipMCQ('postMCQ'); show('postcdmns-sc'); setProg(82); } },
   { id:'postcdmns-sc', label:'Post-CDMNS',   next:()=>{ skipCDMNS('postCDMNS'); show('tam-sc'); setProg(90); saveLocal(); } },
   { id:'tam-sc',       label:'TAM',          next:()=>{ skipTAM(); submitTAM(); } },
-  { id:'aisam-sc',     label:'AI-SAM',       next:()=>{ skipAISAM(); submitAISAM(); } },
   { id:'deb-sc',       label:'Debrief',      next:()=>{ buildPilotFeedback(); show('pilot-fb-sc'); setProg(98); } },
   { id:'pilot-fb-sc', label:'Pilot Feedback', next:()=>{ show('ty-sc'); setProg(100); populateTyScreen(); } },
 ];
@@ -430,7 +429,7 @@ function selTAM(qi,val,el){
 }
 function submitTAM(){
   if(Object.keys(S.data.tam).length<19){ document.getElementById('tam-err').textContent='Please rate all 19 items.'; return; }
-  show('aisam-sc'); setProg(93); buildAISAM(); saveLocal();
+  buildPilotFeedback(); show('pilot-fb-sc'); setProg(98); saveLocal();
 }
 
 // ── AI-SAM (Sindermann et al., 2021) — Intervention group only ──
