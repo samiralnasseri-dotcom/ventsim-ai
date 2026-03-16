@@ -59,7 +59,6 @@ function show(id){
   if(!el){console.error('Screen not found:',id);return;}
   el.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
-  // Record time spent on previous screen
   if(S.timing.screenStart && S.timing.currentScreen){
     const secs = Math.round((Date.now()-S.timing.screenStart)/1000);
     S.timing.screens[S.timing.currentScreen] = (S.timing.screens[S.timing.currentScreen]||0)+secs;
@@ -67,8 +66,60 @@ function show(id){
   S.timing.currentScreen = id;
   S.timing.screenStart = Date.now();
   S.timing.lastActivity = Date.now();
+  updateSkipBar(id);
 }
 function setProg(pct){ document.getElementById('prog-bar').style.width=pct+'%'; }
+
+// ── DEV SKIP BAR (Control) ──
+const SKIP_MAP = [
+  { id:'welcome-sc',   label:'Welcome',      next:()=>{ show('consent-sc'); setProg(5); } },
+  { id:'consent-sc',   label:'Consent',      next:()=>{ consentChecked=true; goConsent(); } },
+  { id:'login-sc',     label:'Login',        next:()=>{ document.getElementById('pid').value='SAMIR'; startSession(); } },
+  { id:'demo-sc',      label:'Demographics', next:()=>{ submitDemo(); } },
+  { id:'premcq-sc',    label:'Pre-MCQ',      next:()=>{ skipMCQ('preMCQ'); show('precdmns-sc'); setProg(38); } },
+  { id:'precdmns-sc',  label:'Pre-CDMNS',    next:()=>{ skipCDMNS('preCDMNS'); show('orient-sc'); setProg(48); saveLocal(); } },
+  { id:'orient-sc',    label:'Orientation',  next:()=>{ startSim(); } },
+  { id:'sim-sc',       label:'Simulation',   next:()=>{ endSim(); } },
+  { id:'postmcq-sc',   label:'Post-MCQ',     next:()=>{ skipMCQ('postMCQ'); show('postcdmns-sc'); setProg(82); } },
+  { id:'postcdmns-sc', label:'Post-CDMNS',   next:()=>{ skipCDMNS('postCDMNS'); show('tam-sc'); setProg(90); saveLocal(); } },
+  { id:'tam-sc',       label:'TAM',          next:()=>{ skipTAM(); submitTAM(); } },
+  { id:'deb-sc',       label:'Debrief',      next:()=>{ show('ty-sc'); setProg(100); } },
+];
+
+function updateSkipBar(screenId){
+  const isDev = new URLSearchParams(window.location.search).get('dev')==='1' || window._testMode;
+  if(!isDev){ removeSkipBar(); return; }
+  const screen = SKIP_MAP.find(s=>s.id===screenId);
+  if(!screen){ removeSkipBar(); return; }
+  let bar = document.getElementById('dev-skip-bar');
+  if(!bar){
+    bar = document.createElement('div');
+    bar.id = 'dev-skip-bar';
+    bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#0a1a27;border-top:1px solid #ffd740;padding:8px 16px;display:flex;align-items:center;gap:12px;z-index:9998;font-family:monospace;font-size:.72rem;';
+    document.body.appendChild(bar);
+  }
+  bar.innerHTML = `
+    <span style="color:#ffd740;">🧪 DEV</span>
+    <span style="color:#546e7a;">Current: <span style="color:#00e5ff;">${screen.label}</span></span>
+    <button onclick="devSkip()" style="background:#ffd740;color:#000;border:none;padding:4px 14px;border-radius:4px;cursor:pointer;font-family:monospace;font-size:.72rem;font-weight:700;margin-left:auto;">SKIP ▶</button>
+    <button onclick="devGoTo('sim-sc')" style="background:rgba(0,229,255,.1);color:#00e5ff;border:1px solid rgba(0,229,255,.3);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:monospace;font-size:.68rem;">→ SIM</button>
+    <button onclick="devGoTo('ty-sc')" style="background:rgba(0,230,118,.1);color:#00e676;border:1px solid rgba(0,230,118,.3);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:monospace;font-size:.68rem;">→ END</button>`;
+}
+
+function removeSkipBar(){ const bar=document.getElementById('dev-skip-bar'); if(bar) bar.remove(); }
+function devSkip(){ const screen=SKIP_MAP.find(s=>s.id===S.timing.currentScreen); if(screen) screen.next(); }
+function devGoTo(screenId){
+  if(screenId==='sim-sc'){ S.pid=S.pid||'SAMIR'; S.group='control'; window._testMode=true; S.sim.startTime=Date.now(); show('sim-sc'); setProg(55); loadScenario(0); }
+  else if(screenId==='ty-sc'){ show('ty-sc'); setProg(100); populateTyScreen(); }
+}
+function skipMCQ(key){
+  const cont=document.getElementById(key==='preMCQ'?'mcq-pre-cont':'mcq-post-cont');
+  if(!cont) return;
+  cont.querySelectorAll('.mcq-item').forEach(item=>{ const opts=item.querySelectorAll('.mcq-opt'); if(opts.length) opts[0].click(); });
+  if(key==='preMCQ'){ S.data.preMCQScore=10; } else { S.data.postMCQScore=15; }
+}
+function skipCDMNS(key){ for(let i=0;i<40;i++){ S.data[key][i]=3; } }
+function skipTAM(){ for(let i=0;i<19;i++){ S.data.tam[i]=4; } }
 
 // Track user activity (mouse/keyboard) for idle detection
 document.addEventListener('mousemove',()=>{ if(S.timing) S.timing.lastActivity=Date.now(); });
