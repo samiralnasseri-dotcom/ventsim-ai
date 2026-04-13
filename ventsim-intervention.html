@@ -350,31 +350,35 @@ canvas.wc.active{display:block;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 
 /* ── ORIENTATION TOOLTIPS ── */
-.ot-backdrop{display:none;position:fixed;inset:0;z-index:8000;background:rgba(5,13,20,.6);backdrop-filter:blur(1px);}
+/* Dim overlay — pointer-events:none so clicks pass through to tooltip */
+.ot-backdrop{display:none;position:fixed;inset:0;z-index:7000;background:rgba(5,13,20,.55);pointer-events:none;}
 .ot-backdrop.on{display:block;}
-.ot-box{position:fixed;z-index:8100;background:var(--panel);border:1px solid var(--cyan);border-radius:10px;padding:16px 18px;width:300px;box-shadow:0 8px 40px rgba(0,229,255,.15);animation:otIn .25s ease;}
-@keyframes otIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.ot-arrow{position:absolute;width:10px;height:10px;background:var(--panel);border:1px solid var(--cyan);transform:rotate(45deg);}
-.ot-arrow.atop   {bottom:-6px;left:50%;margin-left:-5px;border-top:none;border-left:none;}
-.ot-arrow.abottom{top:-6px;left:50%;margin-left:-5px;border-bottom:none;border-right:none;}
-.ot-arrow.aleft  {right:-6px;top:20px;border-bottom:none;border-left:none;}
-.ot-arrow.aright {left:-6px;top:20px;border-top:none;border-right:none;}
+/* Tooltip sits above everything, always receives clicks */
+.ot-box{display:none;position:fixed;z-index:9999;background:var(--panel);border:1.5px solid var(--cyan);border-radius:10px;padding:16px 18px;width:290px;box-shadow:0 8px 32px rgba(0,229,255,.2);}
+.ot-box.on{display:block;animation:otIn .2s ease;}
+@keyframes otIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+/* Arrow */
+.ot-arrow{position:absolute;width:10px;height:10px;background:var(--panel);border:1.5px solid var(--cyan);transform:rotate(45deg);}
+.ot-arrow.a-down {bottom:-6px;border-top:none;border-left:none;}
+.ot-arrow.a-right{right:-6px;top:18px;border-bottom:none;border-left:none;}
+/* Content */
 .ot-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.ot-icon{font-size:1.1rem;flex-shrink:0;}
-.ot-title{font-family:var(--sans);font-size:.88rem;font-weight:700;color:var(--cyan);}
-.ot-body{font-size:.78rem;color:var(--text2);line-height:1.6;margin-bottom:12px;}
-.ot-footer{display:flex;flex-direction:column;gap:7px;}
+.ot-icon{font-size:1rem;flex-shrink:0;}
+.ot-title{font-family:var(--sans);font-size:.86rem;font-weight:700;color:var(--cyan);}
+.ot-body{font-size:.77rem;color:var(--text2);line-height:1.65;margin-bottom:12px;}
+/* Footer */
+.ot-footer{display:flex;flex-direction:column;gap:8px;}
 .ot-progress{height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
-.ot-progress-fill{height:100%;background:var(--cyan);border-radius:1px;transition:width .25s ease;}
+.ot-progress-fill{height:100%;background:var(--cyan);border-radius:1px;transition:width .3s ease;}
 .ot-nav{display:flex;align-items:center;justify-content:space-between;}
-.ot-counter{font-family:var(--mono);font-size:.65rem;color:var(--text3);}
-.ot-actions{display:flex;gap:5px;}
-.ot-skip{background:none;border:none;color:var(--text3);font-family:var(--mono);font-size:.62rem;padding:4px 6px;cursor:pointer;text-decoration:underline;}
-.ot-back{background:none;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:.65rem;padding:5px 10px;border-radius:4px;cursor:pointer;transition:border-color .15s;}
-.ot-back:hover{border-color:var(--text2);}
-.ot-back:disabled{opacity:.3;cursor:default;}
-.ot-next{background:var(--cyan);color:#000;border:none;font-family:var(--mono);font-size:.65rem;font-weight:700;padding:5px 14px;border-radius:4px;cursor:pointer;letter-spacing:.5px;}
-.ot-highlight{outline:2px solid var(--cyan)!important;outline-offset:4px;border-radius:8px;position:relative;z-index:7999;}
+.ot-counter{font-family:var(--mono);font-size:.63rem;color:var(--text3);}
+.ot-actions{display:flex;gap:5px;align-items:center;}
+.ot-skip{background:none;border:none;color:var(--text3);font-family:var(--mono);font-size:.6rem;padding:3px 5px;cursor:pointer;text-decoration:underline;flex-shrink:0;}
+.ot-back{background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:.63rem;padding:4px 9px;border-radius:4px;cursor:pointer;}
+.ot-back:disabled{opacity:.25;cursor:not-allowed;}
+.ot-next{background:var(--cyan);color:#000;border:none;font-family:var(--mono);font-size:.63rem;font-weight:700;padding:4px 12px;border-radius:4px;cursor:pointer;letter-spacing:.5px;}
+/* Highlight ring — outline only, no z-index or overflow changes */
+.ot-hl{outline:2px solid var(--cyan) !important;outline-offset:3px;}
 </style>
 </head>
 <body>
@@ -597,18 +601,18 @@ canvas.wc.active{display:block;}
      S8: SIMULATION
 ═══════════════════════════════════ -->
 <div class="ot-backdrop" id="ot-backdrop"></div>
-<div class="ot-box" id="ot-box" style="display:none;">
+<div class="ot-box" id="ot-box">
   <div class="ot-arrow" id="ot-arrow"></div>
   <div class="ot-head"><span class="ot-icon" id="ot-icon"></span><span class="ot-title" id="ot-title"></span></div>
   <div class="ot-body" id="ot-body"></div>
   <div class="ot-footer">
-    <div class="ot-progress"><div class="ot-progress-fill" id="ot-prog-fill"></div></div>
+    <div class="ot-progress"><div class="ot-progress-fill" id="ot-prog-fill" style="width:0%"></div></div>
     <div class="ot-nav">
       <span class="ot-counter" id="ot-counter"></span>
       <div class="ot-actions">
-        <button class="ot-skip" onclick="otSkip()">Skip tour</button>
-        <button class="ot-back" id="ot-back-btn" onclick="otBack()" disabled>&#9664; Back</button>
-        <button class="ot-next" id="ot-next-btn" onclick="otNext()">Next &#9654;</button>
+        <button class="ot-skip" id="ot-skip-btn">Skip tour</button>
+        <button class="ot-back" id="ot-back-btn" disabled>&#9664; Back</button>
+        <button class="ot-next" id="ot-next-btn">Next &#9654;</button>
       </div>
     </div>
   </div>
@@ -894,182 +898,116 @@ canvas.wc.active{display:block;}
 /* ── ORIENTATION TOOLTIP SYSTEM ── */
 (function(){
   var STEPS=[
-    {
-      target:'ot-target-patient',
-      icon:'🏥', title:'Patient Header',
-      body:'Shows the current patient name, age, diagnosis, and scenario progress. Read this first — it gives you the clinical context for every decision.',
-      arrow:'abottom', side:'below'
-    },
-    {
-      target:'ot-target-vitals',
-      icon:'❤️', title:'Vital Signs Monitor',
-      body:'Live SpO₂, HR, RR, BP, ETCO₂ and FiO₂. Values in red are outside safe limits — these are your priority. Reassess after every intervention.',
-      arrow:'abottom', side:'below'
-    },
-    {
-      target:'ot-target-waves',
-      icon:'📺', title:'Ventilator Waveforms',
-      body:'Real-time animated Flow, Pressure and Volume waveforms. Click each tab to switch. Abnormal patterns — saw-tooth flow, pressure spikes — are key diagnostic cues.',
-      arrow:'abottom', side:'below'
-    },
-    {
-      target:'ot-target-vent',
-      icon:'⚙️', title:'Ventilator Settings',
-      body:'Current set and measured ventilator parameters: Mode, Tidal Volume, RR, PEEP, PIP, FiO₂, I:E ratio, and Plateau Pressure. Compare these against clinical norms.',
-      arrow:'abottom', side:'below'
-    },
-    {
-      target:'ot-target-history',
-      icon:'📋', title:'Clinical History & Handover',
-      body:'Patient background, handover notes, and relevant clinical history. Read this carefully — the details here inform the correct clinical decision.',
-      arrow:'abottom', side:'below'
-    },
-    {
-      target:'ot-target-decision',
-      icon:'⚡', title:'Clinical Decision',
-      body:'Choose from 3–4 options at each decision point. Think carefully — you cannot change your answer once submitted. Your choice affects your score and the patient outcome.',
-      arrow:'abottom', side:'below'
-    },
-    {
-      target:'ot-target-chat',
-      icon:'🤖', title:'AI Clinical Mentor',
-      body:'Your Socratic guide. It will ask questions — not give answers. Type your clinical reasoning freely. The more you engage, the deeper your learning.',
-      arrow:'aright', side:'left'
-    },
-    {
-      target:'ot-target-compass',
-      icon:'📊', title:'Clinical Compass',
-      body:'A collapsible reference panel with three tabs: Compare (set vs measured values), Reference (normal ranges and guidelines), and Hints (contextual prompts). Use it any time.',
-      arrow:'aright', side:'left'
-    }
+    {id:'ot-target-patient',  icon:'🏥', title:'Patient header',
+     body:'Shows the current patient name, age, diagnosis and scenario progress. Read this first — it gives you the clinical context for every decision.',
+     arrow:'a-down'},
+    {id:'ot-target-vitals',   icon:'❤️', title:'Vital signs monitor',
+     body:'Live SpO₂, HR, RR, BP, ETCO₂ and FiO₂. Values in red are outside safe limits — assess these first. Reassess after every intervention.',
+     arrow:'a-down'},
+    {id:'ot-target-waves',    icon:'📺', title:'Ventilator waveforms',
+     body:'Real-time Flow, Pressure and Volume waveforms. Click each tab to switch. Abnormal patterns like saw-tooth flow or pressure spikes are key diagnostic cues.',
+     arrow:'a-down'},
+    {id:'ot-target-vent',     icon:'⚙️', title:'Ventilator settings',
+     body:'Current set and measured parameters: Mode, TV, PEEP, PIP, FiO₂, I:E ratio and Plateau Pressure. Compare these against clinical normal ranges.',
+     arrow:'a-down'},
+    {id:'ot-target-history',  icon:'📋', title:'Clinical history & handover',
+     body:'Patient background and handover notes. Read carefully — the details here are essential to making the correct clinical decision.',
+     arrow:'a-down'},
+    {id:'ot-target-decision', icon:'⚡', title:'Clinical decision',
+     body:'Choose from 3–4 options. You cannot change your answer once submitted — it affects your score and the patient outcome.',
+     arrow:'a-down'},
+    {id:'ot-target-chat',     icon:'🤖', title:'AI-SAM — clinical mentor',
+     body:'Your Socratic guide. It asks questions, not gives answers. Type your clinical reasoning freely — the more you engage, the deeper your learning.',
+     arrow:'a-right'},
+    {id:'ot-target-compass',  icon:'📊', title:'Clinical compass',
+     body:'Collapsible panel: Compare (set vs measured), Reference (normal ranges), Hints (contextual prompts). Available at any time during the simulation.',
+     arrow:'a-right'}
   ];
 
-  var current=-1;
-  var prevTarget=null;
+  var cur=-1;
+  var prevId=null;
 
-  function getRect(id){
-    var el=document.getElementById(id);
-    if(!el) return null;
-    return el.getBoundingClientRect();
+  function hl(id,on){
+    var el=id?document.getElementById(id):null;
+    if(el) el.classList.toggle('ot-hl',on);
   }
 
-  function positionBox(step){
-    var box=document.getElementById('ot-box');
-    var arrow=document.getElementById('ot-arrow');
-    var rect=getRect(step.target);
-    if(!rect){box.style.display='none';return;}
+  function go(i){
+    if(i<0||i>=STEPS.length){done();return;}
+    hl(prevId,false);
+    cur=i;
+    var s=STEPS[i];
+    hl(s.id,true);
+    prevId=s.id;
 
-    var bw=300, bh=box.offsetHeight||180;
-    var vw=window.innerWidth, vh=window.innerHeight;
-    var pad=14;
-    var left, top;
-
-    if(step.side==='below'){
-      top=rect.bottom+pad;
-      left=rect.left+(rect.width/2)-(bw/2);
-    } else if(step.side==='left'){
-      top=rect.top;
-      left=rect.left-bw-pad;
-    } else {
-      top=rect.bottom+pad;
-      left=rect.left+(rect.width/2)-(bw/2);
-    }
-
-    // clamp
-    left=Math.max(pad,Math.min(left,vw-bw-pad));
-    top=Math.max(pad,Math.min(top,vh-bh-pad));
-
-    box.style.left=left+'px';
-    box.style.top=top+'px';
-    box.style.width=bw+'px';
-
-    // arrow
-    arrow.className='ot-arrow '+step.arrow;
-    if(step.arrow==='abottom'){
-      arrow.style.left=Math.min(Math.max(rect.left+(rect.width/2)-left-5,10),bw-20)+'px';
-      arrow.style.top='';
-    } else if(step.arrow==='aright'){
-      arrow.style.left='';
-      arrow.style.top='20px';
-    }
-  }
-
-  function showStep(i){
-    var steps=STEPS;
-    if(i>=steps.length){otDone();return;}
-    current=i;
-    var step=steps[i];
-
-    // remove prev highlight and restore overflow
-    if(prevTarget){
-      var prev=document.getElementById(prevTarget);
-      if(prev){
-        prev.classList.remove('ot-highlight');
-        if(prev._otOverflow!==undefined){prev.style.overflow=prev._otOverflow;delete prev._otOverflow;}
-      }
-    }
-
-    // highlight current — strip overflow:hidden so buttons stay clickable
-    var el=document.getElementById(step.target);
-    if(el){
-      el.classList.add('ot-highlight');
-      el.scrollIntoView({block:'nearest',behavior:'smooth'});
-      if(getComputedStyle(el).overflow==='hidden'||el.style.overflow==='hidden'){
-        el._otOverflow=el.style.overflow;
-        el.style.overflow='visible';
-      }
-    }
-    prevTarget=step.target;
-
-    // fill content
-    document.getElementById('ot-icon').textContent=step.icon;
-    document.getElementById('ot-title').textContent=step.title;
-    document.getElementById('ot-body').textContent=step.body;
-    document.getElementById('ot-counter').textContent=(i+1)+' of '+steps.length;
-    var nb=document.getElementById('ot-next-btn');
-    nb.textContent=i===steps.length-1?'Done ✓':'Next ▶';
+    document.getElementById('ot-icon').textContent=s.icon;
+    document.getElementById('ot-title').textContent=s.title;
+    document.getElementById('ot-body').textContent=s.body;
+    document.getElementById('ot-counter').textContent=(i+1)+' / '+STEPS.length;
+    document.getElementById('ot-next-btn').textContent=i===STEPS.length-1?'Done ✓':'Next ▶';
     document.getElementById('ot-back-btn').disabled=(i===0);
-    document.getElementById('ot-prog-fill').style.width=Math.round(((i+1)/steps.length)*100)+'%';
+    document.getElementById('ot-prog-fill').style.width=Math.round(((i+1)/STEPS.length)*100)+'%';
 
     var box=document.getElementById('ot-box');
-    box.style.display='block';
+    box.classList.add('on');
     document.getElementById('ot-backdrop').classList.add('on');
 
-    // position after paint
-    setTimeout(function(){positionBox(step);},60);
-  }
-
-  function otDone(){
-    document.getElementById('ot-box').style.display='none';
-    document.getElementById('ot-backdrop').classList.remove('on');
-    if(prevTarget){
-      var el=document.getElementById(prevTarget);
-      if(el){
-        el.classList.remove('ot-highlight');
-        if(el._otOverflow!==undefined){el.style.overflow=el._otOverflow;delete el._otOverflow;}
+    /* position tooltip relative to target */
+    setTimeout(function(){
+      var el=s.id?document.getElementById(s.id):null;
+      if(!el){/* center */box.style.top='50%';box.style.left='50%';box.style.transform='translate(-50%,-50%)';return;}
+      box.style.transform='';
+      var er=el.getBoundingClientRect();
+      var bw=290,pad=12;
+      var vw=window.innerWidth,vh=window.innerHeight;
+      var top,left;
+      var arrow=document.getElementById('ot-arrow');
+      arrow.className='ot-arrow '+s.arrow;
+      arrow.style.cssText='';
+      if(s.arrow==='a-down'){
+        top=er.bottom+pad;
+        left=er.left+(er.width/2)-(bw/2);
+        left=Math.max(pad,Math.min(left,vw-bw-pad));
+        if(top+200>vh) top=er.top-200-pad;
+        var al=Math.min(Math.max(er.left+(er.width/2)-left-5,10),bw-20);
+        arrow.style.left=al+'px';
+      } else {
+        top=er.top;
+        left=er.left-bw-pad;
+        if(left<pad) left=er.right+pad;
+        top=Math.max(pad,Math.min(top,vh-220));
       }
-    }
-    prevTarget=null;current=-1;
+      box.style.top=top+'px';
+      box.style.left=left+'px';
+    },80);
   }
 
-  window.otNext=function(){showStep(current+1);};
-  window.otBack=function(){if(current>0)showStep(current-1);};
-  window.otSkip=otDone;
+  function done(){
+    hl(prevId,false);
+    prevId=null;cur=-1;
+    document.getElementById('ot-box').classList.remove('on');
+    document.getElementById('ot-backdrop').classList.remove('on');
+  }
 
-  // Called by ventsim-app.js when sim screen opens (or directly)
+  /* Wire buttons directly — no onclick in HTML to avoid shim conflicts */
+  document.addEventListener('DOMContentLoaded',function(){
+    document.getElementById('ot-next-btn').addEventListener('click',function(){go(cur+1);});
+    document.getElementById('ot-back-btn').addEventListener('click',function(){if(cur>0)go(cur-1);});
+    document.getElementById('ot-skip-btn').addEventListener('click',done);
+  });
+
+  window.otNext=function(){go(cur+1);};
+  window.otBack=function(){if(cur>0)go(cur-1);};
+  window.otSkip=done;
+
   window.startOrientationTour=function(){
-    // Only show on first run per session
-    try{
-      if(sessionStorage.getItem('ot_done')==='1'){return;}
-      sessionStorage.setItem('ot_done','1');
-    }catch(e){}
-    setTimeout(function(){showStep(0);},600);
+    try{if(sessionStorage.getItem('ot_done')==='1')return;sessionStorage.setItem('ot_done','1');}catch(e){}
+    setTimeout(function(){go(0);},700);
   };
 
-  // Hook into startSim if possible — fire tour after sim screen renders
-  var _origStart=window.startSim;
+  var _orig=window.startSim;
   window.startSim=function(){
-    if(typeof _origStart==='function') _origStart.apply(this,arguments);
+    if(typeof _orig==='function')_orig.apply(this,arguments);
     window.startOrientationTour();
   };
 })();
