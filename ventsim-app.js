@@ -77,7 +77,7 @@ const SKIP_MAP = [
   { id:'welcome-sc',   label:'Welcome',      next:()=>{ show('consent-sc'); setProg(5); } },
   { id:'consent-sc',   label:'Consent',      next:()=>{ consentChecked=true; goConsent(); } },
   { id:'login-sc',     label:'Login',        next:()=>{ document.getElementById('pid').value='SAMIR'; startSession(); } },
-  { id:'demo-sc',      label:'Demographics', next:()=>{ submitDemo(); } },
+  { id:'demo-sc',      label:'Demographics', next:()=>{ skipDemo(); } },
   { id:'premcq-sc',    label:'Pre-MCQ',      next:()=>{ skipMCQ('preMCQ'); show('precdmns-sc'); setProg(38); } },
   { id:'precdmns-sc',  label:'Pre-CDMNS',    next:()=>{ skipCDMNS('preCDMNS'); startSim(); } },
   { id:'sim-sc',       label:'Simulation',   next:()=>{ endSim(); } },
@@ -277,6 +277,12 @@ function startAutoSave(){
 /* ═══════════════════════════════════════════
    S4 — DEMOGRAPHICS
 ═══════════════════════════════════════════ */
+function skipDemo(){
+  const ids=['d1','d2','d3','d4','d5','d6','d7','d8','d9','d10','d11','d12','d13','d14','d15','d16','d17'];
+  const defaults=['30','Male','Bachelor','5','ICU','Oman','Yes','No','No','No','No','No','No','No','No','No','No'];
+  ids.forEach((id,i)=>{ const el=document.getElementById(id); if(el&&!el.value) el.value=defaults[i]||'Yes'; });
+  submitDemo();
+}
 function submitDemo(){
   const ids=['d1','d2','d3','d4','d5','d6','d7','d8','d9','d10','d11','d12','d13','d14','d15','d16','d17'];
   const missing=ids.filter(i=>!document.getElementById(i).value);
