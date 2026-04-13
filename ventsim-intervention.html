@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+/* Shim: prevents ReferenceError if onclick fires before ventsim-app.js is ready */
+(function(){
+  var q=[];
+  function s(n){return function(){q.push({n:n,a:[].slice.call(arguments)});};}
+  var fns=['show','setProg','startSim','submitPreMCQ','submitPreCDMNS',
+           'submitPostMCQ','submitPostCDMNS','submitTAM','finish',
+           'sendMsg','chatKey','setWave','toggleCompass','switchTab',
+           'showNextHint','printCertificate','otNext','otSkip'];
+  fns.forEach(function(n){window[n]=s(n);});
+  window.__flush=function(){
+    q.splice(0).forEach(function(i){
+      if(typeof window[i.n]==='function') window[i.n].apply(window,i.a);
+    });
+  };
+  window.addEventListener('load',function(){ window.__flush && window.__flush(); });
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VentSim AI — Intervention Platform | Universiti Malaya 2026</title>
@@ -330,6 +348,33 @@ canvas.wc.active{display:block;}
 ::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* ── ORIENTATION TOOLTIPS ── */
+.ot-backdrop{display:none;position:fixed;inset:0;z-index:8000;background:rgba(5,13,20,.6);backdrop-filter:blur(1px);}
+.ot-backdrop.on{display:block;}
+.ot-box{position:fixed;z-index:8100;background:var(--panel);border:1px solid var(--cyan);border-radius:10px;padding:16px 18px;width:300px;box-shadow:0 8px 40px rgba(0,229,255,.15);animation:otIn .25s ease;}
+@keyframes otIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ot-arrow{position:absolute;width:10px;height:10px;background:var(--panel);border:1px solid var(--cyan);transform:rotate(45deg);}
+.ot-arrow.atop   {bottom:-6px;left:50%;margin-left:-5px;border-top:none;border-left:none;}
+.ot-arrow.abottom{top:-6px;left:50%;margin-left:-5px;border-bottom:none;border-right:none;}
+.ot-arrow.aleft  {right:-6px;top:20px;border-bottom:none;border-left:none;}
+.ot-arrow.aright {left:-6px;top:20px;border-top:none;border-right:none;}
+.ot-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.ot-icon{font-size:1.1rem;flex-shrink:0;}
+.ot-title{font-family:var(--sans);font-size:.88rem;font-weight:700;color:var(--cyan);}
+.ot-body{font-size:.78rem;color:var(--text2);line-height:1.6;margin-bottom:12px;}
+.ot-footer{display:flex;flex-direction:column;gap:7px;}
+.ot-progress{height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
+.ot-progress-fill{height:100%;background:var(--cyan);border-radius:1px;transition:width .25s ease;}
+.ot-nav{display:flex;align-items:center;justify-content:space-between;}
+.ot-counter{font-family:var(--mono);font-size:.65rem;color:var(--text3);}
+.ot-actions{display:flex;gap:5px;}
+.ot-skip{background:none;border:none;color:var(--text3);font-family:var(--mono);font-size:.62rem;padding:4px 6px;cursor:pointer;text-decoration:underline;}
+.ot-back{background:none;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:.65rem;padding:5px 10px;border-radius:4px;cursor:pointer;transition:border-color .15s;}
+.ot-back:hover{border-color:var(--text2);}
+.ot-back:disabled{opacity:.3;cursor:default;}
+.ot-next{background:var(--cyan);color:#000;border:none;font-family:var(--mono);font-size:.65rem;font-weight:700;padding:5px 14px;border-radius:4px;cursor:pointer;letter-spacing:.5px;}
+.ot-highlight{outline:2px solid var(--cyan)!important;outline-offset:4px;border-radius:8px;position:relative;z-index:7999;}
 </style>
 </head>
 <body>
@@ -542,39 +587,33 @@ canvas.wc.active{display:block;}
     <div class="ssub">Rate how frequently you engage in each behaviour during clinical practice. <strong>1 = Never · 5 = Always</strong>. There are no right or wrong answers — reflect on your actual practice.</div>
     <div id="cdmns-pre-cont"></div>
     <div class="ferr" id="precdmns-err"></div>
-    <button class="btn btn-p btn-w" onclick="submitPreCDMNS()">CONTINUE TO ORIENTATION ▶</button>
+    <button class="btn btn-p btn-w" onclick="startSim()">CONTINUE TO SIMULATION ▶</button>
   </div></div>
 </div>
 
-<!-- ═══════════════════════════════════
-     S7: ORIENTATION
-═══════════════════════════════════ -->
-<div class="sc" id="orient-sc">
-  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:48%"></div></div><div class="hbadge">ORIENTATION</div></div>
-  <div class="wrap"><div class="inner">
-    <div class="badge">STEP 5 OF 8</div>
-    <div class="stitle">Platform <span class="hl">Orientation</span></div>
-    <div class="ssub">Before the simulation begins, please familiarise yourself with the interface. This takes approximately 2 minutes.</div>
-    <div class="orient-step"><div class="orient-icon">📺</div><div><div class="orient-title">Ventilator Waveforms</div><div class="orient-desc">You will see live animated waveforms for Flow, Pressure, and Volume. These change in real time based on patient status. Select the waveform tab to switch between views. Abnormal patterns are key clinical cues.</div></div></div>
-    <div class="orient-step"><div class="orient-icon">❤️</div><div><div class="orient-title">Vital Signs Monitor</div><div class="orient-desc">A live vitals panel shows SpO₂, HR, RR, BP, ETCO₂, and FiO₂. Values highlighted in red indicate alarm ranges — assess these first.</div></div></div>
-    <div class="orient-step"><div class="orient-icon">⚡</div><div><div class="orient-title">Clinical Decisions</div><div class="orient-desc">At each decision point you will choose from 3–4 options. Think carefully — your choice affects the patient's condition and your score. You cannot change a decision once made.</div></div></div>
-    <div class="orient-step"><div class="orient-icon">🤖</div><div><div class="orient-title">AI Clinical Mentor</div><div class="orient-desc">The AI will open each scenario with a question to orient your thinking, then remain available throughout. It will ask you questions — not give answers. Type your thoughts freely. The AI uses the Socratic method to guide you toward insight. You are encouraged to engage with it actively.</div></div></div>
-    <div class="orient-step"><div class="orient-icon">📋</div><div><div class="orient-title">Scenario Flow</div><div class="orient-desc">There are 4 scenarios. Each begins with a patient handover, then unfolds over several decision points. A brief debrief appears after each scenario before you proceed to the next.</div></div></div>
-    <div class="orient-step"><div class="orient-icon">💾</div><div><div class="orient-title">Auto-Save</div><div class="orient-desc">Your progress saves automatically every 2 minutes. If you are interrupted, you can resume from where you left off using your participant number.</div></div></div>
-    <div class="card" style="background:rgba(0,229,255,.04);border-color:rgba(0,229,255,.2);">
-      <div style="font-size:.85rem;color:var(--text);line-height:1.7;">
-        ⏱ <strong>Total simulation time: approximately 40 minutes</strong><br>
-        🎯 <strong>Goal:</strong> Make safe, evidence-based clinical decisions for each patient.<br>
-        🤝 <strong>Important:</strong> Work independently. Do not consult others during the session.
-      </div>
-    </div>
-    <button class="btn btn-g btn-w" onclick="startSim()">▶ BEGIN SIMULATION</button>
-  </div></div>
-</div>
+
 
 <!-- ═══════════════════════════════════
      S8: SIMULATION
 ═══════════════════════════════════ -->
+<div class="ot-backdrop" id="ot-backdrop"></div>
+<div class="ot-box" id="ot-box" style="display:none;">
+  <div class="ot-arrow" id="ot-arrow"></div>
+  <div class="ot-head"><span class="ot-icon" id="ot-icon"></span><span class="ot-title" id="ot-title"></span></div>
+  <div class="ot-body" id="ot-body"></div>
+  <div class="ot-footer">
+    <div class="ot-progress"><div class="ot-progress-fill" id="ot-prog-fill"></div></div>
+    <div class="ot-nav">
+      <span class="ot-counter" id="ot-counter"></span>
+      <div class="ot-actions">
+        <button class="ot-skip" onclick="otSkip()">Skip tour</button>
+        <button class="ot-back" id="ot-back-btn" onclick="otBack()" disabled>&#9664; Back</button>
+        <button class="ot-next" id="ot-next-btn" onclick="otNext()">Next &#9654;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="sc" id="sim-sc">
   <div class="hdr">
     <span class="hlogo">VentSim <span>AI</span></span>
@@ -588,7 +627,7 @@ canvas.wc.active{display:block;}
       <!-- LEFT COLUMN -->
       <div class="sim-left">
         <!-- Patient header -->
-        <div class="pt-hdr">
+        <div class="pt-hdr" id="ot-target-patient">
           <div>
             <div class="pt-name" id="pt-name">Patient Loading...</div>
             <div class="pt-meta" id="pt-meta"></div>
@@ -600,7 +639,7 @@ canvas.wc.active{display:block;}
           </div>
         </div>
         <!-- Vitals -->
-        <div class="card" style="padding:12px;">
+        <div class="card" style="padding:12px;" id="ot-target-vitals">
           <div class="card-title">Vital Signs Monitor</div>
           <div class="vitals-grid">
             <div class="vbox"><div class="vbox-lbl">SpO₂</div><div class="vbox-val v-spo2" id="v-spo2">--</div><div class="vbox-unit">%</div></div>
@@ -612,7 +651,7 @@ canvas.wc.active{display:block;}
           </div>
         </div>
         <!-- Waveforms -->
-        <div class="card" style="padding:0;overflow:hidden;">
+        <div class="card" style="padding:0;overflow:hidden;" id="ot-target-waves">
           <div class="wave-wrap" style="border:none;">
             <div class="wave-hdr">
               <div class="wave-tab active" onclick="setWave('flow',this)">FLOW</div>
@@ -628,7 +667,7 @@ canvas.wc.active{display:block;}
           </div>
         </div>
         <!-- Vent settings -->
-        <div class="card" style="padding:12px;">
+        <div class="card" style="padding:12px;" id="ot-target-vent">
           <div class="card-title">Ventilator Settings</div>
           <div class="vent-grid">
             <div class="vset"><div class="vset-lbl">MODE</div><div class="vset-val" id="vs-mode" style="font-size:.8rem;">--</div></div>
@@ -642,13 +681,13 @@ canvas.wc.active{display:block;}
           </div>
         </div>
         <!-- History -->
-        <div class="card">
+        <div class="card" id="ot-target-history">
           <div class="card-title">Clinical History & Handover</div>
           <div class="hx-box" id="hx-box">Loading patient information...</div>
         </div>
         <!-- Decisions -->
         <div class="dec-wrap" id="dec-wrap">
-          <div class="dec-title">⚡ CLINICAL DECISION REQUIRED</div>
+          <div class="dec-title" id="ot-target-decision">⚡ CLINICAL DECISION REQUIRED</div>
           <div class="dec-prompt" id="dec-prompt">Loading...</div>
           <div class="dec-opts" id="dec-opts"></div>
         </div>
@@ -658,7 +697,7 @@ canvas.wc.active{display:block;}
       <!-- RIGHT COLUMN: AI CHAT -->
       <div class="sim-right">
         <div class="chat-wrap" id="chat-wrap">
-          <div class="chat-hdr">
+          <div class="chat-hdr" id="ot-target-chat">
             <div class="chat-ai-dot"></div>
             <div>
               <div class="chat-ai-name">VentSim AI Mentor</div>
@@ -674,7 +713,7 @@ canvas.wc.active{display:block;}
         </div>
         <!-- CLINICAL COMPASS PANEL -->
         <div class="compass-wrap" id="compass-wrap">
-          <button class="compass-toggle" onclick="toggleCompass()">
+          <button class="compass-toggle" onclick="toggleCompass()" id="ot-target-compass">
             <span>📊</span> CLINICAL COMPASS <span class="compass-arrow" id="compass-arrow">▼</span>
           </button>
           <div class="compass-body" id="compass-body" style="display:none;">
@@ -849,6 +888,178 @@ canvas.wc.active{display:block;}
 </div>
 
 
-<script src="ventsim-app.js"></script>
+<script src="ventsim-app.js" defer></script>
+
+<script>
+/* ── ORIENTATION TOOLTIP SYSTEM ── */
+(function(){
+  var STEPS=[
+    {
+      target:'ot-target-patient',
+      icon:'🏥', title:'Patient Header',
+      body:'Shows the current patient name, age, diagnosis, and scenario progress. Read this first — it gives you the clinical context for every decision.',
+      arrow:'abottom', side:'below'
+    },
+    {
+      target:'ot-target-vitals',
+      icon:'❤️', title:'Vital Signs Monitor',
+      body:'Live SpO₂, HR, RR, BP, ETCO₂ and FiO₂. Values in red are outside safe limits — these are your priority. Reassess after every intervention.',
+      arrow:'abottom', side:'below'
+    },
+    {
+      target:'ot-target-waves',
+      icon:'📺', title:'Ventilator Waveforms',
+      body:'Real-time animated Flow, Pressure and Volume waveforms. Click each tab to switch. Abnormal patterns — saw-tooth flow, pressure spikes — are key diagnostic cues.',
+      arrow:'abottom', side:'below'
+    },
+    {
+      target:'ot-target-vent',
+      icon:'⚙️', title:'Ventilator Settings',
+      body:'Current set and measured ventilator parameters: Mode, Tidal Volume, RR, PEEP, PIP, FiO₂, I:E ratio, and Plateau Pressure. Compare these against clinical norms.',
+      arrow:'abottom', side:'below'
+    },
+    {
+      target:'ot-target-history',
+      icon:'📋', title:'Clinical History & Handover',
+      body:'Patient background, handover notes, and relevant clinical history. Read this carefully — the details here inform the correct clinical decision.',
+      arrow:'abottom', side:'below'
+    },
+    {
+      target:'ot-target-decision',
+      icon:'⚡', title:'Clinical Decision',
+      body:'Choose from 3–4 options at each decision point. Think carefully — you cannot change your answer once submitted. Your choice affects your score and the patient outcome.',
+      arrow:'abottom', side:'below'
+    },
+    {
+      target:'ot-target-chat',
+      icon:'🤖', title:'AI Clinical Mentor',
+      body:'Your Socratic guide. It will ask questions — not give answers. Type your clinical reasoning freely. The more you engage, the deeper your learning.',
+      arrow:'aright', side:'left'
+    },
+    {
+      target:'ot-target-compass',
+      icon:'📊', title:'Clinical Compass',
+      body:'A collapsible reference panel with three tabs: Compare (set vs measured values), Reference (normal ranges and guidelines), and Hints (contextual prompts). Use it any time.',
+      arrow:'aright', side:'left'
+    }
+  ];
+
+  var current=-1;
+  var prevTarget=null;
+
+  function getRect(id){
+    var el=document.getElementById(id);
+    if(!el) return null;
+    return el.getBoundingClientRect();
+  }
+
+  function positionBox(step){
+    var box=document.getElementById('ot-box');
+    var arrow=document.getElementById('ot-arrow');
+    var rect=getRect(step.target);
+    if(!rect){box.style.display='none';return;}
+
+    var bw=300, bh=box.offsetHeight||180;
+    var vw=window.innerWidth, vh=window.innerHeight;
+    var pad=14;
+    var left, top;
+
+    if(step.side==='below'){
+      top=rect.bottom+pad;
+      left=rect.left+(rect.width/2)-(bw/2);
+    } else if(step.side==='left'){
+      top=rect.top;
+      left=rect.left-bw-pad;
+    } else {
+      top=rect.bottom+pad;
+      left=rect.left+(rect.width/2)-(bw/2);
+    }
+
+    // clamp
+    left=Math.max(pad,Math.min(left,vw-bw-pad));
+    top=Math.max(pad,Math.min(top,vh-bh-pad));
+
+    box.style.left=left+'px';
+    box.style.top=top+'px';
+    box.style.width=bw+'px';
+
+    // arrow
+    arrow.className='ot-arrow '+step.arrow;
+    if(step.arrow==='abottom'){
+      arrow.style.left=Math.min(Math.max(rect.left+(rect.width/2)-left-5,10),bw-20)+'px';
+      arrow.style.top='';
+    } else if(step.arrow==='aright'){
+      arrow.style.left='';
+      arrow.style.top='20px';
+    }
+  }
+
+  function showStep(i){
+    var steps=STEPS;
+    if(i>=steps.length){otDone();return;}
+    current=i;
+    var step=steps[i];
+
+    // remove prev highlight
+    if(prevTarget){
+      var prev=document.getElementById(prevTarget);
+      if(prev) prev.classList.remove('ot-highlight');
+    }
+
+    // highlight current
+    var el=document.getElementById(step.target);
+    if(el){el.classList.add('ot-highlight');el.scrollIntoView({block:'nearest',behavior:'smooth'});}
+    prevTarget=step.target;
+
+    // fill content
+    document.getElementById('ot-icon').textContent=step.icon;
+    document.getElementById('ot-title').textContent=step.title;
+    document.getElementById('ot-body').textContent=step.body;
+    document.getElementById('ot-counter').textContent=(i+1)+' of '+steps.length;
+    var nb=document.getElementById('ot-next-btn');
+    nb.textContent=i===steps.length-1?'Done ✓':'Next ▶';
+    document.getElementById('ot-back-btn').disabled=(i===0);
+    document.getElementById('ot-prog-fill').style.width=Math.round(((i+1)/steps.length)*100)+'%';
+
+    var box=document.getElementById('ot-box');
+    box.style.display='block';
+    document.getElementById('ot-backdrop').classList.add('on');
+
+    // position after paint
+    setTimeout(function(){positionBox(step);},60);
+  }
+
+  function otDone(){
+    document.getElementById('ot-box').style.display='none';
+    document.getElementById('ot-backdrop').classList.remove('on');
+    if(prevTarget){
+      var el=document.getElementById(prevTarget);
+      if(el) el.classList.remove('ot-highlight');
+    }
+    prevTarget=null;current=-1;
+  }
+
+  window.otNext=function(){showStep(current+1);};
+  window.otBack=function(){if(current>0)showStep(current-1);};
+  window.otSkip=otDone;
+
+  // Called by ventsim-app.js when sim screen opens (or directly)
+  window.startOrientationTour=function(){
+    // Only show on first run per session
+    try{
+      if(sessionStorage.getItem('ot_done')==='1'){return;}
+      sessionStorage.setItem('ot_done','1');
+    }catch(e){}
+    setTimeout(function(){showStep(0);},600);
+  };
+
+  // Hook into startSim if possible — fire tour after sim screen renders
+  var _origStart=window.startSim;
+  window.startSim=function(){
+    if(typeof _origStart==='function') _origStart.apply(this,arguments);
+    window.startOrientationTour();
+  };
+})();
+</script>
 </body>
 </html>
