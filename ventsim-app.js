@@ -1151,6 +1151,11 @@ function startSim(){
   S.sim.startTime=Date.now();
   show('sim-sc'); setProg(55);
   loadScenario(0);
+  // Launch orientation tour once on first sim entry
+  if(typeof window.tour==='function' && !window._tourLaunched){
+    window._tourLaunched=true;
+    setTimeout(function(){ window.tour(1); }, 1000);
+  }
 }
 
 /* ═══════════════════════════════════════════

@@ -954,15 +954,7 @@ q('ot-skip-btn').addEventListener('click', quit);
 window.tour    = function(n){ go(typeof n==='number' ? n-1 : 0); };
 window.tourEnd = quit;
 
-// Fire ONCE when sim-sc first becomes active — disconnect immediately after
-var _obs = new MutationObserver(function(){
-  var sim = document.getElementById('sim-sc');
-  if(sim && sim.classList.contains('active')){
-    _obs.disconnect();
-    setTimeout(function(){ go(0); }, 900);
-  }
-});
-_obs.observe(document.body, {attributes:true, subtree:true, attributeFilter:['class']});
+// Tour is launched by startSim() in ventsim-app.js via window.tour()
 
 // Dev hint
 if(new URLSearchParams(location.search).get('dev')==='1'){
