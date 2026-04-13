@@ -954,16 +954,15 @@ q('ot-skip-btn').addEventListener('click', quit);
 window.tour    = function(n){ go(typeof n==='number' ? n-1 : 0); };
 window.tourEnd = quit;
 
-// Fire ONCE when sim-sc first becomes active
-var _fired = false;
-new MutationObserver(function(){
-  if(_fired) return;
+// Fire ONCE when sim-sc first becomes active — disconnect immediately after
+var _obs = new MutationObserver(function(){
   var sim = document.getElementById('sim-sc');
   if(sim && sim.classList.contains('active')){
-    _fired = true;
+    _obs.disconnect();
     setTimeout(function(){ go(0); }, 900);
   }
-}).observe(document.body, {attributes:true, subtree:true, attributeFilter:['class']});
+});
+_obs.observe(document.body, {attributes:true, subtree:true, attributeFilter:['class']});
 
 // Dev hint
 if(new URLSearchParams(location.search).get('dev')==='1'){
