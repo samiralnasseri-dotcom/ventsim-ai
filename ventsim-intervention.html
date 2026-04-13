@@ -4,6 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VentSim AI — Intervention Platform | Universiti Malaya 2026</title>
+<script>
+/* Safety shim: stubs app functions so onclick calls before ventsim-app.js loads never throw */
+(function(){
+  var _q=[];
+  function stub(name){return function(){_q.push({fn:name,args:[].slice.call(arguments)});}}
+  ['show','setProg','startSim','submitPreMCQ','submitPreCDMNS','submitPostMCQ',
+   'submitPostCDMNS','submitTAM','finish','sendMsg','chatKey','setWave',
+   'toggleCompass','switchTab','showNextHint','printCertificate'
+  ].forEach(function(n){if(typeof window[n]==='undefined')window[n]=stub(n);});
+  window.__shimQ=_q;
+  window.__flushShim=function(){
+    _q.splice(0).forEach(function(i){if(typeof window[i.fn]==='function')window[i.fn].apply(window,i.args);});
+  };
+})();
+</script>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
 
@@ -330,7 +346,72 @@ canvas.wc.active{display:block;}
 ::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* ── THEMES ── */
+/* Navy (default — already set in :root) */
+
+/* Slate Gray */
+body.t-slate{
+  --bg:#111827;--bg2:#1a2232;--bg3:#1f2b3d;--panel:#162030;
+  --border:#233040;--border2:#2e4055;
+  --cyan:#38bdf8;--cyan2:#0ea5e9;
+  --green:#34d399;--green2:#10b981;
+  --amber:#fbbf24;--red:#f87171;
+  --purple:#c4b5fd;--blue:#93c5fd;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#4b6070;
+}
+
+/* Deep Teal */
+body.t-teal{
+  --bg:#042c2a;--bg2:#053530;--bg3:#074038;--panel:#063530;
+  --border:#0a4a42;--border2:#0d6055;
+  --cyan:#2dd4bf;--cyan2:#14b8a6;
+  --green:#4ade80;--green2:#22c55e;
+  --amber:#fcd34d;--red:#f87171;
+  --purple:#c084fc;--blue:#7dd3fc;
+  --text:#ccfbf1;--text2:#5eead4;--text3:#0d9488;
+}
+
+/* Midnight Black */
+body.t-black{
+  --bg:#000000;--bg2:#0a0a0a;--bg3:#111111;--panel:#0d0d0d;
+  --border:#1a1a1a;--border2:#242424;
+  --cyan:#00e5ff;--cyan2:#00b8d4;
+  --green:#00e676;--green2:#00c853;
+  --amber:#ffd740;--red:#ff5252;
+  --purple:#ce93d8;--blue:#82b1ff;
+  --text:#e0e0e0;--text2:#757575;--text3:#424242;
+}
+
+/* Warm Charcoal */
+body.t-warm{
+  --bg:#1a1612;--bg2:#231e18;--bg3:#2a251e;--panel:#211c16;
+  --border:#332d24;--border2:#4a4238;
+  --cyan:#fb923c;--cyan2:#ea580c;
+  --green:#a3e635;--green2:#84cc16;
+  --amber:#facc15;--red:#f87171;
+  --purple:#e879f9;--blue:#60a5fa;
+  --text:#fef3c7;--text2:#d6d3d1;--text3:#78716c;
+}
+
+/* ── THEME SWITCHER WIDGET ── */
+.theme-sw{position:fixed;bottom:20px;right:20px;z-index:9000;display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+.theme-sw-toggle{width:36px;height:36px;border-radius:50%;background:var(--panel);border:1px solid var(--border2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 12px rgba(0,0,0,.5);transition:border-color .2s;}
+.theme-sw-toggle:hover{border-color:var(--cyan);}
+.theme-sw-dots{display:none;flex-direction:column;gap:6px;align-items:flex-end;background:var(--panel);border:1px solid var(--border2);border-radius:8px;padding:10px 10px;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+.theme-sw-dots.open{display:flex;}
+.theme-sw-row{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 6px;border-radius:5px;transition:background .15s;width:100%;}
+.theme-sw-row:hover{background:rgba(255,255,255,.05);}
+.tdot{width:16px;height:16px;border-radius:50%;border:2px solid transparent;flex-shrink:0;transition:border-color .15s;}
+.tdot.active{border-color:#fff;}
+.tdot.d-navy {background:#050d14;outline:1px solid #1a3a55;outline-offset:1px;}
+.tdot.d-slate {background:#111827;}
+.tdot.d-teal  {background:#042c2a;}
+.tdot.d-black {background:#000;outline:1px solid #242424;outline-offset:1px;}
+.tdot.d-warm  {background:#1a1612;}
+.theme-sw-lbl{font-family:var(--mono);font-size:.65rem;color:var(--text2);white-space:nowrap;}
 </style>
+
 </head>
 <body>
 
@@ -849,6 +930,85 @@ canvas.wc.active{display:block;}
 </div>
 
 
-<script src="ventsim-app.js"></script>
+<script src="ventsim-app.js" defer></script>
+<script>window.addEventListener('load',function(){if(window.__flushShim)window.__flushShim();});</script>
+
+<!-- THEME SWITCHER WIDGET -->
+<div class="theme-sw" id="theme-sw">
+  <div class="theme-sw-dots" id="theme-dots">
+    <div class="theme-sw-row" onclick="setTheme('navy')">
+      <div class="tdot d-navy active" id="dot-navy"></div>
+      <span class="theme-sw-lbl">Night Navy</span>
+    </div>
+    <div class="theme-sw-row" onclick="setTheme('slate')">
+      <div class="tdot d-slate" id="dot-slate"></div>
+      <span class="theme-sw-lbl">Slate Gray</span>
+    </div>
+    <div class="theme-sw-row" onclick="setTheme('teal')">
+      <div class="tdot d-teal" id="dot-teal"></div>
+      <span class="theme-sw-lbl">Deep Teal</span>
+    </div>
+    <div class="theme-sw-row" onclick="setTheme('black')">
+      <div class="tdot d-black" id="dot-black"></div>
+      <span class="theme-sw-lbl">Midnight Black</span>
+    </div>
+    <div class="theme-sw-row" onclick="setTheme('warm')">
+      <div class="tdot d-warm" id="dot-warm"></div>
+      <span class="theme-sw-lbl">Warm Charcoal</span>
+    </div>
+  </div>
+  <button class="theme-sw-toggle" onclick="toggleThemeSw()" title="Change theme">🎨</button>
+</div>
+
+<script>
+(function(){
+  const THEMES=['navy','slate','teal','black','warm'];
+  let swOpen=false;
+  let _current='navy';
+
+  function setTheme(name){
+    // Remove any previous theme class, preserve all other body classes
+    THEMES.forEach(t=>document.body.classList.remove('t-'+t));
+    if(name!=='navy') document.body.classList.add('t-'+name);
+    _current=name;
+    THEMES.forEach(t=>{
+      const d=document.getElementById('dot-'+t);
+      if(d) d.classList.toggle('active', t===name);
+    });
+    try{localStorage.setItem('ventsim_theme',name);}catch(e){}
+    swOpen=false;
+    const dots=document.getElementById('theme-dots');
+    if(dots) dots.classList.remove('open');
+  }
+
+  function toggleThemeSw(){
+    swOpen=!swOpen;
+    const dots=document.getElementById('theme-dots');
+    if(dots) dots.classList.toggle('open',swOpen);
+  }
+
+  // Restore saved theme after DOM + app script are ready
+  document.addEventListener('DOMContentLoaded',function(){
+    try{
+      const saved=localStorage.getItem('ventsim_theme');
+      if(saved && THEMES.includes(saved)) setTheme(saved);
+    }catch(e){}
+  });
+
+  // Close panel on outside click
+  document.addEventListener('click',function(e){
+    if(!swOpen) return;
+    const sw=document.getElementById('theme-sw');
+    if(sw && !sw.contains(e.target)){
+      swOpen=false;
+      const dots=document.getElementById('theme-dots');
+      if(dots) dots.classList.remove('open');
+    }
+  });
+
+  window.setTheme=setTheme;
+  window.toggleThemeSw=toggleThemeSw;
+})();
+</script>
 </body>
 </html>
