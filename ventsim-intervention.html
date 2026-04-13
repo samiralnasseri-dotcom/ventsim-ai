@@ -973,6 +973,32 @@ if(new URLSearchParams(location.search).get('dev')==='1'){
     '\n  tour()    start from step 1' +
     '\n  tour(3)   jump to step 3' +
     '\n  tourEnd() close');
+
+  // Auto-fill demographics step 3 so skip works in dev mode
+  document.addEventListener('DOMContentLoaded', function(){
+    var demoSc = document.getElementById('demo-sc');
+    if(!demoSc) return;
+    var obs = new MutationObserver(function(muts){
+      muts.forEach(function(m){
+        if(m.attributeName==='class' && demoSc.classList.contains('active')){
+          var fills = {
+            d1:'20–29 years', d2:'Male', d3:'Omani', d4:'Single',
+            d5:'Bachelor of Nursing', d6:'Yes', d7:'Yes — formal course',
+            d8:'Basic (1–2 sessions)', d9:'4–6 years', d10:'4–6 years',
+            d11:'Staff Nurse', d12:'2 patients', d13:'Rotating shifts',
+            d14:'Very comfortable', d15:'Use occasionally',
+            d16:'3 — Moderately confident', d17:'1–2 times'
+          };
+          for(var id in fills){
+            var el = document.getElementById(id);
+            if(el && el.value === '') el.value = fills[id];
+          }
+          console.log('%c [DEV] Demographics auto-filled — click CONTINUE to skip ','background:#ffd740;color:#000;padding:2px 6px;border-radius:3px;');
+        }
+      });
+    });
+    obs.observe(demoSc, {attributes:true, attributeFilter:['class']});
+  });
 }
 
 })();
