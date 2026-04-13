@@ -335,7 +335,7 @@ canvas.wc.active{display:block;}
 /* ── ORIENTATION TOUR ── */
 .ot-backdrop{display:none;position:fixed;inset:0;z-index:89000;background:rgba(5,13,20,.6);pointer-events:none;}
 .ot-backdrop.on{display:block;}
-.ot-box{display:none;position:fixed;z-index:999999;background:var(--panel);border:1.5px solid var(--cyan);border-radius:10px;padding:16px 18px;width:286px;box-shadow:0 8px 32px rgba(0,229,255,.2);}
+.ot-box{display:none;position:fixed;z-index:999999;pointer-events:all;background:var(--panel);border:1.5px solid var(--cyan);border-radius:10px;padding:16px 18px;width:286px;box-shadow:0 8px 32px rgba(0,229,255,.2);}
 .ot-box.on{display:block;animation:otSlide .2s ease;}
 @keyframes otSlide{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 .ot-arrow{position:absolute;width:10px;height:10px;background:var(--panel);border:1.5px solid var(--cyan);transform:rotate(45deg);pointer-events:none;}
@@ -993,6 +993,7 @@ canvas.wc.active{display:block;}
     el('ot-box').classList.remove('on');
     el('ot-backdrop').classList.remove('on');
     document.body.classList.remove('ot-active');
+    window._tourFired = false;
   }
 
   // Wire buttons immediately — script is at end of <body>, DOM is ready
@@ -1016,19 +1017,19 @@ canvas.wc.active{display:block;}
   window.tour = function(n){ go(typeof n === 'number' ? n-1 : 0); };
   window.tourEnd = quit;
 
-  // Hook startSim — defer until app is ready via polling
-  window._pendingTour = true;
-  var _hookInterval = setInterval(function(){
-    if(typeof window.startSim === 'function' && !window._tourHooked){
-      window._tourHooked = true;
-      clearInterval(_hookInterval);
-      var _orig = window.startSim;
-      window.startSim = function(){
-        _orig.apply(this, arguments);
-        if(window._pendingTour){ window._pendingTour = false; window.startOrientationTour(); }
-      };
-    }
-  }, 100);
+  // Watch for sim-sc becoming active — fire tour only when sim screen is visible
+  var _tourObs = new MutationObserver(function(mutations){
+    mutations.forEach(function(m){
+      m.addedNodes.forEach(function(n){});
+      // Check if sim-sc just became active
+      var simSc = document.getElementById('sim-sc');
+      if(simSc && simSc.classList.contains('active') && !window._tourFired){
+        window._tourFired = true;
+        setTimeout(function(){ window.startOrientationTour(); }, 800);
+      }
+    });
+  });
+  _tourObs.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
 })();
 
 // Console hint for dev mode
