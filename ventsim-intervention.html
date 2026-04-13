@@ -332,28 +332,28 @@ canvas.wc.active{display:block;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 
-/* ── ORIENTATION TOUR ── */
-.ot-backdrop{display:none;position:fixed;inset:0;z-index:88000;background:rgba(5,13,20,.55);pointer-events:none;}
-.ot-backdrop.on{display:block;}
-.ot-box{display:none;position:fixed;z-index:999999;pointer-events:all;background:var(--panel);border:1.5px solid var(--cyan);border-radius:10px;padding:16px 18px;width:286px;box-shadow:0 8px 32px rgba(0,229,255,.2);}
-.ot-box.on{display:block;animation:otIn .2s ease;}
-@keyframes otIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.ot-arrow{position:absolute;width:10px;height:10px;background:var(--panel);border:1.5px solid var(--cyan);transform:rotate(45deg);pointer-events:none;}
-.ot-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.ot-icon{font-size:1rem;}
-.ot-title{font-family:var(--sans);font-size:.86rem;font-weight:700;color:var(--cyan);}
-.ot-body{font-size:.77rem;color:var(--text2);line-height:1.65;margin-bottom:12px;}
-.ot-footer{display:flex;flex-direction:column;gap:7px;}
-.ot-prog{height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
-.ot-prog-fill{height:100%;background:var(--cyan);transition:width .3s;}
-.ot-nav{display:flex;align-items:center;justify-content:space-between;}
-.ot-ctr{font-family:var(--mono);font-size:.62rem;color:var(--text3);}
-.ot-acts{display:flex;gap:5px;align-items:center;}
-.ot-skip{background:none;border:none;color:var(--text3);font-family:var(--mono);font-size:.6rem;padding:3px 4px;cursor:pointer;text-decoration:underline;}
-.ot-back{background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:.62rem;padding:4px 9px;border-radius:4px;cursor:pointer;}
-.ot-back:disabled{opacity:.2;cursor:not-allowed;}
-.ot-next{background:var(--cyan);color:#000;border:none;font-family:var(--mono);font-size:.62rem;font-weight:700;padding:4px 12px;border-radius:4px;cursor:pointer;}
-.ot-hl{outline:2px solid var(--cyan)!important;outline-offset:3px;}
+/* ── ORIENTATION MODAL ── */
+#ot-wrap{display:none;position:fixed;inset:0;z-index:999999;background:rgba(5,13,20,.82);align-items:center;justify-content:center;}
+#ot-wrap.on{display:flex;}
+#ot-modal{background:#0a1a27;border:1.5px solid #00e5ff;border-radius:12px;width:480px;max-width:92vw;overflow:hidden;animation:otIn .25s ease;}
+@keyframes otIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+#ot-label{background:rgba(0,229,255,.08);border-bottom:1px solid #0e2a3f;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;}
+#ot-label-left{display:flex;align-items:center;gap:10px;}
+#ot-icon{font-size:1.1rem;}
+#ot-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:#00e5ff;}
+#ot-step-ctr{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#546e7a;}
+#ot-img{width:100%;height:180px;background:#050d12;display:flex;align-items:center;justify-content:center;border-bottom:1px solid #0e2a3f;overflow:hidden;position:relative;}
+#ot-diagram{width:100%;height:100%;}
+#ot-body{padding:14px 18px;font-size:.82rem;color:#90a4ae;line-height:1.7;}
+#ot-footer{padding:10px 18px 14px;display:flex;flex-direction:column;gap:8px;}
+#ot-prog{height:2px;background:#0e2a3f;border-radius:1px;overflow:hidden;}
+#ot-pfill{height:100%;background:#00e5ff;border-radius:1px;transition:width .3s;}
+#ot-nav{display:flex;align-items:center;justify-content:space-between;}
+#ot-skip-btn{background:none;border:none;color:#546e7a;font-family:'JetBrains Mono',monospace;font-size:.65rem;cursor:pointer;text-decoration:underline;padding:0;}
+#ot-btn-group{display:flex;gap:8px;}
+#ot-back-btn{background:transparent;border:1px solid #1a3a55;color:#90a4ae;font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:6px 14px;border-radius:5px;cursor:pointer;}
+#ot-back-btn:disabled{opacity:.2;cursor:not-allowed;}
+#ot-next-btn{background:#00e5ff;color:#000;border:none;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;padding:6px 18px;border-radius:5px;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -848,21 +848,28 @@ canvas.wc.active{display:block;}
 
 
 
-
-<!-- ORIENTATION TOUR -->
-<div id="ot-backdrop" class="ot-backdrop"></div>
-<div id="ot-box" class="ot-box">
-  <div id="ot-arrow" class="ot-arrow"></div>
-  <div class="ot-head"><span id="ot-icon" class="ot-icon"></span><span id="ot-title" class="ot-title"></span></div>
-  <div id="ot-body" class="ot-body"></div>
-  <div class="ot-footer">
-    <div class="ot-prog"><div id="ot-pfill" class="ot-prog-fill" style="width:0%"></div></div>
-    <div class="ot-nav">
-      <span id="ot-ctr" class="ot-ctr"></span>
-      <div class="ot-acts">
-        <button id="ot-skip" class="ot-skip">Skip tour</button>
-        <button id="ot-back" class="ot-back" disabled>&#9664; Back</button>
-        <button id="ot-next" class="ot-next">Next &#9654;</button>
+<!-- ORIENTATION MODAL -->
+<div id="ot-wrap">
+  <div id="ot-modal">
+    <div id="ot-label">
+      <div id="ot-label-left">
+        <span id="ot-icon"></span>
+        <span id="ot-title"></span>
+      </div>
+      <span id="ot-step-ctr"></span>
+    </div>
+    <div id="ot-img">
+      <svg id="ot-diagram" viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div id="ot-body"></div>
+    <div id="ot-footer">
+      <div id="ot-prog"><div id="ot-pfill" style="width:0%"></div></div>
+      <div id="ot-nav">
+        <button id="ot-skip-btn">Skip tour</button>
+        <div id="ot-btn-group">
+          <button id="ot-back-btn" disabled>&#9664; Back</button>
+          <button id="ot-next-btn">Next &#9654;</button>
+        </div>
       </div>
     </div>
   </div>
@@ -870,84 +877,105 @@ canvas.wc.active{display:block;}
 
 <script>
 (function(){
-  var STEPS=[
-    {id:'ot-patient', icon:'\u{1F3E5}', title:'Patient header',        dir:'down', body:'Patient name, age, diagnosis and scenario number. Read this first for clinical context.'},
-    {id:'ot-vitals',  icon:'\u2764\uFE0F',  title:'Vital signs monitor',   dir:'down', body:'Live SpO\u2082, HR, RR, BP, ETCO\u2082, FiO\u2082. Red values are outside safe limits \u2014 assess these first.'},
-    {id:'ot-waves',   icon:'\u{1F4FA}', title:'Ventilator waveforms',  dir:'down', body:'Real-time Flow, Pressure and Volume waveforms. Click tabs to switch. Abnormal morphology is a key diagnostic cue.'},
-    {id:'ot-vent',    icon:'\u2699\uFE0F',  title:'Ventilator settings',   dir:'down', body:'Set and measured parameters: Mode, TV, PEEP, PIP, FiO\u2082, I:E, Plateau P. Compare against normal ranges.'},
-    {id:'ot-history', icon:'\u{1F4CB}', title:'Clinical history',      dir:'down', body:'Patient background and handover notes. Essential context for making the correct clinical decision.'},
-    {id:'dec-wrap',   icon:'\u26A1',    title:'Clinical decision',     dir:'down', body:'Choose from 3\u20134 options. Cannot be changed once submitted. Affects your score and patient outcome.'},
-    {id:'ot-chat',    icon:'\u{1F916}', title:'AI-SAM \u2014 mentor',        dir:'right',body:'Socratic guide. It asks questions, not answers. Type your reasoning freely and engage actively.'},
-    {id:'ot-compass', icon:'\u{1F4CA}', title:'Clinical compass',      dir:'right',body:'Compare, Reference and Hints tabs. Available any time during the simulation.'}
-  ];
-  var cur=-1, prevId=null;
-  function q(id){return document.getElementById(id);}
-  function hl(id,on){var e=id?q(id):null;if(e)on?e.classList.add('ot-hl'):e.classList.remove('ot-hl');}
-  function place(s){
-    var box=q('ot-box'),arrow=q('ot-arrow'),t=s.id?q(s.id):null;
-    arrow.style.cssText='position:absolute;width:10px;height:10px;background:var(--panel);border:1.5px solid var(--cyan);transform:rotate(45deg);pointer-events:none;';
-    if(!t){box.style.cssText+='top:50%;left:50%;transform:translate(-50%,-50%);';arrow.style.display='none';return;}
-    box.style.transform='';arrow.style.display='';
-    var r=t.getBoundingClientRect(),bw=286,pad=14,vw=window.innerWidth,vh=window.innerHeight,tl,ll;
-    if(s.dir==='down'){
-      tl=r.bottom+pad; ll=r.left+r.width/2-bw/2;
-      ll=Math.max(pad,Math.min(ll,vw-bw-pad));
-      if(tl+240>vh)tl=r.top-240-pad; tl=Math.max(pad,tl);
-      arrow.style.top='-6px';arrow.style.borderBottom='none';arrow.style.borderRight='none';
-      arrow.style.left=Math.min(Math.max(r.left+r.width/2-ll-5,12),bw-22)+'px';
-    } else {
-      tl=r.top; ll=r.left-bw-pad;
-      if(ll<pad)ll=r.right+pad; tl=Math.max(pad,Math.min(tl,vh-240));
-      arrow.style.right='-6px';arrow.style.top='18px';
-      arrow.style.borderTop='none';arrow.style.borderLeft='none';
-    }
-    box.style.top=tl+'px';box.style.left=ll+'px';
+
+var STEPS = [
+  {
+    icon:'🏥', title:'Patient header',
+    body:'Shows the current patient name, age, diagnosis and scenario number. Always read this first — it gives you the clinical context for every decision.',
+    svg:'<rect x="10" y="20" width="460" height="50" rx="6" fill="#0f3460" stroke="#1a3a55" stroke-width="1"/><text x="24" y="42" font-family="Syne,sans-serif" font-size="13" fill="#e0f2f1" font-weight="700">Ahmad Al-Balushi · 58 yrs · Male</text><text x="24" y="60" font-family="JetBrains Mono,monospace" font-size="10" fill="#90a4ae">Post-cardiac surgery · ARDS · ICU-04</text><rect x="360" y="28" width="100" height="22" rx="4" fill="rgba(0,229,255,.1)" stroke="rgba(0,229,255,.3)" stroke-width="1"/><text x="410" y="43" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" text-anchor="middle">SCENARIO 1</text><path d="M240 78 L240 100" stroke="#00e5ff" stroke-width="2" stroke-dasharray="4,3"/><polygon points="236,100 244,100 240,112" fill="#00e5ff"/><text x="240" y="130" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" text-anchor="middle">Read this first</text>'
+  },
+  {
+    icon:'❤️', title:'Vital signs monitor',
+    body:'Live SpO₂, HR, RR, BP, ETCO₂ and FiO₂. Values shown in red are outside safe limits — start your assessment here every time.',
+    svg:'<rect x="10" y="10" width="460" height="120" rx="6" fill="#050d14" stroke="#0e2a3f" stroke-width="1"/><rect x="20" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#ff5252" stroke-width="1.5"/><text x="54" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">SpO₂</text><text x="54" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#ff5252" text-anchor="middle" font-weight="700">91%</text><rect x="96" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#ff5252" stroke-width="1.5"/><text x="130" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">HR</text><text x="130" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#ff5252" text-anchor="middle" font-weight="700">118</text><rect x="172" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#ffd740" stroke-width="1.5"/><text x="206" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">RR</text><text x="206" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#ffd740" text-anchor="middle" font-weight="700">22</text><rect x="248" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#0e2a3f" stroke-width="1"/><text x="282" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">BP</text><text x="282" y="56" font-family="JetBrains Mono,monospace" font-size="13" fill="#ce93d8" text-anchor="middle" font-weight="700">112/68</text><rect x="324" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#0e2a3f" stroke-width="1"/><text x="358" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">ETCO₂</text><text x="358" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#a5d6a7" text-anchor="middle" font-weight="700">38</text><rect x="400" y="20" width="60" height="50" rx="4" fill="#081520" stroke="#0e2a3f" stroke-width="1"/><text x="430" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">FiO₂</text><text x="430" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#82b1ff" text-anchor="middle" font-weight="700">45%</text><text x="54" y="112" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">⚠ ALARM</text><text x="130" y="112" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">⚠ ALARM</text><text x="206" y="112" font-family="JetBrains Mono,monospace" font-size="9" fill="#ffd740" text-anchor="middle">⚠ HIGH</text><text x="282" y="112" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e676" text-anchor="middle">✓ OK</text><text x="358" y="112" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e676" text-anchor="middle">✓ OK</text><text x="430" y="112" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e676" text-anchor="middle">✓ OK</text><text x="148" y="148" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff5252" text-anchor="middle">Red = out of safe range — assess first</text>'
+  },
+  {
+    icon:'📺', title:'Ventilator waveforms',
+    body:'Real-time animated Flow, Pressure and Volume waveforms. Click each tab to switch. Abnormal patterns — saw-tooth flow, pressure spikes — are key diagnostic cues.',
+    svg:'<rect x="10" y="8" width="460" height="20" rx="3" fill="#030a0f" stroke="#0d2535" stroke-width="1"/><rect x="14" y="11" width="40" height="14" rx="2" fill="rgba(0,229,255,.1)" stroke="rgba(0,229,255,.3)" stroke-width="1"/><text x="34" y="22" font-family="JetBrains Mono,monospace" font-size="8" fill="#00e5ff" text-anchor="middle">FLOW</text><rect x="58" y="11" width="52" height="14" rx="2" fill="transparent" stroke="#0d2535" stroke-width="1"/><text x="84" y="22" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">PRESSURE</text><rect x="114" y="11" width="44" height="14" rx="2" fill="transparent" stroke="#0d2535" stroke-width="1"/><text x="136" y="22" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">VOLUME</text><rect x="10" y="30" width="460" height="110" rx="0" fill="#081520" stroke="#0d2535" stroke-width="1"/><polyline points="10,90 50,90 70,55 90,90 130,90 150,55 170,90 210,90 230,55 250,90 290,90 310,55 330,90 370,90 390,55 410,90 450,90 470,55" fill="none" stroke="#00e5ff" stroke-width="2"/><line x1="10" y1="90" x2="470" y2="90" stroke="rgba(0,229,255,.15)" stroke-width="0.8" stroke-dasharray="4,4"/><text x="240" y="160" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" text-anchor="middle">Click tabs above to switch waveform view</text>'
+  },
+  {
+    icon:'⚙️', title:'Ventilator settings',
+    body:'Current set and measured parameters: Mode, TV, PEEP, PIP, FiO₂, I:E and Plateau Pressure. Compare these values against clinical normal ranges.',
+    svg:'<text x="14" y="22" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" letter-spacing="1">SET PARAMETERS</text><rect x="10" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="45" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">MODE</text><text x="45" y="64" font-family="JetBrains Mono,monospace" font-size="11" fill="#82b1ff" text-anchor="middle" font-weight="700">SIMV</text><rect x="86" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="121" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">TV</text><text x="121" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#82b1ff" text-anchor="middle" font-weight="700">520</text><text x="121" y="73" font-family="JetBrains Mono,monospace" font-size="7" fill="#3a5a70" text-anchor="middle">mL</text><rect x="162" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="197" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">PEEP</text><text x="197" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#82b1ff" text-anchor="middle" font-weight="700">8</text><text x="197" y="73" font-family="JetBrains Mono,monospace" font-size="7" fill="#3a5a70" text-anchor="middle">cmH₂O</text><rect x="238" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#ff5252" stroke-width="1.5"/><text x="273" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">PIP</text><text x="273" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#ff5252" text-anchor="middle" font-weight="700">38</text><text x="273" y="73" font-family="JetBrains Mono,monospace" font-size="7" fill="#ff5252" text-anchor="middle">↑ HIGH</text><rect x="314" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="349" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">FiO₂</text><text x="349" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#82b1ff" text-anchor="middle" font-weight="700">45%</text><rect x="390" y="28" width="80" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="430" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">PLATEAU P</text><text x="430" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#82b1ff" text-anchor="middle" font-weight="700">28</text><text x="240" y="115" font-family="JetBrains Mono,monospace" font-size="10" fill="#ffd740" text-anchor="middle">Compare values against clinical normal ranges</text><text x="240" y="130" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">Red border = outside safe limit</text>'
+  },
+  {
+    icon:'📋', title:'Clinical history & handover',
+    body:'Patient background, diagnosis, and nursing handover notes. Read carefully — the clinical details here are essential for choosing the correct management decision.',
+    svg:'<rect x="10" y="10" width="460" height="130" rx="6" fill="#081520" stroke="#0e2a3f" stroke-width="1"/><text x="24" y="30" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" letter-spacing="1">CLINICAL HISTORY</text><line x1="14" y1="35" x2="466" y2="35" stroke="#0e2a3f" stroke-width="1"/><text x="24" y="52" font-family="Inter,sans-serif" font-size="10" fill="#e0f2f1" font-weight="600">58M admitted post CABG × 3. Day 2 ICU.</text><text x="24" y="68" font-family="Inter,sans-serif" font-size="10" fill="#90a4ae">Developed ARDS overnight. CXR: bilateral infiltrates.</text><text x="24" y="84" font-family="Inter,sans-serif" font-size="10" fill="#90a4ae">On SIMV, increasing pressure trend past 2 hours.</text><text x="24" y="100" font-family="Inter,sans-serif" font-size="10" fill="#90a4ae">SpO₂ declining despite FiO₂ 45%. Agitated ++.</text><text x="24" y="116" font-family="Inter,sans-serif" font-size="10" fill="#ffd740">⚠ Handover: Watch for dyssynchrony. ABG pending.</text><text x="240" y="158" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" text-anchor="middle">Read every line — details matter for decisions</text>'
+  },
+  {
+    icon:'⚡', title:'Clinical decision panel',
+    body:'At each decision point choose from 3–4 options. You cannot change your answer once submitted. Your choice directly affects patient outcome and your score.',
+    svg:'<text x="14" y="18" font-family="JetBrains Mono,monospace" font-size="9" fill="#ffd740" letter-spacing="1">⚡ CLINICAL DECISION REQUIRED</text><rect x="10" y="24" width="460" height="30" rx="5" fill="#081520" stroke="#1a3a55" stroke-width="1"/><text x="24" y="44" font-family="Inter,sans-serif" font-size="11" fill="#e0f2f1">A.  Suction airway and reassess ventilator synchrony</text><rect x="10" y="58" width="460" height="30" rx="5" fill="#081520" stroke="#1a3a55" stroke-width="1"/><text x="24" y="78" font-family="Inter,sans-serif" font-size="11" fill="#e0f2f1">B.  Increase FiO₂ to 60% and administer bronchodilator</text><rect x="10" y="92" width="460" height="30" rx="5" fill="#081520" stroke="#1a3a55" stroke-width="1"/><text x="24" y="112" font-family="Inter,sans-serif" font-size="11" fill="#e0f2f1">C.  Switch to Pressure Control and reduce RR</text><rect x="10" y="126" width="460" height="30" rx="5" fill="#081520" stroke="#1a3a55" stroke-width="1"/><text x="24" y="146" font-family="Inter,sans-serif" font-size="11" fill="#e0f2f1">D.  Increase PEEP to 10 and obtain ABG</text><text x="240" y="170" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">Cannot be changed once submitted</text>'
+  },
+  {
+    icon:'🤖', title:'AI-SAM — your clinical mentor',
+    body:'AI-SAM uses the Socratic method — it asks you questions to guide your thinking, never gives direct answers. Type your clinical reasoning freely and engage actively.',
+    svg:'<rect x="10" y="8" width="220" height="140" rx="6" fill="#f8fffe" stroke="#e5e7eb" stroke-width="1"/><rect x="10" y="8" width="220" height="32" rx="6" fill="url(#ghdr)"/><rect x="10" y="28" width="220" height="12" fill="url(#ghdr)"/><defs><linearGradient id="ghdr" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#085041"/><stop offset="1" stop-color="#1d7a6b"/></linearGradient></defs><circle cx="26" cy="24" r="8" fill="rgba(255,255,255,.2)"/><text x="26" y="28" font-family="JetBrains Mono,monospace" font-size="7" fill="#fff" text-anchor="middle" font-weight="700">AI</text><text x="44" y="21" font-family="Inter,sans-serif" font-size="9" fill="#fff" font-weight="700">AI-SAM</text><text x="44" y="31" font-family="Inter,sans-serif" font-size="7" fill="rgba(255,255,255,.7)">Socratic Clinical Guide</text><rect x="20" y="46" width="160" height="32" rx="5" fill="#e8f5f2"/><text x="28" y="58" font-family="Inter,sans-serif" font-size="9" fill="#085041">The PIP has risen to 38.</text><text x="28" y="70" font-family="Inter,sans-serif" font-size="9" fill="#085041">What does this suggest?</text><rect x="50" y="86" width="170" height="22" rx="5" fill="#185fa5"/><text x="135" y="101" font-family="Inter,sans-serif" font-size="9" fill="#fff" text-anchor="middle">Could be secretions or dyssynchrony...</text><rect x="18" y="116" width="198" height="24" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/><text x="110" y="132" font-family="Inter,sans-serif" font-size="9" fill="#9ca3af" text-anchor="middle">Share your clinical reasoning...</text><text x="255" y="80" font-family="Inter,sans-serif" font-size="10" fill="#90a4ae">Type your thoughts</text><text x="255" y="95" font-family="Inter,sans-serif" font-size="10" fill="#90a4ae">freely. AI asks</text><text x="255" y="110" font-family="Inter,sans-serif" font-size="10" fill="#90a4ae">questions — never</text><text x="255" y="125" font-family="Inter,sans-serif" font-size="10" fill="#90a4ae">gives answers.</text><path d="M240 80 L232 80" stroke="#00e5ff" stroke-width="1.5" marker-end="url(#arr)"/><defs><marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><polygon points="0,0 6,3 0,6" fill="#00e5ff"/></marker></defs>'
+  },
+  {
+    icon:'📊', title:'Clinical compass — reference panel',
+    body:'A collapsible panel below the chat with three tabs: Compare (set vs measured values), Reference (normal ranges and guidelines), and Hints (contextual prompts). Use it any time.',
+    svg:'<rect x="10" y="8" width="460" height="28" rx="5" fill="rgba(0,229,255,.06)" stroke="rgba(0,229,255,.2)" stroke-width="1"/><text x="24" y="26" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" letter-spacing="1" font-weight="600">📊  CLINICAL COMPASS  ▼</text><rect x="10" y="40" width="460" height="24" rx="0" fill="#0a1a27" stroke="#0e2a3f" stroke-width="1"/><rect x="10" y="40" width="148" height="24" rx="0" fill="rgba(0,229,255,.08)" stroke="rgba(0,229,255,.3)" stroke-width="1"/><text x="84" y="56" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e5ff" text-anchor="middle">📊 Compare</text><text x="250" y="56" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">📖 Reference</text><text x="400" y="56" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">💡 Hints</text><rect x="10" y="66" width="460" height="80" rx="0" fill="#081520" stroke="#0e2a3f" stroke-width="1"/><text x="24" y="84" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a">PARAMETER</text><text x="240" y="84" font-family="JetBrains Mono,monospace" font-size="8" fill="#82b1ff" text-anchor="middle">SET</text><text x="400" y="84" font-family="JetBrains Mono,monospace" font-size="8" fill="#90a4ae" text-anchor="middle">MEASURED</text><line x1="14" y1="88" x2="466" y2="88" stroke="#0e2a3f" stroke-width="1"/><text x="24" y="102" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a9daa">PIP</text><text x="240" y="102" font-family="JetBrains Mono,monospace" font-size="9" fill="#82b1ff" text-anchor="middle">35 cmH₂O</text><text x="400" y="102" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">38 cmH₂O ↑</text><text x="24" y="118" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a9daa">RR</text><text x="240" y="118" font-family="JetBrains Mono,monospace" font-size="9" fill="#82b1ff" text-anchor="middle">14 br/min</text><text x="400" y="118" font-family="JetBrains Mono,monospace" font-size="9" fill="#ffd740" text-anchor="middle">22 br/min ↑</text><text x="24" y="134" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a9daa">SpO₂</text><text x="240" y="134" font-family="JetBrains Mono,monospace" font-size="9" fill="#82b1ff" text-anchor="middle">≥ 94%</text><text x="400" y="134" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">91% ↓</text><text x="240" y="162" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e5ff" text-anchor="middle">Click to expand — available any time</text>'
   }
-  function go(i){
-    if(i>=STEPS.length){quit();return;} if(i<0)return;
-    hl(prevId,false); cur=i; var s=STEPS[i]; hl(s.id,true); prevId=s.id;
-    q('ot-icon').textContent=s.icon; q('ot-title').textContent=s.title;
-    q('ot-body').textContent=s.body;
-    q('ot-ctr').textContent=(i+1)+' / '+STEPS.length;
-    q('ot-next').textContent=i===STEPS.length-1?'Done \u2713':'Next \u25ba';
-    q('ot-back').disabled=(i===0);
-    q('ot-pfill').style.width=Math.round((i+1)/STEPS.length*100)+'%';
-    q('ot-box').classList.add('on');
-    q('ot-backdrop').classList.add('on');
-    document.body.classList.add('ot-active');
-    setTimeout(function(){place(s);},80);
+];
+
+var cur = -1;
+
+function q(id){ return document.getElementById(id); }
+
+function go(i){
+  if(i < 0 || i >= STEPS.length){ quit(); return; }
+  cur = i;
+  var s = STEPS[i];
+  q('ot-icon').textContent   = s.icon;
+  q('ot-title').textContent  = s.title;
+  q('ot-body').textContent   = s.body;
+  q('ot-step-ctr').textContent = (i+1) + ' of ' + STEPS.length;
+  q('ot-next-btn').textContent = (i === STEPS.length-1) ? 'Done ✓' : 'Next ▶';
+  q('ot-back-btn').disabled    = (i === 0);
+  q('ot-pfill').style.width    = Math.round((i+1)/STEPS.length*100) + '%';
+  q('ot-diagram').innerHTML    = s.svg;
+  q('ot-wrap').classList.add('on');
+}
+
+function quit(){
+  cur = -1;
+  q('ot-wrap').classList.remove('on');
+}
+
+// Wire buttons
+q('ot-next-btn').addEventListener('click', function(){ go(cur+1); });
+q('ot-back-btn').addEventListener('click', function(){ if(cur>0) go(cur-1); });
+q('ot-skip-btn').addEventListener('click', quit);
+
+// Public API
+window.tour    = function(n){ go(typeof n==='number' ? n-1 : 0); };
+window.tourEnd = quit;
+
+// Fire ONCE when sim-sc first becomes active
+var _fired = false;
+new MutationObserver(function(){
+  if(_fired) return;
+  var sim = document.getElementById('sim-sc');
+  if(sim && sim.classList.contains('active')){
+    _fired = true;
+    setTimeout(function(){ go(0); }, 900);
   }
-  function quit(){
-    hl(prevId,false); prevId=null; cur=-1;
-    q('ot-box').classList.remove('on');
-    q('ot-backdrop').classList.remove('on');
-    document.body.classList.remove('ot-active');
-    window._tourDone=true;
-  }
-  // Wire buttons immediately — script runs at end of body, DOM is ready
-  q('ot-next').addEventListener('click',function(){go(cur+1);});
-  q('ot-back').addEventListener('click',function(){if(cur>0)go(cur-1);});
-  q('ot-skip').addEventListener('click',quit);
-  // Public API
-  window.tour=function(n){go(typeof n==='number'?n-1:0);};
-  window.tourEnd=quit;
-  window._otGo=go;
-  // Fire tour when sim-sc becomes active
-  new MutationObserver(function(){
-    var sim=document.getElementById('sim-sc');
-    if(sim&&sim.classList.contains('active')&&!window._tourDone){
-      window._tourDone=true;
-      setTimeout(function(){go(0);},900);
-    }
-  }).observe(document.body,{attributes:true,subtree:true,attributeFilter:['class']});
-  // Dev console hint
-  if(new URLSearchParams(location.search).get('dev')==='1'){
-    console.log('%c VentSim Tour ','background:#00e5ff;color:#000;font-weight:bold;padding:2px 8px;','\n  tour()   start from step 1\n  tour(3)  jump to step 3\n  tourEnd() close');
-  }
+}).observe(document.body, {attributes:true, subtree:true, attributeFilter:['class']});
+
+// Dev hint
+if(new URLSearchParams(location.search).get('dev')==='1'){
+  console.log('%c VentSim Tour ','background:#00e5ff;color:#000;font-weight:bold;padding:2px 8px;border-radius:3px;',
+    '\n  tour()    start from step 1' +
+    '\n  tour(3)   jump to step 3' +
+    '\n  tourEnd() close');
+}
+
 })();
 </script>
 
 <script src="ventsim-app.js"></script>
-
 </body>
 </html>
