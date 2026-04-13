@@ -1000,15 +1000,25 @@ canvas.wc.active{display:block;}
     current=i;
     var step=steps[i];
 
-    // remove prev highlight
+    // remove prev highlight and restore overflow
     if(prevTarget){
       var prev=document.getElementById(prevTarget);
-      if(prev) prev.classList.remove('ot-highlight');
+      if(prev){
+        prev.classList.remove('ot-highlight');
+        if(prev._otOverflow!==undefined){prev.style.overflow=prev._otOverflow;delete prev._otOverflow;}
+      }
     }
 
-    // highlight current
+    // highlight current — strip overflow:hidden so buttons stay clickable
     var el=document.getElementById(step.target);
-    if(el){el.classList.add('ot-highlight');el.scrollIntoView({block:'nearest',behavior:'smooth'});}
+    if(el){
+      el.classList.add('ot-highlight');
+      el.scrollIntoView({block:'nearest',behavior:'smooth'});
+      if(getComputedStyle(el).overflow==='hidden'||el.style.overflow==='hidden'){
+        el._otOverflow=el.style.overflow;
+        el.style.overflow='visible';
+      }
+    }
     prevTarget=step.target;
 
     // fill content
@@ -1034,7 +1044,10 @@ canvas.wc.active{display:block;}
     document.getElementById('ot-backdrop').classList.remove('on');
     if(prevTarget){
       var el=document.getElementById(prevTarget);
-      if(el) el.classList.remove('ot-highlight');
+      if(el){
+        el.classList.remove('ot-highlight');
+        if(el._otOverflow!==undefined){el.style.overflow=el._otOverflow;delete el._otOverflow;}
+      }
     }
     prevTarget=null;current=-1;
   }
