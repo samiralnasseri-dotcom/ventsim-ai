@@ -3,618 +3,852 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VentSim AI — Intervention</title>
+<title>VentSim AI — Intervention Platform | Universiti Malaya 2026</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
 
-/* ── THEME VARIABLES ── */
-body{
-  --bg:#0a2342;--bg2:#050d12;--bg3:#030a0f;--bg4:#0f3460;--bg5:#0a1e2e;
-  --border:#0d2535;--border2:rgba(255,255,255,.1);--hdr:rgba(10,35,66,.97);
-  font-family:'Inter',sans-serif;background:var(--bg);display:flex;flex-direction:column;
+:root {
+  --bg:       #050d14;
+  --bg2:      #081520;
+  --bg3:      #0c1e2e;
+  --panel:    #0a1a27;
+  --border:   #0e2a3f;
+  --border2:  #1a3a55;
+  --cyan:     #00e5ff;
+  --cyan2:    #00b8d4;
+  --green:    #00e676;
+  --green2:   #00c853;
+  --amber:    #ffd740;
+  --red:      #ff5252;
+  --red2:     #d32f2f;
+  --purple:   #ce93d8;
+  --blue:     #82b1ff;
+  --text:     #e0f2f1;
+  --text2:    #90a4ae;
+  --text3:    #546e7a;
+  --mono:     'JetBrains Mono', monospace;
+  --sans:     'Syne', sans-serif;
+  --body:     'Inter', sans-serif;
+  --r:        8px;
 }
-body.t-slate{--bg:#1a1f2e;--bg2:#0d1117;--bg3:#080c12;--bg4:#252b3d;--bg5:#1a2030;--border:#151b2a;--hdr:rgba(26,31,46,.97)}
-body.t-teal {--bg:#042c2a;--bg2:#021815;--bg3:#010e0d;--bg4:#085041;--bg5:#0a3d38;--border:#0a2520;--hdr:rgba(4,44,42,.97)}
-body.t-black{--bg:#0a0a0f;--bg2:#050507;--bg3:#030304;--bg4:#111118;--bg5:#141420;--border:#111118;--hdr:rgba(10,10,15,.97)}
 
-/* ── BRIGHTNESS WRAPPER ── */
-.bwrap{flex:1;min-height:0;display:flex;flex-direction:column;transition:filter .2s}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;}
 
-/* HEADER */
-.hdr{height:52px;flex-shrink:0;background:var(--hdr);border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;padding:0 18px;position:relative;z-index:20}
-.hdr-logo{display:flex;align-items:center;gap:10px}
-.logo-box{width:32px;height:32px;border-radius:7px;background:linear-gradient(135deg,#1d7a6b,#185fa5);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff}
-.logo-txt{font-size:16px;font-weight:600;color:#fff;letter-spacing:-.3px}
-.hdr-right{display:flex;align-items:center;gap:10px}
-.badge{border-radius:20px;padding:3px 11px;font-size:11px;font-weight:600}
-.badge-ai{background:rgba(29,122,107,.3);border:1px solid #1d7a6b;color:#4ade80;display:flex;align-items:center;gap:5px}
-.badge-id{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.85)}
-.ai-dot{width:6px;height:6px;background:#4ade80;border-radius:50%;animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.timer{font-family:'Share Tech Mono',monospace;font-size:13px;color:rgba(255,255,255,.6);letter-spacing:1px}
-.timer.warn{color:#ffd740;animation:pulse .8s infinite}
-.timer.crit{color:#ff2244;animation:pulse .4s infinite}
+/* ── SCANLINE OVERLAY ── */
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,.015) 2px,rgba(0,229,255,.015) 4px);pointer-events:none;z-index:9999;}
 
-/* HEADER TOOLS */
-.hdr-tools{display:flex;align-items:center;gap:8px}
-.theme-dots{display:flex;align-items:center;gap:5px}
-.tdot{width:18px;height:18px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:border-color .15s}
-.tdot.active{border-color:#fff}
-.tdot.d-navy {background:#0a2342}
-.tdot.d-slate {background:#1a1f2e}
-.tdot.d-teal  {background:#042c2a}
-.tdot.d-black {background:#111;outline:1px solid #444;outline-offset:1px}
-.tsep{width:1px;height:14px;background:rgba(255,255,255,.18)}
-.bright-row{display:flex;align-items:center;gap:5px}
-.bright-lbl{font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(255,255,255,.4)}
-.bright-sl{-webkit-appearance:none;appearance:none;width:56px;height:3px;border-radius:2px;background:rgba(255,255,255,.18);outline:none;cursor:pointer}
-.bright-sl::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:#00e5ff;cursor:pointer}
-.log-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.7);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:10px;padding:3px 9px;border-radius:4px;cursor:pointer;letter-spacing:.5px}
-.log-btn.on{border-color:#00e5ff;color:#00e5ff}
+/* ── SCREENS ── */
+.sc{display:none;min-height:100vh;width:100%;animation:fadeIn .4s ease;}
+.sc.active{display:flex;flex-direction:column;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* ALARM BANNER — position:fixed so it never affects layout */
-.alarm-banner{display:none;position:fixed;top:52px;left:0;right:0;z-index:100;color:#fff;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;padding:6px 18px;align-items:center;justify-content:space-between;gap:10px}
-.alarm-banner.critical  {display:flex;background:#dc2626;animation:aflash .8s infinite}
-.alarm-banner.warning   {display:flex;background:#b45309;animation:aflash 1.5s infinite}
-.alarm-banner.escalated {display:flex;background:#7f1d1d;animation:aflash .3s infinite}
-.alarm-banner.silenced  {display:flex;background:#374151;animation:none}
-@keyframes aflash{0%,100%{opacity:1}50%{opacity:.75}}
-.alarm-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.sil-cd{font-family:'Share Tech Mono',monospace;font-size:12px;color:rgba(255,255,255,.85);display:none;min-width:40px}
-.alarm-log-lnk{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:10px;padding:2px 8px;border-radius:4px;cursor:pointer;letter-spacing:.5px}
-.alarm-silence{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:11px;padding:3px 12px;border-radius:4px;cursor:pointer;letter-spacing:1px}
+/* ── HEADER ── */
+.hdr{background:rgba(5,13,20,.95);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);}
+.hlogo{font-family:var(--sans);font-size:1rem;font-weight:800;color:var(--cyan);letter-spacing:-.5px;}
+.hlogo span{color:var(--text2);font-weight:400;}
+.hbadge{margin-left:auto;font-family:var(--mono);font-size:.7rem;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);color:var(--cyan);padding:4px 10px;border-radius:4px;}
+.xp-badge{font-family:var(--mono);font-size:.7rem;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);color:var(--green);padding:4px 10px;border-radius:4px;margin-left:8px;transition:all .3s;}
+.xp-pop{animation:xpPop .6s ease;}
+@keyframes xpPop{0%{transform:scale(1)}50%{transform:scale(1.3);color:#ffd740}100%{transform:scale(1)}}
+.stars-wrap{display:flex;gap:4px;font-size:1.4rem;margin:8px 0;}
+.star-lit{color:#ffd740;text-shadow:0 0 8px rgba(255,215,64,.6);}
+.star-dim{color:var(--border2);}
+.level-badge{display:inline-block;font-family:var(--mono);font-size:.65rem;background:rgba(206,147,216,.1);border:1px solid rgba(206,147,216,.3);color:var(--purple);padding:3px 8px;border-radius:4px;margin-left:6px;}
+.xp-gain-toast{position:fixed;top:60px;right:20px;background:rgba(0,230,118,.15);border:1px solid var(--green);color:var(--green);font-family:var(--mono);font-size:.8rem;padding:8px 14px;border-radius:6px;z-index:9999;animation:toastIn .4s ease,toastOut .4s ease 1.6s forwards;}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(-10px)}}
+.compass-wrap{margin-top:10px;border:1px solid rgba(0,229,255,.2);border-radius:var(--r);overflow:hidden;background:var(--panel);}
+.compass-toggle{width:100%;background:rgba(0,229,255,.06);border:none;color:var(--cyan);font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:1px;padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;text-transform:uppercase;}
+.compass-toggle:hover{background:rgba(0,229,255,.1);}
+.compass-arrow{margin-left:auto;transition:transform .3s;}
+.compass-body{padding:12px;}
+.compass-tabs{display:flex;gap:6px;margin-bottom:12px;}
+.ctab{flex:1;background:transparent;border:1px solid var(--border2);color:var(--text3);font-family:var(--mono);font-size:.65rem;padding:6px 4px;border-radius:4px;cursor:pointer;transition:all .2s;}
+.ctab.active{background:rgba(0,229,255,.08);border-color:var(--cyan);color:var(--cyan);}
+.compass-content{font-size:.78rem;color:var(--text2);line-height:1.6;}
+.compare-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:4px;margin-bottom:4px;background:var(--bg2);}
+.compare-label{color:var(--text3);font-family:var(--mono);font-size:.68rem;}
+.compare-set{color:var(--blue);}
+.compare-actual{color:var(--text);}
+.compare-warn{color:var(--amber);}
+.compare-ok{color:var(--green);}
+.ref-item{padding:6px 0;border-bottom:1px solid var(--border);font-size:.76rem;}
+.ref-item:last-child{border-bottom:none;}
+.ref-label{color:var(--cyan);font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;}
+.hint-box{background:rgba(255,215,64,.05);border:1px solid rgba(255,215,64,.2);border-radius:5px;padding:10px;margin-bottom:8px;font-size:.78rem;color:var(--text);line-height:1.5;}
+.hint-btn{width:100%;background:rgba(255,215,64,.08);border:1px solid rgba(255,215,64,.25);color:var(--amber);font-family:var(--mono);font-size:.7rem;padding:8px;border-radius:4px;cursor:pointer;margin-top:6px;}
+.hint-btn:hover{background:rgba(255,215,64,.15);}
+.hint-used{color:var(--text3);font-size:.72rem;text-align:center;padding:6px;}
+.hprog-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:2px;transition:width .5s ease;width:0%;}
 
-/* RESOLVED FLASH */
-.res-flash{display:none;position:fixed;top:52px;left:0;right:0;z-index:105;background:rgba(74,222,128,.1);border-bottom:2px solid #4ade80;color:#4ade80;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:1.5px;padding:5px 18px;text-align:center}
-.res-flash.show{display:block;animation:rfade 2.5s forwards}
-@keyframes rfade{0%{opacity:1}75%{opacity:1}100%{opacity:0}}
+/* ── WRAP & INNER ── */
+.wrap{flex:1;display:flex;justify-content:center;align-items:flex-start;padding:30px 20px;}
+.inner{width:100%;max-width:760px;}
+.inner-wide{width:100%;max-width:1100px;}
 
-/* ALARM LOG PANEL */
-.alarm-log{display:none;position:fixed;top:52px;right:0;width:248px;bottom:0;z-index:90;background:#030a0f;border-left:1px solid #0d2535;flex-direction:column;overflow:hidden}
-.alarm-log.open{display:flex}
-.alg-hdr{flex-shrink:0;padding:9px 12px;border-bottom:1px solid #0d2535;display:flex;align-items:center;justify-content:space-between}
-.alg-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:#00e5ff;letter-spacing:1.5px}
-.alg-close{background:none;border:none;color:#3a5a70;cursor:pointer;font-size:13px;padding:2px 5px}
-.alg-list{flex:1;overflow-y:auto;padding:7px}
-.alg-entry{background:#081520;border-radius:5px;border-left:3px solid transparent;padding:6px 8px;margin-bottom:5px}
-.alg-entry.critical{border-left-color:#ff2244}
-.alg-entry.warning {border-left-color:#ffd740}
-.alg-entry.resolved{border-left-color:#4ade80}
-.alg-entry.silenced{border-left-color:#6b7280}
-.alg-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
-.alg-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:10px;color:#c8dde8}
-.alg-badge{font-size:8px;padding:1px 5px;border-radius:3px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.5px}
-.alg-badge.critical{background:#7f1d1d;color:#fca5a5}
-.alg-badge.warning {background:#78350f;color:#fcd34d}
-.alg-badge.resolved{background:#14532d;color:#bbf7d0}
-.alg-badge.silenced{background:#374151;color:#d1d5db}
-.alg-bot{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:9px}
-.alg-val{color:#7a9daa}.alg-ts{color:#3a5a70}
+/* ── SECTION TITLES ── */
+.stitle{font-family:var(--sans);font-size:1.6rem;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:6px;}
+.stitle .hl{color:var(--cyan);}
+.ssub{color:var(--text2);font-size:.88rem;line-height:1.6;margin-bottom:24px;}
+.badge{display:inline-block;font-family:var(--mono);font-size:.65rem;font-weight:600;letter-spacing:1.5px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.25);color:var(--cyan);padding:4px 10px;border-radius:3px;margin-bottom:12px;}
 
-/* GREETING */
-.greeting{display:none;position:fixed;top:62px;left:50%;transform:translateX(-50%);width:calc(100% - 36px);max-width:820px;z-index:200;background:#e8f5f2;border:1.5px solid #1d7a6b;border-radius:10px;padding:12px 16px;gap:12px;align-items:flex-start;box-shadow:0 8px 32px rgba(0,0,0,.4)}
-.greeting.on{display:flex}
-.g-av{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#1d7a6b,#185fa5);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
-.g-body h3{font-size:13px;font-weight:600;color:#085041;margin-bottom:3px}
-.g-body p{font-size:12px;color:#0f6e56;line-height:1.5}
-.g-btn{margin-left:auto;flex-shrink:0;align-self:center;background:#1d7a6b;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer}
+/* ── CARDS ── */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:14px;}
+.card-title{font-family:var(--sans);font-size:.8rem;font-weight:700;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border);}
 
-/* MAIN */
-.main{flex:1;min-height:0;display:grid;grid-template-columns:1fr 290px;gap:10px;padding:10px 14px 12px;position:relative;z-index:10}
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--mono);font-size:.78rem;font-weight:600;letter-spacing:.5px;padding:12px 24px;border-radius:6px;border:none;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn-p{background:linear-gradient(135deg,var(--cyan),var(--cyan2));color:#000;}
+.btn-p:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,229,255,.3);}
+.btn-g{background:linear-gradient(135deg,var(--green),var(--green2));color:#000;}
+.btn-g:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,230,118,.3);}
+.btn-o{background:transparent;border:1px solid var(--border2);color:var(--text2);}
+.btn-o:hover{border-color:var(--cyan);color:var(--cyan);}
+.btn-w{width:100%;margin-top:8px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
 
-/* LEFT */
-.left{display:flex;flex-direction:column;min-height:0;border-radius:10px;overflow:hidden}
-.scen-hdr{flex-shrink:0;background:var(--bg4);padding:7px 14px 0}
-.scen-title-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
-.scen-title{font-size:12px;font-weight:600;color:#fff}
-.scen-tag{background:rgba(255,255,255,.12);border-radius:20px;padding:2px 9px;font-size:10px;color:rgba(255,255,255,.75)}
-.prog-meta{display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.6);margin-bottom:3px}
-.prog-bg{height:4px;background:rgba(255,255,255,.12);border-radius:2px;overflow:hidden;margin-bottom:5px}
-.prog-fill{height:100%;width:50%;background:linear-gradient(90deg,#1d7a6b,#4ade80);border-radius:2px}
-.hint{background:rgba(29,122,107,.2);border-left:3px solid #1d7a6b;padding:5px 10px;font-size:11px;color:#9ee5d4;display:flex;align-items:center;gap:7px;margin:0 -14px;padding-left:14px}
+/* ── FORM ELEMENTS ── */
+.fg{margin-bottom:16px;}
+.flbl{display:block;font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:1.2px;color:var(--text2);text-transform:uppercase;margin-bottom:6px;}
+.finp{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;color:var(--text);font-family:var(--mono);font-size:.85rem;outline:none;transition:border-color .2s;}
+.finp:focus{border-color:var(--cyan);}
+select.finp{cursor:pointer;}
+.ferr{color:var(--red);font-size:.75rem;font-family:var(--mono);margin-top:4px;min-height:16px;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:520px){.fgrid{grid-template-columns:1fr;}}
 
-/* MONITOR */
-.monitor{flex:1;min-height:0;background:var(--bg2);display:flex;flex-direction:column;overflow:hidden}
-.mon-bar{flex-shrink:0;background:var(--bg3);border-bottom:1px solid var(--border);padding:3px 12px;display:flex;align-items:center;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:10px}
-.mon-lbl{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:#00e5ff;letter-spacing:2px}
-.mon-info{color:#3a5a70}.mon-info span{color:#c8dde8}
-.mon-clk{font-size:13px;color:#fff;letter-spacing:2px}
-.mon-body{flex:1;min-height:0;display:grid;grid-template-columns:1fr 148px;overflow:hidden}
+/* ── RADIO OPTIONS ── */
+.ro-group{display:flex;flex-direction:column;gap:6px;}
+.ro{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;cursor:pointer;transition:all .2s;font-size:.83rem;}
+.ro:hover{border-color:var(--cyan2);}
+.ro.sel{border-color:var(--cyan);background:rgba(0,229,255,.06);color:var(--cyan);}
+.ro-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;transition:all .2s;}
+.ro.sel .ro-dot{border-color:var(--cyan);background:var(--cyan);}
 
-/* WAVES — original sizing preserved exactly */
-.waves{display:flex;flex-direction:column;padding:3px;gap:2px;overflow:hidden;min-height:0}
-.wave-row{flex:1;min-height:0;background:#081520;border:1px solid var(--border);border-radius:3px;display:flex;flex-direction:column;overflow:hidden;position:relative;cursor:pointer;transition:border-color .2s}
-.wave-row:hover{border-color:rgba(0,229,255,.3)}
-.wave-row.zoomed{position:fixed;top:52px;left:0;right:0;bottom:0;z-index:300;border-radius:0;flex:none;height:calc(100vh - 52px);cursor:zoom-out;border-color:#00e5ff !important}
-.zoom-hint{display:none;position:absolute;bottom:4px;right:7px;font-family:'Share Tech Mono',monospace;font-size:8px;color:rgba(255,255,255,.2);letter-spacing:1px;pointer-events:none}
-.wave-row:hover .zoom-hint{display:block}
-.wave-row.zoomed .zoom-hint{display:block;color:rgba(0,229,255,.35);font-size:9px}
-.wave-lbl{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;padding:2px 8px;border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace}
-.wname{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;letter-spacing:1px}
-.wval{font-size:13px}
-.wunit{font-size:9px;color:#3a5a70;margin-left:2px}
-.wave-row canvas{flex:1;min-height:0;width:100%;display:block}
-.alarm-tag{display:none;position:absolute;top:3px;right:6px;background:#ff2244;color:#fff;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:9px;padding:1px 6px;border-radius:3px;letter-spacing:1px;animation:aflash .8s infinite}
-.alarm-tag.on{display:block}
+/* ── LIKERT ── */
+.lk-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:8px;transition:border-color .2s;}
+.lk-row:hover{border-color:var(--border2);}
+.lk-row.answered{border-color:rgba(0,229,255,.2);}
+.lk-q{font-size:.83rem;line-height:1.5;color:var(--text);}
+.lk-qn{font-family:var(--mono);font-size:.7rem;color:var(--text3);margin-right:6px;}
+.lk-opts{display:flex;gap:4px;flex-shrink:0;}
+.lk-opt{width:32px;height:32px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:var(--mono);font-size:.75rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.lk-opt:hover{border-color:var(--cyan);color:var(--cyan);}
+.lk-opt.sel{background:var(--cyan);border-color:var(--cyan);color:#000;font-weight:700;}
 
-/* PARAMS */
-.params{background:var(--bg3);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;font-family:'Share Tech Mono',monospace}
-.mode-box{flex-shrink:0;background:var(--bg5);border-bottom:1px solid var(--border);padding:5px 8px;text-align:center}
-.mode-lbl{font-size:8px;color:#3a5a70;letter-spacing:1px;font-family:'Rajdhani',sans-serif}
-.mode-val{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:18px;color:#00e5ff;letter-spacing:2px}
-.psec{padding:4px 8px;border-bottom:1px solid var(--border);flex-shrink:0}
-.ptitle{font-size:8px;color:#3a5a70;letter-spacing:1px;font-family:'Rajdhani',sans-serif;text-transform:uppercase;margin-bottom:3px}
-.prow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px}
-.pname{font-size:9px;color:#7a9daa}
-.pval{font-size:14px}
-.punit{font-size:8px;color:#3a5a70;margin-left:2px}
-.alm-list{font-size:9px;color:#ff2244;line-height:1.7}
+/* ── MCQ ── */
+.mcq-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;transition:border-color .2s;}
+.mcq-item.answered{border-color:rgba(0,229,255,.2);}
+.mcq-q{font-size:.88rem;font-weight:500;margin-bottom:12px;line-height:1.5;color:var(--text);}
+.mcq-qn{font-family:var(--mono);font-size:.7rem;color:var(--cyan);margin-right:8px;}
+.mcq-opts{display:flex;flex-direction:column;gap:6px;}
+.mcq-opt{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-radius:5px;border:1px solid var(--border2);cursor:pointer;transition:all .15s;font-size:.82rem;line-height:1.4;}
+.mcq-opt:hover{border-color:var(--cyan2);background:rgba(0,229,255,.04);}
+.mcq-opt.sel{border-color:var(--cyan);background:rgba(0,229,255,.08);color:var(--cyan);}
+.mcq-letter{font-family:var(--mono);font-size:.72rem;color:var(--text3);flex-shrink:0;margin-top:1px;}
+.mcq-opt.sel .mcq-letter{color:var(--cyan);}
 
-/* DECISION */
-.decision{flex-shrink:0;background:#fff;padding:10px 14px;border-top:1px solid #e5e7eb}
-.dec-title{font-size:11px;font-weight:600;color:#111827;margin-bottom:6px}
-.dec-opts{display:flex;flex-direction:column;gap:4px;margin-bottom:7px}
-.dec-opt{display:flex;align-items:center;gap:8px;padding:5px 10px;border:1.5px solid #e5e7eb;border-radius:6px;cursor:pointer;font-size:11px;color:#374151;transition:all .15s}
-.dec-opt:hover{border-color:#185fa5;background:#eff6ff;color:#185fa5}
-.dec-opt input{accent-color:#185fa5}
-.dec-actions{display:flex;justify-content:flex-end;gap:8px}
-.btn-s{padding:5px 13px;border:1.5px solid #d1d5db;border-radius:6px;background:#fff;color:#374151;font-size:11px;cursor:pointer}
-.btn-p{padding:5px 17px;border:none;border-radius:6px;background:#185fa5;color:#fff;font-size:11px;font-weight:600;cursor:pointer}
-.btn-p:disabled{background:#d1d5db;cursor:not-allowed}
+/* ── PROGRESS BAR ── */
+#prog-wrap{position:fixed;top:0;left:0;right:0;height:3px;z-index:200;background:transparent;}
+#prog-bar{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));width:0%;transition:width .5s ease;box-shadow:0 0 8px var(--cyan);}
 
-/* AI-SAM column — original sizing exactly */
-.ai-col{background:#fff;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.2);min-height:0}
-.ai-hdr{flex-shrink:0;background:linear-gradient(135deg,#085041,#1d7a6b);padding:11px 14px;display:flex;align-items:center;gap:10px}
-.ai-av{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
-.ai-title{font-size:13px;font-weight:600;color:#fff}
-.ai-sub{font-size:10px;color:rgba(255,255,255,.7);margin-top:1px}
-.ai-msgs{flex:1;min-height:0;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;background:#f8fffe}
-.msg{display:flex;gap:7px;align-items:flex-start}
-.msg.u{flex-direction:row-reverse}
-.msg-av{width:24px;height:24px;border-radius:50%;flex-shrink:0;background:#1d7a6b;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff}
-.msg.u .msg-av{background:#185fa5}
-.bubble{max-width:210px;padding:8px 11px;border-radius:10px;font-size:11px;line-height:1.5}
-.msg.ai .bubble{background:#e8f5f2;color:#085041;border-radius:2px 10px 10px 10px}
-.msg.u  .bubble{background:#185fa5;color:#fff;border-radius:10px 2px 10px 10px}
-.typing{display:flex;gap:4px;align-items:center;padding:4px 0}
-.typing span{width:6px;height:6px;background:#1d7a6b;border-radius:50%;animation:typ 1.2s infinite}
-.typing span:nth-child(2){animation-delay:.2s}
-.typing span:nth-child(3){animation-delay:.4s}
-@keyframes typ{0%,80%,100%{opacity:.3;transform:scale(1)}40%{opacity:1;transform:scale(1.2)}}
-.ai-inp-row{flex-shrink:0;padding:9px;border-top:1px solid #e5e7eb;display:flex;gap:7px}
-.ai-inp{flex:1;padding:7px 11px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:11px;color:#374151;outline:none;font-family:'Inter',sans-serif}
-.ai-inp:focus{border-color:#1d7a6b}
-.ai-send{width:32px;height:32px;border-radius:7px;background:#1d7a6b;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
-/* original hint below chatbot — preserved exactly */
-.ai-note{flex-shrink:0;padding:5px 10px;background:#f9fafb;border-top:1px solid #e5e7eb;font-size:9px;color:#6b7280;text-align:center;line-height:1.4}
+/* ── LOADER ── */
+#loader{display:none;position:fixed;inset:0;background:rgba(5,13,20,.92);z-index:500;flex-direction:column;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(4px);}
+#loader.on{display:flex;}
+.lring{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ltxt{font-family:var(--mono);font-size:.75rem;color:var(--cyan);letter-spacing:1px;}
 
-/* WAVE BG DECO */
-.wave-deco{position:fixed;bottom:0;left:0;right:0;z-index:0;pointer-events:none;height:180px;overflow:hidden}
-.wave-deco svg{width:100%;position:absolute;bottom:0;min-width:1200px}
+/* ── RESUME BANNER ── */
+#res-banner{display:none;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);border-radius:var(--r);padding:12px 16px;margin-bottom:16px;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+#res-banner .rb-txt{font-size:.82rem;color:var(--green);}
+.rb-acts{display:flex;gap:8px;}
 
-/* ZOOM CLOSE */
-.zoom-close{display:none;position:fixed;top:60px;right:14px;z-index:400;background:rgba(0,229,255,.1);border:1px solid #00e5ff;color:#00e5ff;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;padding:4px 12px;border-radius:4px;cursor:pointer;letter-spacing:1px}
-.zoom-close.vis{display:block}
+/* ── CONSENT ── */
+.consent-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:20px;max-height:320px;overflow-y:auto;font-size:.82rem;line-height:1.8;color:var(--text2);margin-bottom:16px;}
+.consent-box h4{color:var(--text);font-family:var(--sans);margin-bottom:8px;margin-top:16px;font-size:.9rem;}
+.consent-box h4:first-child{margin-top:0;}
+.consent-check{display:flex;align-items:flex-start;gap:10px;padding:12px;background:var(--bg3);border-radius:6px;cursor:pointer;font-size:.83rem;}
+.consent-check input{margin-top:2px;accent-color:var(--cyan);width:16px;height:16px;flex-shrink:0;}
+
+/* ── SIMULATION LAYOUT ── */
+.sim-layout{display:grid;grid-template-columns:1fr 380px;gap:14px;width:100%;max-width:1200px;padding:14px;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}}
+.sim-left{display:flex;flex-direction:column;gap:12px;}
+.sim-right{display:flex;flex-direction:column;gap:12px;}
+
+/* ── PATIENT HEADER ── */
+.pt-hdr{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.pt-name{font-family:var(--sans);font-size:1rem;font-weight:700;color:var(--text);}
+.pt-meta{font-family:var(--mono);font-size:.72rem;color:var(--text2);}
+.pt-dx{font-size:.8rem;color:var(--amber);margin-top:2px;}
+.sc-badge{font-family:var(--mono);font-size:.68rem;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.3);color:var(--cyan);padding:4px 10px;border-radius:3px;}
+.sc-prog{font-family:var(--mono);font-size:.68rem;color:var(--text3);}
+
+/* ── VITALS MONITOR ── */
+.vitals-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+@media(max-width:700px){.vitals-grid{grid-template-columns:repeat(3,1fr);}}
+.vbox{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:8px;text-align:center;}
+.vbox-lbl{font-family:var(--mono);font-size:.58rem;color:var(--text3);letter-spacing:.8px;margin-bottom:4px;}
+.vbox-val{font-family:var(--mono);font-size:1.1rem;font-weight:700;}
+.vbox-unit{font-family:var(--mono);font-size:.58rem;color:var(--text3);}
+.v-spo2{color:#00e5ff;} .v-hr{color:#ff5252;} .v-rr{color:#ffd740;}
+.v-bp{color:#ce93d8;} .v-etco2{color:#a5d6a7;} .v-fio2{color:#82b1ff;}
+.vbox.alert{border-color:var(--red);animation:pulse-border 1s infinite;}
+@keyframes pulse-border{0%,100%{border-color:var(--red)}50%{border-color:transparent}}
+
+/* ── WAVEFORMS ── */
+.wave-wrap{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.wave-hdr{display:flex;gap:6px;padding:8px 12px;background:rgba(0,0,0,.3);border-bottom:1px solid var(--border);}
+.wave-tab{font-family:var(--mono);font-size:.65rem;padding:4px 8px;border-radius:3px;cursor:pointer;border:1px solid transparent;color:var(--text3);transition:all .15s;}
+.wave-tab.active{background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.3);color:var(--cyan);}
+.wave-canvases{position:relative;}
+canvas.wc{display:none;width:100%;height:120px;}
+canvas.wc.active{display:block;}
+
+/* ── VENT SETTINGS ── */
+.vent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+@media(max-width:600px){.vent-grid{grid-template-columns:repeat(2,1fr);}}
+.vset{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:8px;text-align:center;}
+.vset-lbl{font-family:var(--mono);font-size:.58rem;color:var(--text3);letter-spacing:.5px;margin-bottom:3px;}
+.vset-val{font-family:var(--mono);font-size:.95rem;font-weight:600;color:var(--blue);}
+.vset-unit{font-family:var(--mono);font-size:.58rem;color:var(--text3);}
+
+/* ── CLINICAL HISTORY ── */
+.hx-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;font-size:.8rem;line-height:1.7;color:var(--text2);max-height:180px;overflow-y:auto;}
+.hx-box strong{color:var(--text);font-weight:600;}
+
+/* ── DECISIONS ── */
+.dec-wrap{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px;}
+.dec-title{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:1px;color:var(--amber);text-transform:uppercase;margin-bottom:10px;}
+.dec-prompt{font-size:.85rem;font-weight:500;color:var(--text);margin-bottom:12px;line-height:1.5;padding:10px;background:rgba(255,215,64,.05);border-left:2px solid var(--amber);border-radius:0 5px 5px 0;}
+.dec-opts{display:flex;flex-direction:column;gap:6px;}
+.dec-opt{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:6px;border:1px solid var(--border2);cursor:pointer;transition:all .2s;font-size:.85rem;background:var(--bg2);color:#e0f2f1;font-weight:500;}
+.dec-opt:hover:not(:disabled){border-color:var(--cyan2);background:rgba(0,229,255,.06);transform:translateX(3px);}
+.dec-opt.correct{border-color:var(--green)!important;background:rgba(0,230,118,.08)!important;color:var(--green)!important;}
+.dec-opt.incorrect{border-color:var(--red)!important;background:rgba(255,82,82,.06)!important;color:var(--red)!important;}
+.dec-opt:disabled{cursor:default;opacity:0.75;}
+.dec-icon{font-size:.9rem;flex-shrink:0;}
+
+/* ── AI CHAT ── */
+.chat-wrap{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;height:100%;min-height:400px;max-height:580px;}
+.chat-hdr{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:rgba(0,229,255,.03);}
+.chat-ai-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:glow .8s ease-in-out infinite alternate;}
+@keyframes glow{from{opacity:.6}to{opacity:1}}
+.chat-ai-name{font-family:var(--mono);font-size:.72rem;color:var(--green);font-weight:600;}
+.chat-ai-role{font-family:var(--mono);font-size:.65rem;color:var(--text3);}
+.chat-hint{font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-left:auto;text-align:right;line-height:1.4;}
+.msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth;}
+.msgs::-webkit-scrollbar{width:4px;}
+.msgs::-webkit-scrollbar-track{background:transparent;}
+.msgs::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.msg{display:flex;gap:8px;max-width:92%;animation:msgIn .25s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.msg.ai{align-self:flex-start;}
+.msg.usr{align-self:flex-end;flex-direction:row-reverse;}
+.msg.sys{align-self:center;max-width:100%;}
+.mav{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.65rem;font-weight:700;flex-shrink:0;}
+.mav.ai{background:rgba(0,230,118,.15);color:var(--green);border:1px solid rgba(0,230,118,.3);}
+.mav.u{background:rgba(0,229,255,.15);color:var(--cyan);border:1px solid rgba(0,229,255,.3);}
+.mb{padding:9px 12px;border-radius:6px;font-size:.8rem;line-height:1.6;}
+.msg.ai .mb{background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);color:var(--text);border-radius:0 6px 6px 6px;}
+.msg.usr .mb{background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);color:var(--cyan);border-radius:6px 0 6px 6px;}
+.msg.sys .mb{background:rgba(255,215,64,.06);border:1px solid rgba(255,215,64,.2);color:var(--amber);font-size:.75rem;font-family:var(--mono);text-align:center;width:100%;}
+.typing{display:flex;gap:4px;align-items:center;padding:10px 14px;}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--green);opacity:.4;animation:tp .8s ease-in-out infinite;}
+.typing span:nth-child(2){animation-delay:.15s;}
+.typing span:nth-child(3){animation-delay:.3s;}
+@keyframes tp{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+.chat-inp-wrap{padding:10px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.chat-inp{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:5px;padding:8px 12px;color:var(--text);font-family:var(--body);font-size:.82rem;outline:none;resize:none;max-height:80px;}
+.chat-inp:focus{border-color:var(--cyan);}
+.chat-send{background:rgba(0,230,118,.15);border:1px solid rgba(0,230,118,.3);color:var(--green);border-radius:5px;padding:8px 12px;cursor:pointer;font-family:var(--mono);font-size:.72rem;transition:all .2s;white-space:nowrap;}
+.chat-send:hover{background:rgba(0,230,118,.25);}
+
+/* ── SCENE DEBRIEF ── */
+.sdeb-wrap{background:var(--panel);border:1px solid var(--border2);border-radius:var(--r);padding:16px;margin-top:10px;}
+.sdeb-score{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+.sdeb-ring{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:1rem;font-weight:700;flex-shrink:0;}
+.sdeb-ring.good{background:rgba(0,230,118,.12);border:2px solid var(--green);color:var(--green);}
+.sdeb-ring.mid{background:rgba(255,215,64,.12);border:2px solid var(--amber);color:var(--amber);}
+.sdeb-ring.poor{background:rgba(255,82,82,.12);border:2px solid var(--red);color:var(--red);}
+.sdeb-fb{font-size:.82rem;color:var(--text2);line-height:1.6;}
+.sdeb-fb strong{color:var(--text);}
+
+/* ── TAM ── */
+.tam-dim{margin-bottom:20px;}
+.tam-dim-title{font-family:var(--sans);font-size:.85rem;font-weight:700;color:var(--cyan);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.tam-dim-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── SCORES ── */
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:520px){.score-grid{grid-template-columns:1fr;}}
+.score-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;}
+.score-val{font-family:var(--mono);font-size:1.8rem;font-weight:700;color:var(--cyan);}
+.score-lbl{font-family:var(--mono);font-size:.65rem;color:var(--text3);letter-spacing:.8px;margin-top:4px;}
+.score-sub{font-size:.75rem;color:var(--text2);margin-top:4px;}
+
+/* ── DEBRIEF ── */
+.deb-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:16px;font-size:.83rem;line-height:1.8;color:var(--text2);margin-bottom:16px;white-space:pre-wrap;}
+
+/* ── THANK YOU ── */
+.ty-box{text-align:center;padding:40px 20px;}
+.ty-icon{font-size:3rem;margin-bottom:16px;}
+.ty-title{font-family:var(--sans);font-size:1.8rem;font-weight:800;color:var(--green);margin-bottom:8px;}
+.ty-sub{color:var(--text2);font-size:.9rem;margin-bottom:24px;line-height:1.6;}
+.ty-info{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:left;margin-bottom:20px;font-family:var(--mono);font-size:.78rem;}
+.ty-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);}
+.ty-row:last-child{border:none;}
+.ty-row-lbl{color:var(--text3);}
+.ty-row-val{color:var(--cyan);}
+.contact-box{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.15);border-radius:var(--r);padding:14px;font-size:.82rem;color:var(--text2);text-align:center;}
+.contact-box a{color:var(--cyan);text-decoration:none;}
+
+/* ── ORIENTATION ── */
+.orient-step{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;}
+.orient-icon{font-size:1.6rem;flex-shrink:0;}
+.orient-title{font-family:var(--sans);font-size:.92rem;font-weight:700;color:var(--cyan);margin-bottom:5px;}
+.orient-desc{font-size:.82rem;color:var(--text2);line-height:1.6;}
+
+/* ── WELCOME ── */
+.welcome-hero{text-align:center;padding:40px 20px 30px;}
+.welcome-logo{font-family:var(--sans);font-size:2.8rem;font-weight:800;color:var(--cyan);letter-spacing:-2px;margin-bottom:4px;}
+.welcome-logo span{color:var(--text2);}
+.welcome-tagline{font-family:var(--mono);font-size:.78rem;color:var(--text3);letter-spacing:2px;margin-bottom:24px;}
+.welcome-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0;}
+@media(max-width:560px){.welcome-grid{grid-template-columns:1fr;}}
+.welcome-feat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;}
+.welcome-feat-icon{font-size:1.4rem;margin-bottom:8px;}
+.welcome-feat-title{font-family:var(--sans);font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:4px;}
+.welcome-feat-desc{font-size:.75rem;color:var(--text3);line-height:1.5;}
+.contact-footer{text-align:center;font-size:.75rem;color:var(--text3);padding:14px;border-top:1px solid var(--border);margin-top:10px;}
+.contact-footer a{color:var(--cyan);text-decoration:none;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 </style>
 </head>
 <body>
 
-<div class="wave-deco">
-  <svg viewBox="0 0 1440 180" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-    <path fill="rgba(29,122,107,0.08)" d="M0,130L360,110C720,90,1080,110,1440,125L1440,180L0,180Z"/>
-    <path fill="rgba(15,52,96,0.12)" d="M0,155L360,140C720,125,1080,142,1440,152L1440,180L0,180Z"/>
-  </svg>
-</div>
+<div id="prog-wrap"><div id="prog-bar"></div></div>
+<div id="loader"><div class="lring"></div><div class="ltxt" id="ltxt">LOADING...</div></div>
 
-<!-- HEADER -->
-<header class="hdr">
-  <div class="hdr-logo">
-    <div class="logo-box">VS</div>
-    <span class="logo-txt">VentSim AI</span>
-  </div>
-  <div class="hdr-right">
-    <div class="hdr-tools">
-      <div class="theme-dots">
-        <div class="tdot d-navy active" title="Night navy"  onclick="setTheme('navy',this)"></div>
-        <div class="tdot d-slate"       title="Slate gray"  onclick="setTheme('slate',this)"></div>
-        <div class="tdot d-teal"        title="Deep teal"   onclick="setTheme('teal',this)"></div>
-        <div class="tdot d-black"       title="Midnight"    onclick="setTheme('black',this)"></div>
+<!-- ═══════════════════════════════════
+     S1: WELCOME
+═══════════════════════════════════ -->
+<div class="sc active" id="welcome-sc">
+  <div class="wrap" style="align-items:center;">
+    <div class="inner" style="max-width:680px;">
+      <div class="welcome-hero">
+        <div class="welcome-logo">VentSim<span> AI</span></div>
+        <div class="welcome-tagline">GENERATIVE AI · CLINICAL SIMULATION · ICU NURSING</div>
+        <div class="badge">INTERVENTION PLATFORM — UNIVERSITI MALAYA PhD STUDY 2026</div>
+        <p class="ssub" style="margin-top:14px;">A generative AI-driven virtual simulation platform for mechanical ventilation clinical decision-making training in ICU nursing. This platform is part of a PhD research study.</p>
       </div>
-      <div class="tsep"></div>
-      <div class="bright-row" title="Monitor brightness">
-        <span class="bright-lbl">☀</span>
-        <input class="bright-sl" type="range" min="40" max="100" value="100" step="1" oninput="setBright(this.value)">
+      <div class="welcome-grid">
+        <div class="welcome-feat"><div class="welcome-feat-icon">🫁</div><div class="welcome-feat-title">4 Clinical Scenarios</div><div class="welcome-feat-desc">Real-world ICU ventilation cases with live waveforms and vitals</div></div>
+        <div class="welcome-feat"><div class="welcome-feat-icon">🤖</div><div class="welcome-feat-title">Socratic AI Mentor</div><div class="welcome-feat-desc">Interactive AI that guides critical thinking through questioning</div></div>
+        <div class="welcome-feat"><div class="welcome-feat-icon">📊</div><div class="welcome-feat-title">Validated Instruments</div><div class="welcome-feat-desc">CDMNS · MCQ · TAM assessment battery</div></div>
       </div>
-      <div class="tsep"></div>
-      <button class="log-btn" id="log-btn" onclick="toggleLog()">LOG</button>
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-title">Study Information</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.8rem;color:var(--text2);">
+          <div><span style="color:var(--text3);font-family:var(--mono);font-size:.68rem;">RESEARCHER</span><br>Samir Alnasseri · 24085855</div>
+          <div><span style="color:var(--text3);font-family:var(--mono);font-size:.68rem;">UNIVERSITY</span><br>Universiti Malaya, Malaysia</div>
+          <div><span style="color:var(--text3);font-family:var(--mono);font-size:.68rem;">SUPERVISORS</span><br>Dr. Noor Hanita · Prof. Vimala</div>
+          <div><span style="color:var(--text3);font-family:var(--mono);font-size:.68rem;">ESTIMATED TIME</span><br>~90 minutes</div>
+        </div>
+      </div>
+      <button class="btn btn-p btn-w" onclick="show('consent-sc');setProg(5)">▶ BEGIN STUDY PARTICIPATION</button>
+      <div class="contact-footer">For enquiries: <span class="researcher-email"></span> · <a href="tel:+9689944245">+968 9944245</a></div>
     </div>
-    <div class="badge badge-ai"><span class="ai-dot"></span>AI-SAM active</div>
-    <div class="badge badge-id" id="pid-badge">P058</div>
-    <div class="timer" id="timer">30:00</div>
-  </div>
-</header>
-
-<!-- ALARM BANNER -->
-<div class="alarm-banner critical" id="alarm-banner">
-  <span id="alarm-txt">⚠&nbsp; HIGH PRESSURE ALARM — PIP 38 cmH₂O &nbsp;|&nbsp; PATIENT-VENTILATOR ASYNCHRONY SUSPECTED</span>
-  <div class="alarm-right">
-    <span class="sil-cd" id="sil-cd"></span>
-    <button class="alarm-log-lnk" onclick="toggleLog()">LOG ▸</button>
-    <button class="alarm-silence" onclick="silenceAlarm()">SILENCE 2 MIN</button>
   </div>
 </div>
 
-<!-- RESOLVED FLASH -->
-<div class="res-flash" id="res-flash">✓ &nbsp;ALARM RESOLVED — parameters normalising after intervention</div>
-
-<!-- ALARM LOG PANEL -->
-<div class="alarm-log" id="alarm-log">
-  <div class="alg-hdr">
-    <span class="alg-title">ALARM LOG</span>
-    <button class="alg-close" onclick="toggleLog()">✕</button>
-  </div>
-  <div class="alg-list" id="alg-list"></div>
+<!-- ═══════════════════════════════════
+     S2: INFORMED CONSENT
+═══════════════════════════════════ -->
+<div class="sc" id="consent-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:5%"></div></div><div class="hbadge">CONSENT</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 1 OF 8</div>
+    <div class="stitle">Informed <span class="hl">Consent</span></div>
+    <div class="ssub">Please read the following information carefully before deciding to participate.</div>
+    <div class="consent-box">
+      <h4>Study Title</h4>
+      <p>Effect of Generative AI-Driven Standardised Patient Simulation on ICU Nurses' Clinical Decision-Making and Technology Acceptance in Oman: A Quasi-Experimental Study.</p>
+      <h4>Purpose of the Study</h4>
+      <p>This study examines whether AI-guided virtual simulation improves clinical decision-making in mechanical ventilation management among ICU nurses. You are being invited to participate in this research study.</p>
+      <h4>What Will Happen</h4>
+      <p>You will complete: (1) a short demographic form, (2) a pre-test knowledge and clinical decision-making assessment, (3) an orientation tutorial, (4) four virtual ICU simulation scenarios with AI guidance (~40 minutes), (5) a post-test, and (6) a technology acceptance questionnaire. The entire session takes approximately 90 minutes.</p>
+      <h4>The AI Chatbot</h4>
+      <p>During simulation, an AI clinical mentor will ask you Socratic questions to guide your thinking. It will never give you direct answers — it is designed to stimulate your reasoning, not replace it.</p>
+      <h4>Risks and Benefits</h4>
+      <p>There are no foreseeable risks to participation. You may benefit from an enhanced learning experience and contribute to evidence-based nursing education in Oman.</p>
+      <h4>Confidentiality</h4>
+      <p>All data is anonymised. Your participant number (not your name) will be used throughout. Data will be stored securely and used for research purposes only.</p>
+      <h4>Voluntary Participation</h4>
+      <p>Participation is entirely voluntary. You may withdraw at any time without consequence. Your decision will not affect your employment or any other aspect of your work.</p>
+      <h4>Ethics Approval</h4>
+      <p>This study has been approved by the Universiti Malaya Research Ethics Committee (UMREC) and the Ministry of Health Oman.</p>
+      <h4>Contact</h4>
+      <p>For questions: Samir Alnasseri — <strong><span class="researcher-email"></span></strong> · <strong>+968 9944245</strong></p>
+    </div>
+    <label class="consent-check">
+      <input type="checkbox" id="consent-cb" onchange="checkConsent()">
+      <span>I have read and understood the information above. I voluntarily agree to participate in this study and understand I may withdraw at any time.</span>
+    </label>
+    <div class="ferr" id="c-err"></div>
+    <br>
+    <button class="btn btn-p btn-w" onclick="goConsent()">CONFIRM CONSENT & CONTINUE ▶</button>
+    <div class="contact-footer">Enquiries: <span class="researcher-email"></span> · <a href="tel:+9689944245">+968 9944245</a></div>
+  </div></div>
 </div>
 
-<!-- ZOOM CLOSE -->
-<button class="zoom-close" id="zoom-close" onclick="closeZoom()">✕ &nbsp;CLOSE ZOOM</button>
-
-<!-- GREETING -->
-<div class="greeting on" id="greeting">
-  <div class="g-av">AI</div>
-  <div class="g-body">
-    <h3>Welcome to VentSim AI — AI-SAM is your learning guide</h3>
-    <p>Hello! Begin by reviewing the bedside monitor. I will ask Socratic questions to deepen your reasoning — I will not give answers directly.</p>
-  </div>
-  <button class="g-btn" onclick="document.getElementById('greeting').className='greeting'">Begin</button>
-</div>
-
-<!-- BRIGHTNESS WRAPPER -->
-<div class="bwrap" id="bwrap">
-<div class="main">
-
-  <!-- LEFT -->
-  <div class="left">
-
-    <div class="scen-hdr">
-      <div class="scen-title-row">
-        <span class="scen-title">Scenario 2 — Post-Operative Respiratory Failure (Post-cardiac surgery · Male 58 yrs)</span>
-        <span class="scen-tag">ICU</span>
-      </div>
-      <div class="prog-meta"><span>Scenario 2 of 4</span><span>50% complete</span></div>
-      <div class="prog-bg"><div class="prog-fill"></div></div>
-      <div class="hint">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="#9ee5d4"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-        Review the bedside monitor parameters before making your clinical decision.
+<!-- ═══════════════════════════════════
+     S3: LOGIN
+═══════════════════════════════════ -->
+<div class="sc" id="login-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:12%"></div></div><div class="hbadge">LOGIN</div></div>
+  <div class="wrap"><div class="inner" style="max-width:440px;">
+    <div class="badge">STEP 2 OF 8</div>
+    <div class="stitle">Participant <span class="hl">Login</span></div>
+    <div class="ssub">Enter the participant number assigned to you by the researcher.</div>
+    <div id="res-banner">
+      <span class="rb-txt" id="res-info">Session found — resume?</span>
+      <div class="rb-acts">
+        <button class="btn btn-g" style="padding:7px 14px;font-size:.7rem;" onclick="resumeSession()">RESUME</button>
+        <button class="btn btn-o" style="padding:7px 14px;font-size:.7rem;" onclick="clearSaved()">START FRESH</button>
       </div>
     </div>
-
-    <div class="monitor">
-      <div class="mon-bar">
-        <span class="mon-lbl">BEDSIDE MONITOR</span>
-        <span class="mon-info">BED: <span>ICU-04</span> &nbsp;|&nbsp; MODE: <span>SIMV</span></span>
-        <span class="mon-clk" id="mon-clk">--:--:--</span>
+    <div class="card">
+      <div class="fg">
+        <label class="flbl">Participant Number <span style="color:var(--red)">*</span></label>
+        <input class="finp" id="pid" placeholder="Enter your participant number" maxlength="6" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
+        <div class="ferr" id="pid-err"></div>
       </div>
-      <div class="mon-body">
+      <div class="fg">
+        <label class="flbl">Session Date</label>
+        <input class="finp" id="ses-date" type="date">
+      </div>
+      <div class="fg">
+        <label class="flbl">Study Group</label>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:.8rem;color:var(--text3);font-family:var(--mono);">
+          🔒 Group assigned automatically from participant number
+        </div>
+      </div>
+      <div class="ferr" id="login-err"></div>
+    </div>
+    <button class="btn btn-p btn-w" onclick="startSession()">▶ BEGIN SESSION</button>
+    <div class="contact-footer">Problems? <span class="researcher-email"></span> · <a href="tel:+9689944245">+968 9944245</a></div>
+  </div></div>
+</div>
 
-        <div class="waves">
-          <div class="wave-row" id="wr-pres" onclick="toggleZoom('wr-pres')">
-            <div class="alarm-tag on" id="at-pip">HIGH PIP</div>
-            <div class="wave-lbl">
-              <span class="wname" style="color:#00ff7f">PRESSURE</span>
-              <div><span class="wval" style="color:#ff2244" id="v-pip">38</span><span class="wunit">PIP &nbsp;</span><span class="wval" style="color:#00ff7f;font-size:11px">6</span><span class="wunit">PEEP cmH₂O</span></div>
-            </div>
-            <canvas id="c-pres"></canvas>
-            <span class="zoom-hint">CLICK TO ZOOM</span>
+<!-- ═══════════════════════════════════
+     S4: DEMOGRAPHICS
+═══════════════════════════════════ -->
+<div class="sc" id="demo-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" id="demo-prog" style="width:15%"></div></div><div class="hbadge" id="hbadge">P--- · INT</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 3 OF 8</div>
+    <div class="stitle">Participant <span class="hl">Information</span></div>
+    <div class="ssub">Please provide the following information. All responses are anonymous.</div>
+    <div class="card">
+      <div class="card-title">Personal & Professional Background</div>
+      <div class="fgrid">
+        <div class="fg"><label class="flbl">Age Group</label>
+          <select class="finp" id="d1"><option value="">Select...</option><option>20–29 years</option><option>30–39 years</option><option>40–49 years</option><option>50 years or above</option></select></div>
+        <div class="fg"><label class="flbl">Gender</label>
+          <select class="finp" id="d2"><option value="">Select...</option><option>Male</option><option>Female</option><option>Prefer not to say</option></select></div>
+        <div class="fg"><label class="flbl">Nationality</label>
+          <select class="finp" id="d3"><option value="">Select...</option><option>Omani</option><option>Indian</option><option>Filipino</option><option>Other Arab</option><option>Other</option></select></div>
+        <div class="fg"><label class="flbl">Marital Status</label>
+          <select class="finp" id="d4"><option value="">Select...</option><option>Single</option><option>Married</option><option>Divorced/Widowed</option></select></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Education & Qualifications</div>
+      <div class="fgrid">
+        <div class="fg"><label class="flbl">Highest Qualification</label>
+          <select class="finp" id="d5"><option value="">Select...</option><option>Diploma in Nursing</option><option>Bachelor of Nursing</option><option>Postgraduate Diploma</option><option>Master's or above</option></select></div>
+        <div class="fg"><label class="flbl">Critical Care Certification</label>
+          <select class="finp" id="d6"><option value="">Select...</option><option>Yes</option><option>No</option><option>In progress</option></select></div>
+        <div class="fg"><label class="flbl">MV Training (past 2 years)</label>
+          <select class="finp" id="d7"><option value="">Select...</option><option>Yes — formal course</option><option>Yes — in-service only</option><option>No training received</option></select></div>
+        <div class="fg"><label class="flbl">Prior Simulation Experience</label>
+          <select class="finp" id="d8"><option value="">Select...</option><option>None</option><option>Basic (1–2 sessions)</option><option>Moderate (3–5 sessions)</option><option>Extensive (6+ sessions)</option></select></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Clinical Experience</div>
+      <div class="fgrid">
+        <div class="fg"><label class="flbl">Total Nursing Experience</label>
+          <select class="finp" id="d9"><option value="">Select...</option><option>Less than 1 year</option><option>1–3 years</option><option>4–6 years</option><option>7–10 years</option><option>More than 10 years</option></select></div>
+        <div class="fg"><label class="flbl">ICU Experience</label>
+          <select class="finp" id="d10"><option value="">Select...</option><option>Less than 1 year</option><option>1–3 years</option><option>4–6 years</option><option>7–10 years</option><option>More than 10 years</option></select></div>
+        <div class="fg"><label class="flbl">Current Role</label>
+          <select class="finp" id="d11"><option value="">Select...</option><option>Staff Nurse</option><option>Senior Staff Nurse</option><option>Charge Nurse</option><option>ICU Coordinator</option><option>Other</option></select></div>
+        <div class="fg"><label class="flbl">Patients per Shift (avg)</label>
+          <select class="finp" id="d12"><option value="">Select...</option><option>1 patient</option><option>2 patients</option><option>3 patients</option><option>4 or more</option></select></div>
+        <div class="fg"><label class="flbl">Shift Pattern</label>
+          <select class="finp" id="d13"><option value="">Select...</option><option>Day shifts only</option><option>Night shifts only</option><option>Rotating shifts</option></select></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Technology & Ventilator Familiarity</div>
+      <div class="fgrid">
+        <div class="fg"><label class="flbl">Computer/Tablet Comfort</label>
+          <select class="finp" id="d14"><option value="">Select...</option><option>Not comfortable</option><option>Slightly comfortable</option><option>Moderately comfortable</option><option>Very comfortable</option><option>Expert user</option></select></div>
+        <div class="fg"><label class="flbl">Prior AI Tool Use</label>
+          <select class="finp" id="d15"><option value="">Select...</option><option>Never used</option><option>Used once or twice</option><option>Use occasionally</option><option>Use regularly</option></select></div>
+        <div class="fg"><label class="flbl">MV Self-Confidence (1–5)</label>
+          <select class="finp" id="d16"><option value="">Select...</option><option>1 — Not at all confident</option><option>2 — Slightly confident</option><option>3 — Moderately confident</option><option>4 — Confident</option><option>5 — Very confident</option></select></div>
+        <div class="fg"><label class="flbl">MV Emergency in Past 6 Months</label>
+          <select class="finp" id="d17"><option value="">Select...</option><option>None</option><option>1–2 times</option><option>3–5 times</option><option>More than 5 times</option></select></div>
+      </div>
+    </div>
+    <div class="ferr" id="demo-err"></div>
+    <button class="btn btn-p btn-w" onclick="submitDemo()">CONTINUE TO PRE-TEST ▶</button>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S5: PRE-TEST MCQ
+═══════════════════════════════════ -->
+<div class="sc" id="premcq-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:28%"></div></div><div class="hbadge" id="hbadge2">PRE-MCQ</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 4 OF 8 — PRE-TEST</div>
+    <div class="stitle">Knowledge <span class="hl">Assessment</span></div>
+    <div class="ssub">Answer all 20 questions. Select the single best answer. No feedback is given at this stage — this is your baseline assessment.</div>
+    <div id="mcq-pre-cont"></div>
+    <div class="ferr" id="premcq-err"></div>
+    <button class="btn btn-p btn-w" onclick="submitPreMCQ()">CONTINUE TO CDMNS ▶</button>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S6: PRE-TEST CDMNS
+═══════════════════════════════════ -->
+<div class="sc" id="precdmns-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:38%"></div></div><div class="hbadge">PRE-CDMNS</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 4 OF 8 — PRE-TEST (continued)</div>
+    <div class="stitle">Clinical Decision-Making <span class="hl">Scale</span></div>
+    <div class="ssub">Rate how frequently you engage in each behaviour during clinical practice. <strong>1 = Never · 5 = Always</strong>. There are no right or wrong answers — reflect on your actual practice.</div>
+    <div id="cdmns-pre-cont"></div>
+    <div class="ferr" id="precdmns-err"></div>
+    <button class="btn btn-p btn-w" onclick="submitPreCDMNS()">CONTINUE TO ORIENTATION ▶</button>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S7: ORIENTATION
+═══════════════════════════════════ -->
+<div class="sc" id="orient-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:48%"></div></div><div class="hbadge">ORIENTATION</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 5 OF 8</div>
+    <div class="stitle">Platform <span class="hl">Orientation</span></div>
+    <div class="ssub">Before the simulation begins, please familiarise yourself with the interface. This takes approximately 2 minutes.</div>
+    <div class="orient-step"><div class="orient-icon">📺</div><div><div class="orient-title">Ventilator Waveforms</div><div class="orient-desc">You will see live animated waveforms for Flow, Pressure, and Volume. These change in real time based on patient status. Select the waveform tab to switch between views. Abnormal patterns are key clinical cues.</div></div></div>
+    <div class="orient-step"><div class="orient-icon">❤️</div><div><div class="orient-title">Vital Signs Monitor</div><div class="orient-desc">A live vitals panel shows SpO₂, HR, RR, BP, ETCO₂, and FiO₂. Values highlighted in red indicate alarm ranges — assess these first.</div></div></div>
+    <div class="orient-step"><div class="orient-icon">⚡</div><div><div class="orient-title">Clinical Decisions</div><div class="orient-desc">At each decision point you will choose from 3–4 options. Think carefully — your choice affects the patient's condition and your score. You cannot change a decision once made.</div></div></div>
+    <div class="orient-step"><div class="orient-icon">🤖</div><div><div class="orient-title">AI Clinical Mentor</div><div class="orient-desc">The AI will open each scenario with a question to orient your thinking, then remain available throughout. It will ask you questions — not give answers. Type your thoughts freely. The AI uses the Socratic method to guide you toward insight. You are encouraged to engage with it actively.</div></div></div>
+    <div class="orient-step"><div class="orient-icon">📋</div><div><div class="orient-title">Scenario Flow</div><div class="orient-desc">There are 4 scenarios. Each begins with a patient handover, then unfolds over several decision points. A brief debrief appears after each scenario before you proceed to the next.</div></div></div>
+    <div class="orient-step"><div class="orient-icon">💾</div><div><div class="orient-title">Auto-Save</div><div class="orient-desc">Your progress saves automatically every 2 minutes. If you are interrupted, you can resume from where you left off using your participant number.</div></div></div>
+    <div class="card" style="background:rgba(0,229,255,.04);border-color:rgba(0,229,255,.2);">
+      <div style="font-size:.85rem;color:var(--text);line-height:1.7;">
+        ⏱ <strong>Total simulation time: approximately 40 minutes</strong><br>
+        🎯 <strong>Goal:</strong> Make safe, evidence-based clinical decisions for each patient.<br>
+        🤝 <strong>Important:</strong> Work independently. Do not consult others during the session.
+      </div>
+    </div>
+    <button class="btn btn-g btn-w" onclick="startSim()">▶ BEGIN SIMULATION</button>
+  </div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S8: SIMULATION
+═══════════════════════════════════ -->
+<div class="sc" id="sim-sc">
+  <div class="hdr">
+    <span class="hlogo">VentSim <span>AI</span></span>
+    <div class="hprog"><div class="hprog-fill" style="width:55%"></div></div>
+    <span id="sim-sc-ind" style="font-family:var(--mono);font-size:.7rem;color:var(--text3);">SCENARIO 1/4</span>
+    <div class="hbadge" id="sim-hbadge">SIM</div>
+    <div class="xp-badge" id="xp-badge">✦ 0 XP</div>
+  </div>
+  <div style="display:flex;justify-content:center;width:100%;">
+    <div class="sim-layout">
+      <!-- LEFT COLUMN -->
+      <div class="sim-left">
+        <!-- Patient header -->
+        <div class="pt-hdr">
+          <div>
+            <div class="pt-name" id="pt-name">Patient Loading...</div>
+            <div class="pt-meta" id="pt-meta"></div>
+            <div class="pt-dx" id="pt-dx"></div>
           </div>
-          <div class="wave-row" id="wr-flow" onclick="toggleZoom('wr-flow')">
-            <div class="wave-lbl">
-              <span class="wname" style="color:#00e5ff">FLOW</span>
-              <div><span class="wval" style="color:#00e5ff" id="v-flow">32</span><span class="wunit">L/min</span></div>
-            </div>
-            <canvas id="c-flow"></canvas>
-            <span class="zoom-hint">CLICK TO ZOOM</span>
-          </div>
-          <div class="wave-row" id="wr-vol" onclick="toggleZoom('wr-vol')">
-            <div class="wave-lbl">
-              <span class="wname" style="color:#ffdd00">VOLUME</span>
-              <div><span class="wval" style="color:#ffdd00" id="v-tv">520</span><span class="wunit">mL Vt &nbsp;</span><span class="wval" style="color:#ffdd00;font-size:11px">7.3</span><span class="wunit">L MV</span></div>
-            </div>
-            <canvas id="c-vol"></canvas>
-            <span class="zoom-hint">CLICK TO ZOOM</span>
-          </div>
-          <div class="wave-row" id="wr-spo2" onclick="toggleZoom('wr-spo2')">
-            <div class="alarm-tag on" id="at-spo2">LOW SpO₂</div>
-            <div class="wave-lbl">
-              <span class="wname" style="color:#ff8c00">PLETH / SpO₂</span>
-              <div><span class="wval" style="color:#ff2244" id="v-spo2">91</span><span class="wunit">% &nbsp;</span><span class="wval" style="color:#ff8c00;font-size:11px" id="v-hr">104</span><span class="wunit">bpm</span></div>
-            </div>
-            <canvas id="c-spo2"></canvas>
-            <span class="zoom-hint">CLICK TO ZOOM</span>
+          <div style="text-align:right;">
+            <div class="sc-badge" id="sc-badge">SCENARIO 1</div>
+            <div class="sc-prog" id="sc-prog" style="margin-top:4px;"></div>
           </div>
         </div>
-
-        <div class="params">
-          <div class="mode-box"><div class="mode-lbl">MODE</div><div class="mode-val">SIMV</div></div>
-          <div class="psec">
-            <div class="ptitle">SET</div>
-            <div class="prow"><span class="pname">FiO₂</span><span><span class="pval" style="color:#00e5ff">45</span><span class="punit">%</span></span></div>
-            <div class="prow"><span class="pname">RR</span><span><span class="pval" style="color:#00e5ff">14</span><span class="punit">br/m</span></span></div>
-            <div class="prow"><span class="pname">VT</span><span><span class="pval" style="color:#00e5ff">520</span><span class="punit">mL</span></span></div>
-            <div class="prow"><span class="pname">PEEP</span><span><span class="pval" style="color:#00e5ff">6</span><span class="punit">cmH₂O</span></span></div>
-            <div class="prow"><span class="pname">Ti</span><span><span class="pval" style="color:#00e5ff">1.2</span><span class="punit">s</span></span></div>
-          </div>
-          <div class="psec">
-            <div class="ptitle">MEASURED</div>
-            <div class="prow"><span class="pname">PIP</span><span><span class="pval" style="color:#ff2244" id="p-pip">38</span><span class="punit">cmH₂O</span></span></div>
-            <div class="prow"><span class="pname">RR tot</span><span><span class="pval" style="color:#ff2244">22</span><span class="punit">br/m</span></span></div>
-            <div class="prow"><span class="pname">SpO₂</span><span><span class="pval" style="color:#ff2244" id="p-spo2">91</span><span class="punit">%</span></span></div>
-            <div class="prow"><span class="pname">HR</span><span><span class="pval" style="color:#ff8c00" id="p-hr">104</span><span class="punit">bpm</span></span></div>
-            <div class="prow"><span class="pname">MAP</span><span><span class="pval" style="color:#c8dde8">68</span><span class="punit">mmHg</span></span></div>
-          </div>
-          <div class="psec">
-            <div class="ptitle">⚠ ALARMS</div>
-            <div class="alm-list" id="active-alarms">HIGH PIP<br>38 &gt; 35<br><br>HIGH RR<br>22 &gt; 20<br><br>LOW SpO₂<br>91 &lt; 94</div>
+        <!-- Vitals -->
+        <div class="card" style="padding:12px;">
+          <div class="card-title">Vital Signs Monitor</div>
+          <div class="vitals-grid">
+            <div class="vbox"><div class="vbox-lbl">SpO₂</div><div class="vbox-val v-spo2" id="v-spo2">--</div><div class="vbox-unit">%</div></div>
+            <div class="vbox"><div class="vbox-lbl">HR</div><div class="vbox-val v-hr" id="v-hr">--</div><div class="vbox-unit">bpm</div></div>
+            <div class="vbox"><div class="vbox-lbl">RR</div><div class="vbox-val v-rr" id="v-rr">--</div><div class="vbox-unit">br/min</div></div>
+            <div class="vbox"><div class="vbox-lbl">BP</div><div class="vbox-val v-bp" id="v-bp">--</div><div class="vbox-unit">mmHg</div></div>
+            <div class="vbox"><div class="vbox-lbl">ETCO₂</div><div class="vbox-val v-etco2" id="v-etco2">--</div><div class="vbox-unit">mmHg</div></div>
+            <div class="vbox"><div class="vbox-lbl">FiO₂</div><div class="vbox-val v-fio2" id="v-fio2">--</div><div class="vbox-unit">%</div></div>
           </div>
         </div>
-
+        <!-- Waveforms -->
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div class="wave-wrap" style="border:none;">
+            <div class="wave-hdr">
+              <div class="wave-tab active" onclick="setWave('flow',this)">FLOW</div>
+              <div class="wave-tab" onclick="setWave('pressure',this)">PRESSURE</div>
+              <div class="wave-tab" onclick="setWave('volume',this)">VOLUME</div>
+              <span style="margin-left:auto;font-family:var(--mono);font-size:.6rem;color:var(--text3);" id="wave-lbl">L/min</span>
+            </div>
+            <div class="wave-canvases">
+              <canvas id="wc-flow" class="wc active" height="120"></canvas>
+              <canvas id="wc-pressure" class="wc" height="120"></canvas>
+              <canvas id="wc-volume" class="wc" height="120"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- Vent settings -->
+        <div class="card" style="padding:12px;">
+          <div class="card-title">Ventilator Settings</div>
+          <div class="vent-grid">
+            <div class="vset"><div class="vset-lbl">MODE</div><div class="vset-val" id="vs-mode" style="font-size:.8rem;">--</div></div>
+            <div class="vset"><div class="vset-lbl">TV</div><div class="vset-val" id="vs-tv">--</div><div class="vset-unit">mL</div></div>
+            <div class="vset"><div class="vset-lbl">RR Set</div><div class="vset-val" id="vs-rr">--</div><div class="vset-unit">/min</div></div>
+            <div class="vset"><div class="vset-lbl">PEEP</div><div class="vset-val" id="vs-peep">--</div><div class="vset-unit">cmH₂O</div></div>
+            <div class="vset"><div class="vset-lbl">PIP</div><div class="vset-val" id="vs-pip">--</div><div class="vset-unit">cmH₂O</div></div>
+            <div class="vset"><div class="vset-lbl">FiO₂</div><div class="vset-val" id="vs-fio2">--</div><div class="vset-unit">%</div></div>
+            <div class="vset"><div class="vset-lbl">I:E</div><div class="vset-val" id="vs-ie" style="font-size:.8rem;">--</div></div>
+            <div class="vset"><div class="vset-lbl">Plateau P</div><div class="vset-val" id="vs-plat">--</div><div class="vset-unit">cmH₂O</div></div>
+          </div>
+        </div>
+        <!-- History -->
+        <div class="card">
+          <div class="card-title">Clinical History & Handover</div>
+          <div class="hx-box" id="hx-box">Loading patient information...</div>
+        </div>
+        <!-- Decisions -->
+        <div class="dec-wrap" id="dec-wrap">
+          <div class="dec-title">⚡ CLINICAL DECISION REQUIRED</div>
+          <div class="dec-prompt" id="dec-prompt">Loading...</div>
+          <div class="dec-opts" id="dec-opts"></div>
+        </div>
+        <!-- Scene debrief (hidden until after decision) -->
+        <div id="sdeb-area" style="display:none;"></div>
+      </div>
+      <!-- RIGHT COLUMN: AI CHAT -->
+      <div class="sim-right">
+        <div class="chat-wrap" id="chat-wrap">
+          <div class="chat-hdr">
+            <div class="chat-ai-dot"></div>
+            <div>
+              <div class="chat-ai-name">VentSim AI Mentor</div>
+              <div class="chat-ai-role">Socratic Clinical Guide</div>
+            </div>
+            <div class="chat-hint">Type your thoughts<br>AI will guide — not answer</div>
+          </div>
+          <div class="msgs" id="msgs"></div>
+          <div class="chat-inp-wrap">
+            <textarea class="chat-inp" id="chat-inp" placeholder="Share your clinical reasoning..." rows="2" onkeydown="chatKey(event)"></textarea>
+            <button class="chat-send" onclick="sendMsg()">SEND ↑</button>
+          </div>
+        </div>
+        <!-- CLINICAL COMPASS PANEL -->
+        <div class="compass-wrap" id="compass-wrap">
+          <button class="compass-toggle" onclick="toggleCompass()">
+            <span>📊</span> CLINICAL COMPASS <span class="compass-arrow" id="compass-arrow">▼</span>
+          </button>
+          <div class="compass-body" id="compass-body" style="display:none;">
+            <div class="compass-tabs">
+              <button class="ctab active" id="ctab-compare" onclick="switchTab('compare')">📊 Compare</button>
+              <button class="ctab" id="ctab-reference" onclick="switchTab('reference')">📖 Reference</button>
+              <button class="ctab" id="ctab-hint" onclick="switchTab('hint')">💡 Hints</button>
+            </div>
+            <div class="compass-content" id="compass-compare">
+              <div id="compare-table"></div>
+            </div>
+            <div class="compass-content" id="compass-reference" style="display:none;">
+              <div id="reference-content"></div>
+            </div>
+            <div class="compass-content" id="compass-hint" style="display:none;">
+              <div id="hint-content"></div>
+              <button class="hint-btn" id="hint-btn" onclick="showNextHint()">💡 Show Hint</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="decision">
-      <div class="dec-title">Select your management decision:</div>
-      <div class="dec-opts">
-        <label class="dec-opt"><input type="radio" name="dec" value="a"> Suction airway and reassess ventilator synchrony</label>
-        <label class="dec-opt"><input type="radio" name="dec" value="b"> Increase FiO₂ to 60% and administer bronchodilator</label>
-        <label class="dec-opt"><input type="radio" name="dec" value="c"> Switch to Pressure Control and reduce respiratory rate</label>
-        <label class="dec-opt"><input type="radio" name="dec" value="d"> Increase PEEP to 10 cmH₂O and obtain ABG</label>
-      </div>
-      <div class="dec-actions">
-        <button class="btn-s">Patient history</button>
-        <button class="btn-p" id="sub-btn" disabled onclick="submitDecision()">Submit decision</button>
-      </div>
-    </div>
-
-  </div><!-- /left -->
-
-  <!-- AI-SAM -->
-  <div class="ai-col">
-    <div class="ai-hdr">
-      <div class="ai-av">AI</div>
-      <div><div class="ai-title">AI-SAM</div><div class="ai-sub">Clinical reasoning support</div></div>
-    </div>
-    <div class="ai-msgs" id="ai-msgs">
-      <div class="msg ai"><div class="msg-av">AI</div><div class="bubble">The PIP has risen to 38 cmH₂O. What does this tell you about the patient's airway resistance right now?</div></div>
-      <div class="msg u"><div class="msg-av">P</div><div class="bubble">Could be secretion build-up or patient-ventilator asynchrony causing the pressure spike...</div></div>
-      <div class="msg ai"><div class="msg-av">AI</div><div class="bubble">Good reasoning. The total RR is 22 but the set rate is 14 — what does that gap suggest about the patient's respiratory drive?</div></div>
-    </div>
-    <div class="ai-inp-row">
-      <input class="ai-inp" id="ai-inp" placeholder="Ask AI-SAM..." onkeydown="if(event.key==='Enter')sendMsg()">
-      <button class="ai-send" onclick="sendMsg()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-      </button>
-    </div>
-    <div class="ai-note">AI-SAM guides your clinical reasoning — it will not reveal the correct answer directly.</div>
   </div>
+</div>
 
-</div><!-- /main -->
-</div><!-- /bwrap -->
+<!-- ═══════════════════════════════════
+     S9: POST-TEST MCQ
+═══════════════════════════════════ -->
+<div class="sc" id="postmcq-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:75%"></div></div><div class="hbadge">POST-MCQ</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 6 OF 8 — POST-TEST</div>
+    <div class="stitle">Post-Simulation <span class="hl">Knowledge Assessment</span></div>
+    <div class="ssub">Answer all 20 questions again. Your answers now may reflect what you have learned during the simulation.</div>
+    <div id="mcq-post-cont"></div>
+    <div class="ferr" id="postmcq-err"></div>
+    <button class="btn btn-p btn-w" onclick="submitPostMCQ()">CONTINUE TO POST-CDMNS ▶</button>
+  </div></div>
+</div>
 
-<script>
-'use strict';
+<!-- ═══════════════════════════════════
+     S10: POST-TEST CDMNS
+═══════════════════════════════════ -->
+<div class="sc" id="postcdmns-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:82%"></div></div><div class="hbadge">POST-CDMNS</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 7 OF 8 — POST-TEST (continued)</div>
+    <div class="stitle">Post-Simulation <span class="hl">Clinical Decision-Making Scale</span></div>
+    <div class="ssub">Rate the same behaviours again. Answer based on how you feel <em>right now</em>, after completing the simulation.</div>
+    <div id="cdmns-post-cont"></div>
+    <div class="ferr" id="postcdmns-err"></div>
+    <button class="btn btn-p btn-w" onclick="submitPostCDMNS()">CONTINUE TO TAM ▶</button>
+  </div></div>
+</div>
 
-/* URL params */
-const urlP=new URLSearchParams(window.location.search);
-const PID=(urlP.get('pid')||'P058').toUpperCase();
-document.getElementById('pid-badge').textContent=PID;
+<!-- ═══════════════════════════════════
+     S11: TAM
+═══════════════════════════════════ -->
+<div class="sc" id="tam-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:90%"></div></div><div class="hbadge">TAM</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 7 OF 8 — TECHNOLOGY ACCEPTANCE</div>
+    <div class="stitle">Technology <span class="hl">Acceptance</span></div>
+    <div class="ssub">Rate your agreement with each statement about the AI simulation you just experienced. <strong>1 = Strongly Disagree · 5 = Strongly Agree</strong>.</div>
+    <div id="tam-cont"></div>
+    <div class="ferr" id="tam-err"></div>
+    <button class="btn btn-p btn-w" onclick="submitTAM()">CONTINUE TO DEBRIEF ▶</button>
+  </div></div>
+</div>
 
-/* Clock */
-(function(){
-  const el=document.getElementById('mon-clk');
-  function t(){el.textContent=[new Date().getHours(),new Date().getMinutes(),new Date().getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');}
-  t();setInterval(t,1000);
-})();
+<!-- ═══════════════════════════════════
+     S12: DEBRIEF
+═══════════════════════════════════ -->
+<div class="sc" id="deb-sc">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:96%"></div></div><div class="hbadge">DEBRIEF</div></div>
+  <div class="wrap"><div class="inner">
+    <div class="badge">STEP 8 OF 8</div>
+    <div class="stitle">Session <span class="hl">Debrief</span></div>
+    <div class="ssub">Review your performance and personalised feedback below.</div>
+    <div class="score-grid">
+      <div class="score-box"><div class="score-val" id="deb-sim-score">--</div><div class="score-lbl">SIMULATION SCORE</div><div class="score-sub" id="deb-sim-acc">-- accuracy</div></div>
+      <div class="score-box"><div class="score-val" id="deb-mcq-gain" style="color:var(--green)">--</div><div class="score-lbl">MCQ GAIN</div><div class="score-sub" id="deb-mcq-sub">pre → post</div></div>
+      <div class="score-box"><div class="score-val" id="deb-cdmns-gain" style="color:var(--amber)">--</div><div class="score-lbl">CDMNS GAIN</div><div class="score-sub">clinical decision score</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">AI Clinical Feedback</div>
+      <div class="deb-box" id="deb-fb">Generating personalised feedback...</div>
+    </div>
+    <div class="card" style="background:rgba(0,230,118,.03);border-color:rgba(0,230,118,.15);">
+      <div class="card-title" style="color:var(--green);">Evidence Summary</div>
+      <div style="font-size:.82rem;color:var(--text2);line-height:1.8;">
+        <strong style="color:var(--text);">Key Guidelines Applied in Today's Scenarios:</strong><br>
+        🫁 <strong>ARDSNet Protocol:</strong> TV 6 mL/kg IBW · Plateau pressure ≤30 cmH₂O · FiO₂/PEEP titration table<br>
+        🔍 <strong>DOPE Mnemonic:</strong> Displacement · Obstruction · Pneumothorax · Equipment failure<br>
+        ⚖️ <strong>SBT Criteria:</strong> RSBI &lt;105 · Spontaneous breathing trial · Weaning parameters<br>
+        🔄 <strong>Dyssynchrony:</strong> Flow starvation · Double-triggering · Reverse triggering patterns
+      </div>
+    </div>
+    <button class="btn btn-g btn-w" onclick="finish()">✓ COMPLETE STUDY & SAVE DATA</button>
+  </div></div>
+</div>
 
-/* Countdown */
-(function(){
-  let s=1800;const el=document.getElementById('timer');
-  setInterval(()=>{
-    if(s>0){s--;el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
-    el.className=s<=120?'timer crit':s<=300?'timer warn':'timer';}
-  },1000);
-})();
+<!-- ═══════════════════════════════════
+     S13: THANK YOU
+═══════════════════════════════════ -->
+<div class="sc" id="ty-sc">
+  <div class="wrap"><div class="inner" style="max-width:680px;">
 
-/* Theme switcher */
-function setTheme(name,btn){
-  document.body.className=name==='navy'?'':('t-'+name);
-  document.querySelectorAll('.tdot').forEach(d=>d.classList.remove('active'));
-  btn.classList.add('active');
-}
+    <!-- SESSION COMPLETE CARD -->
+    <div class="ty-box">
+      <div class="ty-icon">✅</div>
+      <div class="ty-title">Session Complete</div>
+      <div class="ty-sub">Your data has been saved. Thank you for contributing to nursing education research in Oman.</div>
+      <div class="ty-info">
+        <div class="ty-row"><span class="ty-row-lbl">PARTICIPANT</span><span class="ty-row-val" id="ty-pid">--</span></div>
+        <div class="ty-row"><span class="ty-row-lbl">GROUP</span><span class="ty-row-val">Intervention Group</span></div>
+        <div class="ty-row"><span class="ty-row-lbl">SESSION ID</span><span class="ty-row-val" id="ty-sid">--</span></div>
+        <div class="ty-row"><span class="ty-row-lbl">STATUS</span><span class="ty-row-val" id="ty-st">Saved ✓</span></div>
+      </div>
+    </div>
 
-/* Brightness */
-function setBright(v){document.getElementById('bwrap').style.filter='brightness('+v+'%)';}
+    <!-- PERFORMANCE SUMMARY -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title">📊 Your Session Summary</div>
+      <div id="ty-summary" style="font-size:.82rem;color:var(--text2);line-height:1.8;"></div>
+    </div>
 
-/* Alarm log */
-const LOG=[];let logOpen=false;
-function addLog(name,val,sev){
-  const now=new Date();
-  const ts=[now.getHours(),now.getMinutes(),now.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');
-  LOG.unshift({name,val,sev,ts});renderLog();
-}
-function renderLog(){
-  const list=document.getElementById('alg-list');list.innerHTML='';
-  LOG.forEach(e=>{
-    const d=document.createElement('div');d.className='alg-entry '+e.sev;
-    d.innerHTML='<div class="alg-top"><span class="alg-name">'+e.name+'</span><span class="alg-badge '+e.sev+'">'+e.sev.toUpperCase()+'</span></div><div class="alg-bot"><span class="alg-val">'+e.val+'</span><span class="alg-ts">'+e.ts+'</span></div>';
-    list.appendChild(d);
-  });
-}
-function toggleLog(){
-  logOpen=!logOpen;
-  document.getElementById('alarm-log').className='alarm-log'+(logOpen?' open':'');
-  document.getElementById('log-btn').className='log-btn'+(logOpen?' on':'');
-}
+    <!-- XP & LEVEL -->
+    <div class="card" style="background:rgba(0,230,118,.04);border-color:rgba(0,230,118,.2);">
+      <div class="card-title" style="color:var(--green);">🏆 Kolb Learning Achievement</div>
+      <div id="ty-xp" style="font-size:.85rem;color:var(--text2);line-height:1.8;"></div>
+      <div style="font-size:.72rem;color:var(--text3);margin-top:8px;font-family:var(--mono);">
+        XP reflects Kolb's cycle: Concrete Experience · Reflective Observation · Abstract Conceptualisation · Active Experimentation
+      </div>
+    </div>
 
-/* Alarm sound */
-let _ac=null,_ai=null,_silInt=null,_silSec=0,_esc=0,_alive=true;
-function ac(){if(!_ac)_ac=new(window.AudioContext||window.webkitAudioContext)();return _ac;}
-function beep(f,d,v){try{const c=ac(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='square';o.frequency.value=f;g.gain.setValueAtTime(v,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+d);o.start();o.stop(c.currentTime+d);}catch(e){}}
+    <!-- PRINT CERTIFICATE BUTTON -->
+    <div style="text-align:center;margin:16px 0;">
+      <button class="btn btn-o" onclick="printCertificate()" style="gap:8px;">🖨️ Print Participation Certificate</button>
+    </div>
 
-function alarmTick(){
-  if(!_alive)return;_esc++;
-  const banner=document.getElementById('alarm-banner');
-  if(_esc>=6){
-    banner.className='alarm-banner escalated';
-    document.getElementById('alarm-txt').textContent='⚠⚠ ESCALATING ALARM — IMMEDIATE RESPONSE REQUIRED ⚠⚠';
-    beep(1600,.1,.4);setTimeout(()=>beep(1300,.1,.32),140);
-  } else if(_esc>=3){
-    banner.className='alarm-banner warning';
-    beep(1400,.1,.35);setTimeout(()=>beep(1100,.1,.28),150);
-  } else {
-    beep(1200,.1,.3);setTimeout(()=>beep(980,.1,.25),160);
-  }
-}
+    <!-- APA REFERENCES -->
+    <div class="card" style="margin-top:8px;">
+      <div class="card-title">📚 References & Instruments Used</div>
+      <div style="font-size:.74rem;color:var(--text2);line-height:1.9;font-family:var(--body);">
+        <p style="margin-bottom:8px;">Anderson, L. W., &amp; Krathwohl, D. R. (Eds.). (2001). <em>A taxonomy for learning, teaching, and assessing: A revision of Bloom's taxonomy of educational objectives.</em> Longman.</p>
+        <p style="margin-bottom:8px;">Acute Respiratory Distress Syndrome Network. (2000). Ventilation with lower tidal volumes as compared with traditional tidal volumes for acute lung injury and the acute respiratory distress syndrome. <em>New England Journal of Medicine, 342</em>(18), 1301–1308. https://doi.org/10.1056/NEJM200005043421801</p>
+        <p style="margin-bottom:8px;">Brochard, L., Slutsky, A., &amp; Pesenti, A. (2017). Mechanical ventilation to minimize progression of lung injury in acute respiratory failure. <em>American Journal of Respiratory and Critical Care Medicine, 195</em>(4), 438–442. https://doi.org/10.1164/rccm.201605-1081CP</p>
+        <p style="margin-bottom:8px;">Davis, F. D. (1989). Perceived usefulness, perceived ease of use, and user acceptance of information technology. <em>MIS Quarterly, 13</em>(3), 319–340. https://doi.org/10.2307/249008</p>
+        <p style="margin-bottom:8px;">Grasselli, G., Calfee, C. S., Camporota, L., Poole, D., Amato, M. B. P., Antonelli, M., Arabi, Y. M., Beitler, J. R., Bellani, G., Bellingan, G., Blackwood, B., Bos, L. D. J., Brochard, L., Brodie, D., Burns, K. E. A., Combes, A., De Backer, D., Demoule, A., Fan, E., … Cecconi, M. (2023). ESICM guidelines on acute respiratory distress syndrome: Definition, phenotyping and respiratory support strategies. <em>Intensive Care Medicine, 49</em>(7), 727–759. https://doi.org/10.1007/s00134-023-07050-7</p>
+        <p style="margin-bottom:8px;">INACSL Standards Committee. (2021). Healthcare simulation standards of best practice™: The debriefing process. <em>Clinical Simulation in Nursing, 58</em>, 27–32. https://doi.org/10.1016/j.ecns.2021.08.011</p>
+        <p style="margin-bottom:8px;">Jenkins, H. M. (1985). A research tool for measuring perceptions of clinical decision making. <em>Journal of Professional Nursing, 1</em>(4), 221–229. https://doi.org/10.1016/S8755-7223(85)80159-9</p>
+        <p style="margin-bottom:8px;">Kolb, D. A. (2015). <em>Experiential learning: Experience as the source of learning and development</em> (2nd ed.). Pearson FT Press.</p>
+        <p style="margin-bottom:8px;">Schmidt, G. A., Girard, T. D., Kress, J. P., Morris, P. E., Ouellette, D. R., Alhazzani, W., Burns, S. M., Epstein, S. K., Esteban, A., Fan, E., Ferrer, M., Fraser, G. L., Hough, C. L., Mehta, S., Nanchal, R., Patel, S., Pawlik, A. J., Schweickert, W. D., … Truwit, J. D. (2017). Liberation from mechanical ventilation in critically ill adults: Executive summary of an official American College of Chest Physicians/American Thoracic Society clinical practice guideline. <em>Chest, 151</em>(1), 160–165. https://doi.org/10.1016/j.chest.2016.10.037</p>
+      </div>
+    </div>
 
-function startAlarm(){
-  if(_ai)return;_esc=0;_alive=true;alarmTick();
-  _ai=setInterval(alarmTick,900);
-  addLog('HIGH PIP','38 > 35 cmH₂O','critical');
-  addLog('LOW SpO₂','91% < 94%','critical');
-  addLog('HIGH RR','22 > 20 br/min','warning');
-}
+    <!-- CONTACT -->
+    <div class="contact-box" style="margin-top:16px;">
+      <div style="margin-bottom:6px;color:var(--text);font-weight:500;">Research Team Contact</div>
+      Samir Alnasseri · PhD Candidate · Universiti Malaya<br>
+      <span class="researcher-email"></span> ·
+      <a href="tel:+9689944245">+968 9944245</a>
+    </div>
 
-/* Silence + countdown */
-function silenceAlarm(){
-  clearInterval(_ai);_ai=null;clearInterval(_silInt);
-  _alive=false;_esc=0;_silSec=120;
-  const banner=document.getElementById('alarm-banner');
-  banner.className='alarm-banner silenced';
-  document.getElementById('alarm-txt').textContent='⏸  ALARM SILENCED — monitoring continues';
-  const cd=document.getElementById('sil-cd');cd.style.display='inline';
-  addLog('Silenced by nurse','2 min silence','silenced');
-  _silInt=setInterval(()=>{
-    _silSec--;
-    cd.textContent=String(Math.floor(_silSec/60)).padStart(2,'0')+':'+String(_silSec%60).padStart(2,'0');
-    if(_silSec<=0){
-      clearInterval(_silInt);cd.style.display='none';
-      document.getElementById('alarm-txt').textContent='⚠\u00a0 HIGH PRESSURE ALARM — PIP 38 cmH₂O \u00a0|\u00a0 PATIENT-VENTILATOR ASYNCHRONY SUSPECTED';
-      startAlarm();
-    }
-  },1000);
-}
+  </div></div>
+</div>
 
-setTimeout(startAlarm,2000);
+<!-- PRINT CERTIFICATE (hidden) -->
+<div id="cert-print" style="display:none;">
+  <div id="cert-content"></div>
+</div>
 
-/* Decision */
-document.querySelectorAll('input[name="dec"]').forEach(r=>r.addEventListener('change',()=>{document.getElementById('sub-btn').disabled=false;}));
-function submitDecision(){
-  const sel=document.querySelector('input[name="dec"]:checked');if(!sel)return;
-  clearInterval(_ai);_ai=null;clearInterval(_silInt);_alive=false;
-  document.getElementById('alarm-banner').className='alarm-banner';
-  document.getElementById('sil-cd').style.display='none';
-  const f=document.getElementById('res-flash');f.className='res-flash show';
-  setTimeout(()=>{f.className='res-flash';},3000);
-  document.getElementById('at-pip').className='alarm-tag';
-  document.getElementById('at-spo2').className='alarm-tag';
-  document.getElementById('active-alarms').innerHTML='<span style="color:#4ade80">All alarms resolved</span>';
-  addLog('Decision submitted','Option '+sel.value.toUpperCase(),'resolved');
-  addLog('HIGH PIP resolved','PIP normalising','resolved');
-  addLog('LOW SpO₂ resolved','SpO₂ improving','resolved');
-}
 
-/* AI chat */
-const REPLIES=['That is a good observation. What bedside clinical signs would help you confirm or rule out that hypothesis?','Before changing ventilator settings — what is the first assessment step you should perform at the bedside?','How would you differentiate between secretion-related obstruction and patient-ventilator dyssynchrony clinically?','Consider the pressure waveform shape during inspiration — what does it tell you about the cause?','You are on the right track. What does SpO₂ of 91% tell you about the urgency of intervention?','Think about the set RR of 14 versus the measured total RR of 22 — what is driving those extra 8 breaths?','If you were to auscultate now, what breath sounds would you expect and what would they indicate?'];
-let rIdx=0;
-function sendMsg(){
-  const inp=document.getElementById('ai-inp'),txt=inp.value.trim();if(!txt)return;
-  const msgs=document.getElementById('ai-msgs');
-  const u=document.createElement('div');u.className='msg u';u.innerHTML='<div class="msg-av">P</div><div class="bubble">'+txt+'</div>';
-  msgs.appendChild(u);inp.value='';msgs.scrollTop=msgs.scrollHeight;
-  const t=document.createElement('div');t.className='msg ai';t.innerHTML='<div class="msg-av">AI</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
-  msgs.appendChild(t);msgs.scrollTop=msgs.scrollHeight;
-  setTimeout(()=>{t.querySelector('.bubble').textContent=REPLIES[rIdx%REPLIES.length];rIdx++;msgs.scrollTop=msgs.scrollHeight;},1200);
-}
-
-/* Value drift */
-setInterval(()=>{
-  const pip=Math.round(38+(Math.random()*2-1));
-  const spo2=Math.max(88,91+(Math.random()>.7?Math.round(Math.random()*2-1):0));
-  const hr=Math.round(104+(Math.random()>.8?Math.random()*4-2:0));
-  ['v-pip','p-pip'].forEach(id=>document.getElementById(id).textContent=pip);
-  ['v-spo2','p-spo2'].forEach(id=>document.getElementById(id).textContent=spo2);
-  ['v-hr','p-hr'].forEach(id=>document.getElementById(id).textContent=hr);
-},2500);
-
-/* Waveform zoom */
-let zId=null;
-function toggleZoom(rowId){
-  if(zId===rowId){closeZoom();return;}
-  if(zId)closeZoom();
-  document.getElementById(rowId).classList.add('zoomed');
-  zId=rowId;document.getElementById('zoom-close').className='zoom-close vis';
-  const k=rowId.replace('wr-','');if(WS[k]){WS[k].W=0;WS[k].H=0;}
-}
-function closeZoom(){
-  if(!zId)return;
-  document.getElementById(zId).classList.remove('zoomed');
-  const k=zId.replace('wr-','');if(WS[k]){WS[k].W=0;WS[k].H=0;}
-  zId=null;document.getElementById('zoom-close').className='zoom-close';
-}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeZoom();});
-
-/* Waveform engine — original unchanged */
-const WAVES={
-  pres:{id:'c-pres',color:'#00ff7f',min:0,max:60,period:()=>60/14,fn:(ph)=>{const ti=1.2;return ph<ti?6+32*Math.min(ph/.28,1)*(1-.04*Math.sin(ph*14)):6+32*Math.exp(-4*(ph-ti));}},
-  flow:{id:'c-flow',color:'#00e5ff',min:-60,max:60,period:()=>60/14,fn:(ph)=>{const ti=1.2,T=60/14,te=T-ti;return ph<ti?38*Math.sin(Math.PI*ph/ti)*(1+.07*Math.sin(ph*16)):-32*Math.exp(-2.5*(ph-ti))*Math.sin(Math.PI*(ph-ti)/te);}},
-  vol: {id:'c-vol', color:'#ffdd00',min:0,max:800,period:()=>60/14,fn:(ph)=>{const ti=1.2;return ph<ti?520*(1-Math.cos(Math.PI*ph/ti))/2:520*Math.exp(-3*(ph-ti));}},
-  spo2:{id:'c-spo2',color:'#ff8c00',min:0,max:1,period:()=>60/104,fn:(ph)=>{const T=60/104,n=ph/T;return .5+.44*(Math.sin(2*Math.PI*n)+.18*Math.sin(4*Math.PI*n+.8));}},
-};
-const WS={};for(const k in WAVES)WS[k]={t:0,last:null,hist:null,idx:0,W:0,H:0,ctx:null};
-const DPR=Math.min(window.devicePixelRatio||1,2);
-function mapY(v,mn,mx,H){return H-((v-mn)/(mx-mn))*H;}
-function sizeCanvas(k){
-  const w=WAVES[k],s=WS[k];const el=document.getElementById(w.id);
-  const W=el.offsetWidth,H=el.offsetHeight;
-  if(W<4||H<4)return false;if(s.W===W&&s.H===H)return true;
-  el.width=Math.round(W*DPR);el.height=Math.round(H*DPR);
-  s.ctx=el.getContext('2d');s.ctx.scale(DPR,DPR);
-  s.W=W;s.H=H;s.hist=new Float32Array(W);s.idx=0;return true;
-}
-function draw(k){
-  const w=WAVES[k],s=WS[k];if(!s.ctx||!s.W)return;
-  const{ctx,W,H,hist}=s;
-  ctx.fillStyle='#081520';ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=.5;
-  for(let i=1;i<4;i++){const y=(i/4)*H;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-  for(let x=70;x<W;x+=70){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
-  if(k==='flow'){ctx.strokeStyle='rgba(0,229,255,0.12)';ctx.lineWidth=.8;const y=mapY(0,-60,60,H);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-  ctx.strokeStyle=w.color;ctx.lineWidth=1.8;ctx.shadowColor=w.color;ctx.shadowBlur=3;
-  ctx.beginPath();let first=true;const len=hist.length;
-  for(let i=0;i<len;i++){const x=(i/len)*W,y=mapY(hist[(s.idx+i)%len],w.min,w.max,H);if(first){ctx.moveTo(x,y);first=false;}else ctx.lineTo(x,y);}
-  ctx.stroke();ctx.shadowBlur=0;
-  const sx=(s.idx/len)*W;
-  ctx.fillStyle='#081520';ctx.fillRect(sx,0,10,H);
-  ctx.strokeStyle='rgba(255,255,255,0.18)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(sx,0);ctx.lineTo(sx,H);ctx.stroke();
-}
-let animStarted=false;
-function frame(ts){
-  for(const k in WAVES){sizeCanvas(k);const w=WAVES[k],s=WS[k];if(!s.W||!s.hist)continue;
-  if(!s.last)s.last=ts;const dt=Math.min((ts-s.last)/1000,.05);s.last=ts;s.t+=dt;
-  const ph=s.t%w.period();s.hist[s.idx]=w.fn(ph);s.idx=(s.idx+1)%s.hist.length;draw(k);}
-  requestAnimationFrame(frame);
-}
-function startAnim(){
-  if(animStarted)return;let ready=false;
-  for(const k in WAVES){if(sizeCanvas(k))ready=true;}
-  if(!ready){setTimeout(startAnim,100);return;}
-  animStarted=true;requestAnimationFrame(frame);
-}
-window.addEventListener('resize',()=>{for(const k in WAVES){WS[k].W=0;WS[k].H=0;}});
-document.addEventListener('DOMContentLoaded',()=>setTimeout(startAnim,50));
-window.addEventListener('load',()=>setTimeout(startAnim,50));
-setTimeout(startAnim,300);
-</script>
+<script src="ventsim-app.js"></script>
 </body>
 </html>
