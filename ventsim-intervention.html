@@ -36,7 +36,8 @@
 html,body{width:100%;min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;}
 
 /* ── SCANLINE OVERLAY ── */
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,.015) 2px,rgba(0,229,255,.015) 4px);pointer-events:none;z-index:9999;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,.015) 2px,rgba(0,229,255,.015) 4px);pointer-events:none;z-index:1;}
+body.ot-active::before{display:none;}
 
 /* ── SCREENS ── */
 .sc{display:none;min-height:100vh;width:100%;animation:fadeIn .4s ease;}
@@ -846,7 +847,6 @@ canvas.wc.active{display:block;}
 </div>
 
 
-<script src="ventsim-app.js"></script>
 
 <!-- ORIENTATION TOUR OVERLAY -->
 <div id="ot-backdrop" class="ot-backdrop"></div>
@@ -982,6 +982,7 @@ canvas.wc.active{display:block;}
 
     el('ot-box').classList.add('on');
     el('ot-backdrop').classList.add('on');
+    document.body.classList.add('ot-active');
 
     setTimeout(function(){ place(s); }, 60);
   }
@@ -991,6 +992,7 @@ canvas.wc.active{display:block;}
     prevId = null; cur = -1;
     el('ot-box').classList.remove('on');
     el('ot-backdrop').classList.remove('on');
+    document.body.classList.remove('ot-active');
   }
 
   // Wire buttons immediately — script is at end of <body>, DOM is ready
