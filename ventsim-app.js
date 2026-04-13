@@ -79,8 +79,7 @@ const SKIP_MAP = [
   { id:'login-sc',     label:'Login',        next:()=>{ document.getElementById('pid').value='SAMIR'; startSession(); } },
   { id:'demo-sc',      label:'Demographics', next:()=>{ submitDemo(); } },
   { id:'premcq-sc',    label:'Pre-MCQ',      next:()=>{ skipMCQ('preMCQ'); show('precdmns-sc'); setProg(38); } },
-  { id:'precdmns-sc',  label:'Pre-CDMNS',    next:()=>{ skipCDMNS('preCDMNS'); show('orient-sc'); setProg(48); saveLocal(); } },
-  { id:'orient-sc',    label:'Orientation',  next:()=>{ startSim(); } },
+  { id:'precdmns-sc',  label:'Pre-CDMNS',    next:()=>{ skipCDMNS('preCDMNS'); startSim(); } },
   { id:'sim-sc',       label:'Simulation',   next:()=>{ endSim(); } },
   { id:'postmcq-sc',   label:'Post-MCQ',     next:()=>{ skipMCQ('postMCQ'); show('postcdmns-sc'); setProg(82); } },
   { id:'postcdmns-sc', label:'Post-CDMNS',   next:()=>{ skipCDMNS('postCDMNS'); show('tam-sc'); setProg(90); saveLocal(); } },
@@ -97,7 +96,7 @@ function updateSkipBar(screenId){
   if(!bar){
     bar = document.createElement('div');
     bar.id = 'dev-skip-bar';
-    bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#0a1a27;border-top:1px solid #ffd740;padding:8px 16px;display:flex;align-items:center;gap:12px;z-index:9998;font-family:monospace;font-size:.72rem;';
+    bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#0a1a27;border-top:1px solid #ffd740;padding:8px 16px;display:flex;align-items:center;gap:12px;z-index:999999;font-family:monospace;font-size:.72rem;';
     document.body.appendChild(bar);
   }
   bar.innerHTML = `
@@ -387,7 +386,7 @@ function cdmnsTotal(key){ return Object.values(S.data[key]).reduce((a,b)=>a+b,0)
 
 function submitPreCDMNS(){
   if(!cdmnsComplete('preCDMNS')){ document.getElementById('precdmns-err').textContent='Please rate all 40 items.'; return; }
-  show('orient-sc'); setProg(48); saveLocal();
+  startSim(); saveLocal();
 }
 function submitPostCDMNS(){
   if(!cdmnsComplete('postCDMNS')){ document.getElementById('postcdmns-err').textContent='Please rate all 40 items.'; return; }

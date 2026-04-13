@@ -1,24 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>
-/* Shim: prevents ReferenceError if onclick fires before ventsim-app.js is ready */
-(function(){
-  var q=[];
-  function s(n){return function(){q.push({n:n,a:[].slice.call(arguments)});};}
-  var fns=['show','setProg','startSim','submitPreMCQ','submitPreCDMNS',
-           'submitPostMCQ','submitPostCDMNS','submitTAM','finish',
-           'sendMsg','chatKey','setWave','toggleCompass','switchTab',
-           'showNextHint','printCertificate'];
-  fns.forEach(function(n){window[n]=s(n);});
-  window.__flush=function(){
-    q.splice(0).forEach(function(i){
-      if(typeof window[i.n]==='function') window[i.n].apply(window,i.a);
-    });
-  };
-  window.addEventListener('load',function(){ window.__flush && window.__flush(); });
-})();
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VentSim AI — Intervention Platform | Universiti Malaya 2026</title>
@@ -349,36 +331,28 @@ canvas.wc.active{display:block;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 
-/* ── ORIENTATION TOOLTIPS ── */
-/* Dim overlay — pointer-events:none so clicks pass through to tooltip */
-.ot-backdrop{display:none;position:fixed;inset:0;z-index:7000;background:rgba(5,13,20,.55);pointer-events:none;}
+/* ── ORIENTATION TOUR ── */
+.ot-backdrop{display:none;position:fixed;inset:0;z-index:89000;background:rgba(5,13,20,.6);pointer-events:none;}
 .ot-backdrop.on{display:block;}
-/* Tooltip sits above everything, always receives clicks */
-.ot-box{display:none;position:fixed;z-index:99999;background:var(--panel);border:1.5px solid var(--cyan);border-radius:10px;padding:16px 18px;width:290px;box-shadow:0 8px 32px rgba(0,229,255,.2);}
-.ot-box.on{display:block;animation:otIn .2s ease;}
-@keyframes otIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-/* Arrow */
-.ot-arrow{position:absolute;width:10px;height:10px;background:var(--panel);border:1.5px solid var(--cyan);transform:rotate(45deg);}
-.ot-arrow.a-down {bottom:-6px;border-top:none;border-left:none;}
-.ot-arrow.a-right{right:-6px;top:18px;border-bottom:none;border-left:none;}
-/* Content */
+.ot-box{display:none;position:fixed;z-index:999999;background:var(--panel);border:1.5px solid var(--cyan);border-radius:10px;padding:16px 18px;width:286px;box-shadow:0 8px 32px rgba(0,229,255,.2);}
+.ot-box.on{display:block;animation:otSlide .2s ease;}
+@keyframes otSlide{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.ot-arrow{position:absolute;width:10px;height:10px;background:var(--panel);border:1.5px solid var(--cyan);transform:rotate(45deg);pointer-events:none;}
 .ot-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.ot-icon{font-size:1rem;flex-shrink:0;}
+.ot-icon{font-size:1rem;}
 .ot-title{font-family:var(--sans);font-size:.86rem;font-weight:700;color:var(--cyan);}
 .ot-body{font-size:.77rem;color:var(--text2);line-height:1.65;margin-bottom:12px;}
-/* Footer */
-.ot-footer{display:flex;flex-direction:column;gap:8px;}
-.ot-progress{height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
-.ot-progress-fill{height:100%;background:var(--cyan);border-radius:1px;transition:width .3s ease;}
+.ot-footer{display:flex;flex-direction:column;gap:7px;}
+.ot-prog{height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
+.ot-prog-fill{height:100%;background:var(--cyan);transition:width .3s;}
 .ot-nav{display:flex;align-items:center;justify-content:space-between;}
-.ot-counter{font-family:var(--mono);font-size:.63rem;color:var(--text3);}
-.ot-actions{display:flex;gap:5px;align-items:center;}
-.ot-skip{background:none;border:none;color:var(--text3);font-family:var(--mono);font-size:.6rem;padding:3px 5px;cursor:pointer;text-decoration:underline;flex-shrink:0;}
-.ot-back{background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:.63rem;padding:4px 9px;border-radius:4px;cursor:pointer;}
-.ot-back:disabled{opacity:.25;cursor:not-allowed;}
-.ot-next{background:var(--cyan);color:#000;border:none;font-family:var(--mono);font-size:.63rem;font-weight:700;padding:4px 12px;border-radius:4px;cursor:pointer;letter-spacing:.5px;}
-/* Highlight ring — outline only, no z-index or overflow changes */
-.ot-hl{outline:2px solid var(--cyan) !important;outline-offset:3px;}
+.ot-ctr{font-family:var(--mono);font-size:.62rem;color:var(--text3);}
+.ot-acts{display:flex;gap:5px;align-items:center;}
+.ot-skip{background:none;border:none;color:var(--text3);font-family:var(--mono);font-size:.6rem;padding:3px 4px;cursor:pointer;text-decoration:underline;}
+.ot-back{background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:.62rem;padding:4px 9px;border-radius:4px;cursor:pointer;}
+.ot-back:disabled{opacity:.2;cursor:not-allowed;}
+.ot-next{background:var(--cyan);color:#000;border:none;font-family:var(--mono);font-size:.62rem;font-weight:700;padding:4px 12px;border-radius:4px;cursor:pointer;}
+.ot-hl{outline:2px solid var(--cyan)!important;outline-offset:3px;}
 </style>
 </head>
 <body>
@@ -591,33 +565,13 @@ canvas.wc.active{display:block;}
     <div class="ssub">Rate how frequently you engage in each behaviour during clinical practice. <strong>1 = Never · 5 = Always</strong>. There are no right or wrong answers — reflect on your actual practice.</div>
     <div id="cdmns-pre-cont"></div>
     <div class="ferr" id="precdmns-err"></div>
-    <button class="btn btn-p btn-w" onclick="startSim()">CONTINUE TO SIMULATION ▶</button>
+    <button class="btn btn-p btn-w" onclick="submitPreCDMNS()">CONTINUE TO SIMULATION ▶</button>
   </div></div>
 </div>
-
-
 
 <!-- ═══════════════════════════════════
      S8: SIMULATION
 ═══════════════════════════════════ -->
-<div class="ot-backdrop" id="ot-backdrop"></div>
-<div class="ot-box" id="ot-box">
-  <div class="ot-arrow" id="ot-arrow"></div>
-  <div class="ot-head"><span class="ot-icon" id="ot-icon"></span><span class="ot-title" id="ot-title"></span></div>
-  <div class="ot-body" id="ot-body"></div>
-  <div class="ot-footer">
-    <div class="ot-progress"><div class="ot-progress-fill" id="ot-prog-fill" style="width:0%"></div></div>
-    <div class="ot-nav">
-      <span class="ot-counter" id="ot-counter"></span>
-      <div class="ot-actions">
-        <button class="ot-skip" id="ot-skip-btn">Skip tour</button>
-        <button class="ot-back" id="ot-back-btn" disabled>&#9664; Back</button>
-        <button class="ot-next" id="ot-next-btn">Next &#9654;</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="sc" id="sim-sc">
   <div class="hdr">
     <span class="hlogo">VentSim <span>AI</span></span>
@@ -631,7 +585,7 @@ canvas.wc.active{display:block;}
       <!-- LEFT COLUMN -->
       <div class="sim-left">
         <!-- Patient header -->
-        <div class="pt-hdr" id="ot-target-patient">
+        <div class="pt-hdr" id="ot-patient">
           <div>
             <div class="pt-name" id="pt-name">Patient Loading...</div>
             <div class="pt-meta" id="pt-meta"></div>
@@ -643,7 +597,7 @@ canvas.wc.active{display:block;}
           </div>
         </div>
         <!-- Vitals -->
-        <div class="card" style="padding:12px;" id="ot-target-vitals">
+        <div class="card" style="padding:12px;" id="ot-vitals">
           <div class="card-title">Vital Signs Monitor</div>
           <div class="vitals-grid">
             <div class="vbox"><div class="vbox-lbl">SpO₂</div><div class="vbox-val v-spo2" id="v-spo2">--</div><div class="vbox-unit">%</div></div>
@@ -655,7 +609,7 @@ canvas.wc.active{display:block;}
           </div>
         </div>
         <!-- Waveforms -->
-        <div class="card" style="padding:0;" id="ot-target-waves">
+        <div class="card" style="padding:0;" id="ot-waves">
           <div class="wave-wrap" style="border:none;">
             <div class="wave-hdr">
               <div class="wave-tab active" onclick="setWave('flow',this)">FLOW</div>
@@ -671,7 +625,7 @@ canvas.wc.active{display:block;}
           </div>
         </div>
         <!-- Vent settings -->
-        <div class="card" style="padding:12px;" id="ot-target-vent">
+        <div class="card" style="padding:12px;" id="ot-vent">
           <div class="card-title">Ventilator Settings</div>
           <div class="vent-grid">
             <div class="vset"><div class="vset-lbl">MODE</div><div class="vset-val" id="vs-mode" style="font-size:.8rem;">--</div></div>
@@ -685,13 +639,13 @@ canvas.wc.active{display:block;}
           </div>
         </div>
         <!-- History -->
-        <div class="card" id="ot-target-history">
+        <div class="card" id="ot-history">
           <div class="card-title">Clinical History & Handover</div>
           <div class="hx-box" id="hx-box">Loading patient information...</div>
         </div>
         <!-- Decisions -->
-        <div class="dec-wrap" id="dec-wrap">
-          <div class="dec-title" id="ot-target-decision">⚡ CLINICAL DECISION REQUIRED</div>
+        <div class="dec-wrap" id="dec-wrap" data-ot="ot-decision">
+          <div class="dec-title">⚡ CLINICAL DECISION REQUIRED</div>
           <div class="dec-prompt" id="dec-prompt">Loading...</div>
           <div class="dec-opts" id="dec-opts"></div>
         </div>
@@ -701,7 +655,7 @@ canvas.wc.active{display:block;}
       <!-- RIGHT COLUMN: AI CHAT -->
       <div class="sim-right">
         <div class="chat-wrap" id="chat-wrap">
-          <div class="chat-hdr" id="ot-target-chat">
+          <div class="chat-hdr" id="ot-chat">
             <div class="chat-ai-dot"></div>
             <div>
               <div class="chat-ai-name">VentSim AI Mentor</div>
@@ -717,7 +671,7 @@ canvas.wc.active{display:block;}
         </div>
         <!-- CLINICAL COMPASS PANEL -->
         <div class="compass-wrap" id="compass-wrap">
-          <button class="compass-toggle" onclick="toggleCompass()" id="ot-target-compass">
+          <button class="compass-toggle" id="ot-compass" onclick="toggleCompass()">
             <span>📊</span> CLINICAL COMPASS <span class="compass-arrow" id="compass-arrow">▼</span>
           </button>
           <div class="compass-body" id="compass-body" style="display:none;">
@@ -892,140 +846,162 @@ canvas.wc.active{display:block;}
 </div>
 
 
+<script src="ventsim-app.js"></script>
+
+<!-- ORIENTATION TOUR OVERLAY -->
+<div id="ot-backdrop" class="ot-backdrop"></div>
+<div id="ot-box" class="ot-box">
+  <div id="ot-arrow" class="ot-arrow"></div>
+  <div class="ot-head"><span id="ot-icon" class="ot-icon"></span><span id="ot-title" class="ot-title"></span></div>
+  <div id="ot-body" class="ot-body"></div>
+  <div class="ot-footer">
+    <div class="ot-prog"><div id="ot-pfill" class="ot-prog-fill" style="width:0%"></div></div>
+    <div class="ot-nav">
+      <span id="ot-ctr" class="ot-ctr"></span>
+      <div class="ot-acts">
+        <button id="ot-skip" class="ot-skip">Skip tour</button>
+        <button id="ot-back" class="ot-back" disabled>&#9664; Back</button>
+        <button id="ot-next" class="ot-next">Next &#9654;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-/* ══════════════════════════════════════════════════════
-   ORIENTATION TOUR — runs independently of ventsim-app.js
-   Buttons wired immediately, no DOMContentLoaded needed
-   because this script is at end of body.
-══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   ORIENTATION TOUR
+   — Runs before ventsim-app.js loads
+   — Buttons wired via addEventListener (no onclick)
+   — z-index 999999 clears all overlays including scanline
+═══════════════════════════════════════════ */
 (function(){
-  var STEPS=[
-    {id:'ot-target-patient',  icon:'🏥', title:'Patient header',
-     body:'Shows the current patient name, age, diagnosis and scenario progress. Read this first — it gives you the clinical context for every decision.',
-     arrow:'down'},
-    {id:'ot-target-vitals',   icon:'❤️', title:'Vital signs monitor',
-     body:'Live SpO₂, HR, RR, BP, ETCO₂ and FiO₂. Values in red are outside safe limits — assess these first. Reassess after every intervention.',
-     arrow:'down'},
-    {id:'ot-target-waves',    icon:'📺', title:'Ventilator waveforms',
-     body:'Real-time Flow, Pressure and Volume waveforms. Click each tab to switch. Abnormal patterns like saw-tooth flow or pressure spikes are key diagnostic cues.',
-     arrow:'down'},
-    {id:'ot-target-vent',     icon:'⚙️', title:'Ventilator settings',
-     body:'Current set and measured parameters: Mode, TV, PEEP, PIP, FiO₂, I:E ratio and Plateau Pressure. Compare these against clinical normal ranges.',
-     arrow:'down'},
-    {id:'ot-target-history',  icon:'📋', title:'Clinical history & handover',
-     body:'Patient background and handover notes. Read carefully — the details here are essential to making the correct clinical decision.',
-     arrow:'down'},
-    {id:'ot-target-decision', icon:'⚡', title:'Clinical decision',
-     body:'Choose from 3-4 options. You cannot change your answer once submitted — it affects your score and the patient outcome.',
-     arrow:'down'},
-    {id:'ot-target-chat',     icon:'🤖', title:'AI-SAM — clinical mentor',
-     body:'Your Socratic guide. It asks questions, not gives answers. Type your clinical reasoning freely — the more you engage, the deeper your learning.',
-     arrow:'right'},
-    {id:'ot-target-compass',  icon:'📊', title:'Clinical compass',
-     body:'Collapsible panel: Compare (set vs measured), Reference (normal ranges), Hints (contextual prompts). Available at any time during the simulation.',
-     arrow:'right'}
+  var STEPS = [
+    { id:'ot-patient',  icon:'🏥', title:'Patient header',
+      body:'Shows the patient name, age, diagnosis and scenario number. Always read this first — it gives you the clinical context for every decision you will make.',
+      dir:'down' },
+    { id:'ot-vitals',   icon:'❤️', title:'Vital signs monitor',
+      body:'Live SpO\u2082, HR, RR, BP, ETCO\u2082 and FiO\u2082. Values shown in red are outside safe limits — start your assessment here. Reassess after every intervention.',
+      dir:'down' },
+    { id:'ot-waves',    icon:'📺', title:'Ventilator waveforms',
+      body:'Real-time Flow, Pressure and Volume waveforms. Click any tab to switch between them. Abnormal morphology — saw-tooth flow, pressure spikes — are key diagnostic cues.',
+      dir:'down' },
+    { id:'ot-vent',     icon:'⚙️', title:'Ventilator settings',
+      body:'Current set and measured parameters: Mode, TV, PEEP, PIP, FiO\u2082, I:E and Plateau Pressure. Compare these values against normal clinical ranges to identify deviations.',
+      dir:'down' },
+    { id:'ot-history',  icon:'📋', title:'Clinical history & handover',
+      body:'Patient background and nursing handover notes. Read these carefully — the clinical details here are essential context for choosing the correct management decision.',
+      dir:'down' },
+    { id:'dec-wrap',    icon:'⚡', title:'Clinical decision panel',
+      body:'At each decision point choose from 3–4 options. You cannot change your answer once submitted. Your choice directly affects patient outcome and your performance score.',
+      dir:'down' },
+    { id:'ot-chat',     icon:'🤖', title:'AI-SAM — your clinical mentor',
+      body:'AI-SAM uses the Socratic method — it will ask you questions to guide your thinking rather than giving direct answers. Type your clinical reasoning and engage actively.',
+      dir:'right' },
+    { id:'ot-compass',  icon:'📊', title:'Clinical compass',
+      body:'A collapsible reference panel with three tabs: Compare (set vs measured values), Reference (normal clinical ranges) and Hints (contextual prompts). Use it any time.',
+      dir:'right' }
   ];
 
   var cur = -1;
   var prevId = null;
 
-  /* ── helpers ── */
-  function q(id){ return document.getElementById(id); }
+  function el(id){ return document.getElementById(id); }
 
-  function setHL(id, on){
-    var el = q(id);
-    if(el){ on ? el.classList.add('ot-hl') : el.classList.remove('ot-hl'); }
+  function hl(id, on){
+    var e = id ? el(id) : null;
+    if(e) on ? e.classList.add('ot-hl') : e.classList.remove('ot-hl');
   }
 
-  function position(s){
-    var box = q('ot-box');
-    var arrow = q('ot-arrow');
-    var el = s.id ? q(s.id) : null;
-    if(!el){
-      box.style.cssText = 'top:50%;left:50%;transform:translate(-50%,-50%);';
+  function place(step){
+    var box = el('ot-box');
+    var arrow = el('ot-arrow');
+    var target = step.id ? el(step.id) : null;
+
+    // Reset arrow styles
+    arrow.style.cssText = 'position:absolute;width:10px;height:10px;background:var(--panel);border:1.5px solid var(--cyan);transform:rotate(45deg);pointer-events:none;';
+
+    if(!target){
+      box.style.top = '50%'; box.style.left = '50%';
+      box.style.transform = 'translate(-50%,-50%)';
       arrow.style.display = 'none';
       return;
     }
+
     box.style.transform = '';
     arrow.style.display = '';
-    var r = el.getBoundingClientRect();
-    var bw = 290, bh = 220, pad = 14;
+    var r = target.getBoundingClientRect();
+    var bw = 286, pad = 12;
     var vw = window.innerWidth, vh = window.innerHeight;
     var t, l;
-    // reset arrow
-    arrow.style.cssText = '';
-    if(s.arrow === 'down'){
-      /* tooltip below element */
+
+    if(step.dir === 'down'){
       t = r.bottom + pad;
       l = r.left + r.width/2 - bw/2;
       l = Math.max(pad, Math.min(l, vw - bw - pad));
-      /* if too close to bottom, put above */
-      if(t + bh > vh - pad){ t = r.top - bh - pad; }
+      if(t + 230 > vh) t = r.top - 230 - pad;
       t = Math.max(pad, t);
-      /* arrow points UP from tooltip top edge toward element */
-      arrow.className = 'ot-arrow';
+      // Arrow points up from tooltip top
       arrow.style.top = '-6px';
-      arrow.style.borderBottom = 'none';
-      arrow.style.borderRight = 'none';
+      arrow.style.borderBottomColor = 'transparent';
+      arrow.style.borderRightColor = 'transparent';
       var al = Math.min(Math.max(r.left + r.width/2 - l - 5, 12), bw - 22);
       arrow.style.left = al + 'px';
     } else {
-      /* tooltip to left of element */
+      // right — tooltip to the left of element
       t = r.top;
       l = r.left - bw - pad;
       if(l < pad){ l = r.right + pad; }
-      t = Math.max(pad, Math.min(t, vh - bh - pad));
-      arrow.className = 'ot-arrow';
+      t = Math.max(pad, Math.min(t, vh - 230));
       arrow.style.right = '-6px';
       arrow.style.top = '18px';
-      arrow.style.borderBottom = 'none';
-      arrow.style.borderLeft = 'none';
+      arrow.style.borderTopColor = 'transparent';
+      arrow.style.borderLeftColor = 'transparent';
     }
+
     box.style.top = t + 'px';
     box.style.left = l + 'px';
   }
 
-  function render(i){
-    var s = STEPS[i];
-    q('ot-icon').textContent = s.icon;
-    q('ot-title').textContent = s.title;
-    q('ot-body').textContent  = s.body;
-    q('ot-counter').textContent = (i+1) + ' / ' + STEPS.length;
-    q('ot-next-btn').textContent = (i === STEPS.length-1) ? 'Done ✓' : 'Next ►';
-    q('ot-back-btn').disabled = (i === 0);
-    q('ot-prog-fill').style.width = Math.round((i+1)/STEPS.length*100) + '%';
-    q('ot-box').classList.add('on');
-    q('ot-backdrop').classList.add('on');
-    setTimeout(function(){ position(s); }, 60);
-  }
-
   function go(i){
-    if(i >= STEPS.length){ done(); return; }
+    if(i >= STEPS.length){ quit(); return; }
     if(i < 0) return;
-    setHL(prevId, false);
+
+    hl(prevId, false);
     cur = i;
-    setHL(STEPS[i].id, true);
-    prevId = STEPS[i].id;
-    render(i);
+    var s = STEPS[i];
+    hl(s.id, true);
+    prevId = s.id;
+
+    el('ot-icon').textContent  = s.icon;
+    el('ot-title').textContent = s.title;
+    el('ot-body').textContent  = s.body;
+    el('ot-ctr').textContent   = (i+1) + ' / ' + STEPS.length;
+    el('ot-next').textContent  = i === STEPS.length-1 ? 'Done \u2713' : 'Next \u25ba';
+    el('ot-back').disabled     = (i === 0);
+    el('ot-pfill').style.width = Math.round((i+1)/STEPS.length*100) + '%';
+
+    el('ot-box').classList.add('on');
+    el('ot-backdrop').classList.add('on');
+
+    setTimeout(function(){ place(s); }, 60);
   }
 
-  function done(){
-    setHL(prevId, false);
+  function quit(){
+    hl(prevId, false);
     prevId = null; cur = -1;
-    q('ot-box').classList.remove('on');
-    q('ot-backdrop').classList.remove('on');
+    el('ot-box').classList.remove('on');
+    el('ot-backdrop').classList.remove('on');
   }
 
-  /* ── Wire buttons immediately (script is at end of body, DOM is ready) ── */
-  q('ot-next-btn').addEventListener('click', function(){ go(cur + 1); });
-  q('ot-back-btn').addEventListener('click', function(){ if(cur > 0) go(cur - 1); });
-  q('ot-skip-btn').addEventListener('click', function(){ done(); });
+  // Wire buttons immediately — script is at end of <body>, DOM is ready
+  el('ot-next').addEventListener('click', function(){ go(cur + 1); });
+  el('ot-back').addEventListener('click', function(){ if(cur > 0) go(cur - 1); });
+  el('ot-skip').addEventListener('click', quit);
 
-  /* ── Public API ── */
+  // Public API
   window._otGo   = go;
-  window._otDone = done;
+  window._otDone = quit;
 
-  /* startOrientationTour — called after sim screen is shown */
   window.startOrientationTour = function(){
     try{
       if(sessionStorage.getItem('ot_done') === '1') return;
@@ -1033,9 +1009,35 @@ canvas.wc.active{display:block;}
     }catch(e){}
     setTimeout(function(){ go(0); }, 800);
   };
+
+  // Console helpers — printed automatically in DEV mode
+  window.tour = function(n){ go(typeof n === 'number' ? n-1 : 0); };
+  window.tourEnd = quit;
+
+  // Hook startSim — defer until app is ready via polling
+  window._pendingTour = true;
+  var _hookInterval = setInterval(function(){
+    if(typeof window.startSim === 'function' && !window._tourHooked){
+      window._tourHooked = true;
+      clearInterval(_hookInterval);
+      var _orig = window.startSim;
+      window.startSim = function(){
+        _orig.apply(this, arguments);
+        if(window._pendingTour){ window._pendingTour = false; window.startOrientationTour(); }
+      };
+    }
+  }, 100);
 })();
+
+// Console hint for dev mode
+if(new URLSearchParams(location.search).get('dev') === '1'){
+  console.log('%c VentSim Tour ', 'background:#00e5ff;color:#000;font-weight:bold;padding:2px 8px;border-radius:3px;',
+    '\n  tour()    — start from step 1' +
+    '\n  tour(3)   — jump to step 3' +
+    '\n  tourEnd() — close');
+}
 </script>
 
-<script src="ventsim-app.js" defer></script>
+<script src="ventsim-app.js"></script>
 </body>
 </html>
