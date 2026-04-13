@@ -954,7 +954,18 @@ q('ot-skip-btn').addEventListener('click', quit);
 window.tour    = function(n){ go(typeof n==='number' ? n-1 : 0); };
 window.tourEnd = quit;
 
-// Tour is launched by startSim() in ventsim-app.js via window.tour()
+// Wrap startSim after app loads to trigger tour
+window.addEventListener('load', function(){
+  var _orig = window.startSim;
+  if(typeof _orig !== 'function') return;
+  window.startSim = function(){
+    _orig.apply(this, arguments);
+    if(!window._tourLaunched){
+      window._tourLaunched = true;
+      setTimeout(function(){ go(0); }, 1000);
+    }
+  };
+});
 
 // Dev hint
 if(new URLSearchParams(location.search).get('dev')==='1'){
