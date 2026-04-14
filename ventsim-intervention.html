@@ -954,27 +954,17 @@ q('ot-skip-btn').addEventListener('click', quit);
 window.tour    = function(n){ go(typeof n==='number' ? n-1 : 0); };
 window.tourEnd = quit;
 
-// Watch for orient-sc becoming active, then patch its BEGIN SIMULATION button
+// Wrap startSim after app loads to trigger tour
 window.addEventListener('load', function(){
-  var orientSc = document.getElementById('orient-sc');
-  if(!orientSc) return;
-  var obs = new MutationObserver(function(){
-    if(!orientSc.classList.contains('active')) return;
-    var btn = orientSc.querySelector('button.btn-g');
-    if(btn && !btn._tourPatched){
-      btn._tourPatched = true;
-      var origOnclick = btn.onclick;
-      btn.onclick = function(){
-        if(origOnclick) origOnclick.call(this);
-        else if(typeof startSim === 'function') startSim();
-        if(!window._tourLaunched){
-          window._tourLaunched = true;
-          setTimeout(function(){ go(0); }, 800);
-        }
-      };
+  var _orig = window.startSim;
+  if(typeof _orig !== 'function') return;
+  window.startSim = function(){
+    _orig.apply(this, arguments);
+    if(!window._tourLaunched){
+      window._tourLaunched = true;
+      setTimeout(function(){ go(0); }, 1000);
     }
-  });
-  obs.observe(orientSc, {attributes:true, attributeFilter:['class']});
+  };
 });
 
 // Dev hint
