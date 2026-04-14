@@ -584,7 +584,7 @@ canvas.wc.active{display:block;}
         💾 <strong>Auto-save:</strong> Your progress saves automatically every 2 minutes.
       </div>
     </div>
-    <button class="btn btn-g btn-w" onclick="startSim()">▶ BEGIN SIMULATION</button>
+    <button class="btn btn-g btn-w" onclick="startSim();if(!window._tourLaunched){window._tourLaunched=true;setTimeout(function(){window.tour&&window.tour(1);},800);}">▶ BEGIN SIMULATION</button>
   </div></div>
 </div>
 
@@ -797,7 +797,7 @@ canvas.wc.active{display:block;}
       <div class="ty-sub">Your data has been saved. Thank you for contributing to nursing education research in Oman.</div>
       <div class="ty-info">
         <div class="ty-row"><span class="ty-row-lbl">PARTICIPANT</span><span class="ty-row-val" id="ty-pid">--</span></div>
-        <div class="ty-row"><span class="ty-row-lbl">GROUP</span><span class="ty-row-val">Intervention Group</span></div>
+        <div class="ty-row"><span class="ty-row-lbl">GROUP</span><span class="ty-row-val">Control Group</span></div>
         <div class="ty-row"><span class="ty-row-lbl">SESSION ID</span><span class="ty-row-val" id="ty-sid">--</span></div>
         <div class="ty-row"><span class="ty-row-lbl">STATUS</span><span class="ty-row-val" id="ty-st">Saved ✓</span></div>
       </div>
@@ -939,17 +939,7 @@ q('ot-back-btn').addEventListener('click', function(){ if(cur>0) go(cur-1); });
 q('ot-skip-btn').addEventListener('click', quit);
 window.tour    = function(n){ go(typeof n==='number' ? n-1 : 0); };
 window.tourEnd = quit;
-window.addEventListener('load', function(){
-  var _orig = window.startSim;
-  if(typeof _orig !== 'function') return;
-  window.startSim = function(){
-    _orig.apply(this, arguments);
-    if(!window._tourLaunched){
-      window._tourLaunched = true;
-      setTimeout(function(){ go(0); }, 800);
-    }
-  };
-});
+/* startSim wrap removed — tour launched directly from button onclick */
 if(new URLSearchParams(location.search).get('dev')==='1'){
   console.log('%c VentSim Tour ','background:#00e5ff;color:#000;font-weight:bold;padding:2px 8px;border-radius:3px;',
     '

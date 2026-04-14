@@ -954,17 +954,27 @@ q('ot-skip-btn').addEventListener('click', quit);
 window.tour    = function(n){ go(typeof n==='number' ? n-1 : 0); };
 window.tourEnd = quit;
 
-// Wrap startSim after app loads to trigger tour
+// Watch for orient-sc becoming active, then patch its BEGIN SIMULATION button
 window.addEventListener('load', function(){
-  var _orig = window.startSim;
-  if(typeof _orig !== 'function') return;
-  window.startSim = function(){
-    _orig.apply(this, arguments);
-    if(!window._tourLaunched){
-      window._tourLaunched = true;
-      setTimeout(function(){ go(0); }, 1000);
+  var orientSc = document.getElementById('orient-sc');
+  if(!orientSc) return;
+  var obs = new MutationObserver(function(){
+    if(!orientSc.classList.contains('active')) return;
+    var btn = orientSc.querySelector('button.btn-g');
+    if(btn && !btn._tourPatched){
+      btn._tourPatched = true;
+      var origOnclick = btn.onclick;
+      btn.onclick = function(){
+        if(origOnclick) origOnclick.call(this);
+        else if(typeof startSim === 'function') startSim();
+        if(!window._tourLaunched){
+          window._tourLaunched = true;
+          setTimeout(function(){ go(0); }, 800);
+        }
+      };
     }
-  };
+  });
+  obs.observe(orientSc, {attributes:true, attributeFilter:['class']});
 });
 
 // Dev hint
@@ -973,32 +983,6 @@ if(new URLSearchParams(location.search).get('dev')==='1'){
     '\n  tour()    start from step 1' +
     '\n  tour(3)   jump to step 3' +
     '\n  tourEnd() close');
-
-  // Auto-fill demographics step 3 so skip works in dev mode
-  document.addEventListener('DOMContentLoaded', function(){
-    var demoSc = document.getElementById('demo-sc');
-    if(!demoSc) return;
-    var obs = new MutationObserver(function(muts){
-      muts.forEach(function(m){
-        if(m.attributeName==='class' && demoSc.classList.contains('active')){
-          var fills = {
-            d1:'20–29 years', d2:'Male', d3:'Omani', d4:'Single',
-            d5:'Bachelor of Nursing', d6:'Yes', d7:'Yes — formal course',
-            d8:'Basic (1–2 sessions)', d9:'4–6 years', d10:'4–6 years',
-            d11:'Staff Nurse', d12:'2 patients', d13:'Rotating shifts',
-            d14:'Very comfortable', d15:'Use occasionally',
-            d16:'3 — Moderately confident', d17:'1–2 times'
-          };
-          for(var id in fills){
-            var el = document.getElementById(id);
-            if(el && el.value === '') el.value = fills[id];
-          }
-          console.log('%c [DEV] Demographics auto-filled — click CONTINUE to skip ','background:#ffd740;color:#000;padding:2px 6px;border-radius:3px;');
-        }
-      });
-    });
-    obs.observe(demoSc, {attributes:true, attributeFilter:['class']});
-  });
 }
 
 })();
