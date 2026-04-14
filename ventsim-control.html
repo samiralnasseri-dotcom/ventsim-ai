@@ -571,22 +571,17 @@ canvas.wc.active{display:block;}
      S7: ORIENTATION
 ═══════════════════════════════════ -->
 <div class="sc" id="orient-sc">
-  <div class="hdr"><span class="hlogo">VentSim</span><div class="hprog"><div class="hprog-fill" style="width:48%"></div></div><div class="hbadge">ORIENTATION</div></div>
-  <div class="wrap"><div class="inner">
+  <div class="hdr"><span class="hlogo">VentSim <span>AI</span></span><div class="hprog"><div class="hprog-fill" style="width:48%"></div></div><div class="hbadge">ORIENTATION</div></div>
+  <div class="wrap"><div class="inner" style="max-width:560px;">
     <div class="badge">STEP 5 OF 8</div>
     <div class="stitle">Platform <span class="hl">Orientation</span></div>
-    <div class="ssub">Before the simulation begins, please familiarise yourself with the interface. This takes approximately 2 minutes.</div>
-    <div class="orient-step"><div class="orient-icon">📺</div><div><div class="orient-title">Ventilator Waveforms</div><div class="orient-desc">You will see live animated waveforms for Flow, Pressure, and Volume. These change in real time based on patient status. Select the waveform tab to switch between views. Abnormal patterns are key clinical cues.</div></div></div>
-    <div class="orient-step"><div class="orient-icon">❤️</div><div><div class="orient-title">Vital Signs Monitor</div><div class="orient-desc">A live vitals panel shows SpO₂, HR, RR, BP, ETCO₂, and FiO₂. Values highlighted in red indicate alarm ranges — assess these first.</div></div></div>
-    <div class="orient-step"><div class="orient-icon">⚡</div><div><div class="orient-title">Clinical Decisions</div><div class="orient-desc">At each decision point you will choose from 3–4 options. Think carefully — your choice affects the patient's condition and your score. You cannot change a decision once made.</div></div></div>
-    
-    <div class="orient-step"><div class="orient-icon">📋</div><div><div class="orient-title">Scenario Flow</div><div class="orient-desc">There are 4 scenarios. Each begins with a patient handover, then unfolds over several decision points. A brief debrief appears after each scenario before you proceed to the next.</div></div></div>
-    <div class="orient-step"><div class="orient-icon">💾</div><div><div class="orient-title">Auto-Save</div><div class="orient-desc">Your progress saves automatically every 2 minutes. If you are interrupted, you can resume from where you left off using your participant number.</div></div></div>
-    <div class="card" style="background:rgba(0,229,255,.04);border-color:rgba(0,229,255,.2);">
-      <div style="font-size:.85rem;color:var(--text);line-height:1.7;">
+    <div class="ssub">A short interactive tour will guide you through the simulation interface. Click <strong style="color:var(--cyan)">Begin Simulation</strong> to start the tour — it takes approximately 2 minutes.</div>
+    <div class="card" style="background:rgba(0,229,255,.04);border-color:rgba(0,229,255,.2);margin-bottom:20px;">
+      <div style="font-size:.85rem;color:var(--text);line-height:1.9;">
         ⏱ <strong>Total simulation time: approximately 40 minutes</strong><br>
         🎯 <strong>Goal:</strong> Make safe, evidence-based clinical decisions for each patient.<br>
-        🤝 <strong>Important:</strong> Work independently. Do not consult others during the session.
+        🤝 <strong>Important:</strong> Work independently. Do not consult others during the session.<br>
+        💾 <strong>Auto-save:</strong> Your progress saves automatically every 2 minutes.
       </div>
     </div>
     <button class="btn btn-g btn-w" onclick="startSim()">▶ BEGIN SIMULATION</button>
