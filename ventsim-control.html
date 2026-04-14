@@ -584,7 +584,7 @@ canvas.wc.active{display:block;}
         💾 <strong>Auto-save:</strong> Your progress saves automatically every 2 minutes.
       </div>
     </div>
-    <button class="btn btn-g btn-w" onclick="startSim();if(!window._tourLaunched){window._tourLaunched=true;setTimeout(function(){window.tour&&window.tour(1);},800);}">▶ BEGIN SIMULATION</button>
+    <button class="btn btn-g btn-w" onclick="window.startSim()">▶ BEGIN SIMULATION</button>
   </div></div>
 </div>
 
@@ -878,6 +878,9 @@ canvas.wc.active{display:block;}
   </div>
 </div>
 
+
+<script src="ventsim-control.js"></script>
+
 <script>
 (function(){
 var STEPS = [
@@ -949,8 +952,6 @@ if(new URLSearchParams(location.search).get('dev')==='1'){
 }
 })();
 </script>
-
-<script src="ventsim-control.js"></script>
 <script>
 (function(){
   /* DEV skip fix: patch submitDemo so fields are always filled before validation.
