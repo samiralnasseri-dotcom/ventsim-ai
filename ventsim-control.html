@@ -944,9 +944,7 @@ window.addEventListener('load', function(){
   if(typeof _orig !== 'function') return;
   window.startSim = function(){
     _orig.apply(this, arguments);
-    // Only launch tour when coming from orientation screen (not dev skip/goto)
-    var fromOrient = window.S && window.S.timing && window.S.timing.currentScreen === 'orient-sc';
-    if(!window._tourLaunched && fromOrient){
+    if(!window._tourLaunched){
       window._tourLaunched = true;
       setTimeout(function(){ go(0); }, 800);
     }
