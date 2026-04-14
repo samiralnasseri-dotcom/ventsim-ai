@@ -208,36 +208,6 @@ select.finp{cursor:pointer;}
 canvas.wc{display:none;width:100%;height:120px;}
 canvas.wc.active{display:block;}
 
-/* ── FULL ICU MONITOR ── */
-.icu-monitor{background:#050d12;border:1px solid #0d2535;border-radius:var(--r);overflow:hidden;}
-.icu-topbar{background:#030a0f;border-bottom:1px solid #0d2535;padding:4px 12px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;}
-.icu-lbl{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;color:#00e5ff;letter-spacing:2px;}
-.icu-meta{color:#3a5a70;}.icu-meta span{color:#a8c8d8;}
-.icu-clk{font-size:11px;color:#bcd;letter-spacing:2px;}
-.icu-body{display:grid;grid-template-columns:1fr 138px;height:300px;}
-.icu-waves{display:flex;flex-direction:column;padding:3px;gap:2px;overflow:hidden;}
-.icu-wr{flex:1;min-height:0;background:#081520;border:1px solid #0d2535;border-radius:3px;display:flex;flex-direction:column;overflow:hidden;position:relative;}
-.icu-wl{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;padding:2px 8px;border-bottom:1px solid #0d2535;font-family:var(--mono);}
-.icu-wname{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;letter-spacing:.5px;}
-.icu-wval{font-family:'JetBrains Mono',monospace;font-size:12px;}
-.icu-wunit{font-size:8px;color:#3a5a70;margin-left:2px;}
-.icu-wr canvas{flex:1;min-height:0;width:100%;display:block;}
-.icu-atag{display:none;position:absolute;top:2px;right:5px;background:#ff2244;color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:8px;padding:1px 5px;border-radius:3px;animation:icu-flash .8s infinite;}
-.icu-atag.on{display:block;}
-@keyframes icu-flash{0%,100%{background:#ff2244}50%{background:#7f1d1d}}
-.icu-params{background:#030a10;border-left:1px solid #0d2535;display:flex;flex-direction:column;overflow-y:auto;font-family:'JetBrains Mono',monospace;}
-.icu-params::-webkit-scrollbar{width:3px;}.icu-params::-webkit-scrollbar-thumb{background:#0d2535;}
-.icu-mode{background:#0a1e2e;border-bottom:1px solid #0d2535;padding:5px 8px;text-align:center;flex-shrink:0;}
-.icu-mode-l{font-size:7px;color:#3a5a70;letter-spacing:1px;}
-.icu-mode-v{font-weight:700;font-size:19px;color:#00e5ff;letter-spacing:2px;}
-.icu-psec{padding:5px 8px;border-bottom:1px solid #0d2535;flex-shrink:0;}
-.icu-ptit{font-size:7px;color:#3a5a70;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
-.icu-pr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px;}
-.icu-pn{font-size:9px;color:#7a9daa;}
-.icu-pv{font-size:14px;}
-.icu-pu{font-size:7px;color:#3a5a70;margin-left:1px;}
-.icu-alm{font-size:9px;color:#ff2244;line-height:1.7;}
-
 /* ── VENT SETTINGS ── */
 .vent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
 @media(max-width:600px){.vent-grid{grid-template-columns:repeat(2,1fr);}}
@@ -371,7 +341,7 @@ canvas.wc.active{display:block;}
 #ot-icon{font-size:1.1rem;}
 #ot-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:#00e5ff;}
 #ot-step-ctr{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#546e7a;}
-#ot-img{width:100%;height:180px;background:#050d12;display:flex;align-items:center;justify-content:center;border-bottom:1px solid #0e2a3f;overflow:hidden;position:relative;}
+#ot-img{width:100%;height:180px;background:#050d12;display:flex;align-items:center;justify-content:center;border-bottom:1px solid #0e2a3f;overflow:hidden;}
 #ot-diagram{width:100%;height:100%;}
 #ot-body{padding:14px 18px;font-size:.82rem;color:#90a4ae;line-height:1.7;}
 #ot-footer{padding:10px 18px 14px;display:flex;flex-direction:column;gap:8px;}
@@ -383,6 +353,36 @@ canvas.wc.active{display:block;}
 #ot-back-btn{background:transparent;border:1px solid #1a3a55;color:#90a4ae;font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:6px 14px;border-radius:5px;cursor:pointer;}
 #ot-back-btn:disabled{opacity:.2;cursor:not-allowed;}
 #ot-next-btn{background:#00e5ff;color:#000;border:none;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;padding:6px 18px;border-radius:5px;cursor:pointer;}
+
+/* ── ICU MONITOR ── */
+.icu-monitor{background:#050d12;border:1px solid #0d2535;border-radius:var(--r);overflow:hidden;}
+.icu-topbar{background:#030a0f;border-bottom:1px solid #0d2535;padding:4px 12px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;}
+.icu-lbl{font-weight:700;font-size:11px;color:#00e5ff;letter-spacing:2px;}
+.icu-meta{color:#3a5a70;}.icu-meta span{color:#a8c8d8;}
+.icu-clk{font-size:11px;color:#bcd;letter-spacing:2px;}
+.icu-body{display:grid;grid-template-columns:1fr 138px;height:300px;}
+.icu-waves{display:flex;flex-direction:column;padding:3px;gap:2px;overflow:hidden;}
+.icu-wr{flex:1;min-height:0;background:#081520;border:1px solid #0d2535;border-radius:3px;display:flex;flex-direction:column;overflow:hidden;position:relative;}
+.icu-wl{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;padding:2px 8px;border-bottom:1px solid #0d2535;}
+.icu-wname{font-weight:700;font-size:10px;letter-spacing:.5px;}
+.icu-wval{font-size:12px;}
+.icu-wunit{font-size:8px;color:#3a5a70;margin-left:2px;}
+.icu-wr canvas{flex:1;min-height:0;width:100%;display:block;}
+.icu-atag{display:none;position:absolute;top:2px;right:5px;background:#ff2244;color:#fff;font-weight:700;font-size:8px;padding:1px 5px;border-radius:3px;animation:icu-flash .8s infinite;}
+.icu-atag.on{display:block;}
+@keyframes icu-flash{0%,100%{background:#ff2244}50%{background:#7f1d1d}}
+.icu-params{background:#030a10;border-left:1px solid #0d2535;display:flex;flex-direction:column;overflow-y:auto;}
+.icu-params::-webkit-scrollbar{width:3px;}.icu-params::-webkit-scrollbar-thumb{background:#0d2535;}
+.icu-mode{background:#0a1e2e;border-bottom:1px solid #0d2535;padding:5px 8px;text-align:center;flex-shrink:0;}
+.icu-mode-l{font-size:7px;color:#3a5a70;letter-spacing:1px;}
+.icu-mode-v{font-weight:700;font-size:19px;color:#00e5ff;letter-spacing:2px;}
+.icu-psec{padding:5px 8px;border-bottom:1px solid #0d2535;flex-shrink:0;}
+.icu-ptit{font-size:7px;color:#3a5a70;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.icu-pr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px;}
+.icu-pn{font-size:9px;color:#7a9daa;}
+.icu-pv{font-size:14px;}
+.icu-pu{font-size:7px;color:#3a5a70;margin-left:1px;}
+.icu-alm{font-size:9px;color:#ff2244;line-height:1.7;}
 </style>
 </head>
 <body>
@@ -607,8 +607,8 @@ canvas.wc.active{display:block;}
     <div class="badge">STEP 5 OF 8</div>
     <div class="stitle">Platform <span class="hl">Orientation</span></div>
     <div class="ssub">Before the simulation begins, please familiarise yourself with the interface. This takes approximately 2 minutes.</div>
-    <div class="orient-step"><div class="orient-icon">📺</div><div><div class="orient-title">Bedside Monitor</div><div class="orient-desc">You will see a full ICU bedside monitor with four simultaneous animated waveforms: Pressure, Flow, Volume, and SpO₂/Pleth. All waveforms update in real time based on patient status. Alarm tags appear when values exceed safe limits — assess these first.</div></div></div>
-    <div class="orient-step"><div class="orient-icon">❤️</div><div><div class="orient-title">Vital Signs & Parameters</div><div class="orient-desc">The right panel of the monitor shows set and measured ventilator parameters, active alarms, and patient vitals including SpO₂, HR, and MAP. Values highlighted in red indicate alarm ranges.</div></div></div>
+    <div class="orient-step"><div class="orient-icon">📺</div><div><div class="orient-title">Ventilator Waveforms</div><div class="orient-desc">You will see live animated waveforms for Flow, Pressure, and Volume. These change in real time based on patient status. Select the waveform tab to switch between views. Abnormal patterns are key clinical cues.</div></div></div>
+    <div class="orient-step"><div class="orient-icon">❤️</div><div><div class="orient-title">Vital Signs Monitor</div><div class="orient-desc">A live vitals panel shows SpO₂, HR, RR, BP, ETCO₂, and FiO₂. Values highlighted in red indicate alarm ranges — assess these first.</div></div></div>
     <div class="orient-step"><div class="orient-icon">⚡</div><div><div class="orient-title">Clinical Decisions</div><div class="orient-desc">At each decision point you will choose from 3–4 options. Think carefully — your choice affects the patient's condition and your score. You cannot change a decision once made.</div></div></div>
     
     <div class="orient-step"><div class="orient-icon">📋</div><div><div class="orient-title">Scenario Flow</div><div class="orient-desc">There are 4 scenarios. Each begins with a patient handover, then unfolds over several decision points. A brief debrief appears after each scenario before you proceed to the next.</div></div></div>
@@ -663,7 +663,7 @@ canvas.wc.active{display:block;}
             <div class="vbox"><div class="vbox-lbl">FiO₂</div><div class="vbox-val v-fio2" id="v-fio2">--</div><div class="vbox-unit">%</div></div>
           </div>
         </div>
-        <!-- ICU Monitor with all 4 waveforms -->
+        <!-- ICU Monitor — canvases use wc-* IDs so ventsim-control.js draws to them -->
         <div class="icu-monitor">
           <div class="icu-topbar">
             <span class="icu-lbl">BEDSIDE MONITOR</span>
@@ -683,7 +683,7 @@ canvas.wc.active{display:block;}
               <div class="icu-wr">
                 <div class="icu-wl">
                   <span class="icu-wname" style="color:#00e5ff">FLOW</span>
-                  <div><span class="icu-wval" style="color:#00e5ff" id="icu-flow">--</span><span class="icu-wunit">L/min</span></div>
+                  <div><span class="icu-wval" style="color:#00e5ff">--</span><span class="icu-wunit">L/min</span></div>
                 </div>
                 <canvas id="wc-flow"></canvas>
               </div>
@@ -944,25 +944,14 @@ canvas.wc.active{display:block;}
 <!-- ORIENTATION MODAL -->
 <div id="ot-wrap">
   <div id="ot-modal">
-    <div id="ot-label">
-      <div id="ot-label-left">
-        <span id="ot-icon"></span>
-        <span id="ot-title"></span>
-      </div>
-      <span id="ot-step-ctr"></span>
-    </div>
-    <div id="ot-img">
-      <svg id="ot-diagram" viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg"></svg>
-    </div>
+    <div id="ot-label"><div id="ot-label-left"><span id="ot-icon"></span><span id="ot-title"></span></div><span id="ot-step-ctr"></span></div>
+    <div id="ot-img"><svg id="ot-diagram" viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg"></svg></div>
     <div id="ot-body"></div>
     <div id="ot-footer">
       <div id="ot-prog"><div id="ot-pfill" style="width:0%"></div></div>
       <div id="ot-nav">
         <button id="ot-skip-btn">Skip tour</button>
-        <div id="ot-btn-group">
-          <button id="ot-back-btn" disabled>&#9664; Back</button>
-          <button id="ot-next-btn">Next &#9654;</button>
-        </div>
+        <div id="ot-btn-group"><button id="ot-back-btn" disabled>&#9664; Back</button><button id="ot-next-btn">Next &#9654;</button></div>
       </div>
     </div>
   </div>
@@ -970,228 +959,113 @@ canvas.wc.active{display:block;}
 
 <script>
 (function(){
-
-var STEPS = [
-  {
-    icon:'🏥', title:'Patient header',
-    body:'Shows the current patient name, age, diagnosis and scenario number. Always read this first — it gives you the clinical context for every decision.',
-    svg:'<rect x="10" y="20" width="460" height="50" rx="6" fill="#0f3460" stroke="#1a3a55" stroke-width="1"/><text x="24" y="42" font-family="Syne,sans-serif" font-size="13" fill="#e0f2f1" font-weight="700">Ahmad Al-Balushi · 58 yrs · Male</text><text x="24" y="60" font-family="JetBrains Mono,monospace" font-size="10" fill="#90a4ae">Post-cardiac surgery · ARDS · ICU-04</text><rect x="360" y="28" width="100" height="22" rx="4" fill="rgba(0,229,255,.1)" stroke="rgba(0,229,255,.3)" stroke-width="1"/><text x="410" y="43" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" text-anchor="middle">SCENARIO 1</text><path d="M240 78 L240 100" stroke="#00e5ff" stroke-width="2" stroke-dasharray="4,3"/><polygon points="236,100 244,100 240,112" fill="#00e5ff"/><text x="240" y="130" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" text-anchor="middle">Read this first</text>'
-  },
-  {
-    icon:'❤️', title:'Vital signs monitor',
-    body:'Live SpO₂, HR, RR, BP, ETCO₂ and FiO₂. Values shown in red are outside safe limits — start your assessment here every time.',
-    svg:'<rect x="10" y="10" width="460" height="120" rx="6" fill="#050d14" stroke="#0e2a3f" stroke-width="1"/><rect x="20" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#ff5252" stroke-width="1.5"/><text x="54" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">SpO₂</text><text x="54" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#ff5252" text-anchor="middle" font-weight="700">91%</text><rect x="96" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#ff5252" stroke-width="1.5"/><text x="130" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">HR</text><text x="130" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#ff5252" text-anchor="middle" font-weight="700">118</text><rect x="172" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#ffd740" stroke-width="1.5"/><text x="206" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">RR</text><text x="206" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#ffd740" text-anchor="middle" font-weight="700">22</text><rect x="248" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#0e2a3f" stroke-width="1"/><text x="282" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">BP</text><text x="282" y="56" font-family="JetBrains Mono,monospace" font-size="13" fill="#ce93d8" text-anchor="middle" font-weight="700">112/68</text><rect x="324" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#0e2a3f" stroke-width="1"/><text x="358" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">ETCO₂</text><text x="358" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#a5d6a7" text-anchor="middle" font-weight="700">38</text><rect x="400" y="20" width="60" height="50" rx="4" fill="#081520" stroke="#0e2a3f" stroke-width="1"/><text x="430" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">FiO₂</text><text x="430" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#82b1ff" text-anchor="middle" font-weight="700">45%</text><text x="54" y="112" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">⚠ ALARM</text><text x="130" y="112" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">⚠ ALARM</text><text x="206" y="112" font-family="JetBrains Mono,monospace" font-size="9" fill="#ffd740" text-anchor="middle">⚠ HIGH</text><text x="282" y="112" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e676" text-anchor="middle">✓ OK</text><text x="358" y="112" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e676" text-anchor="middle">✓ OK</text><text x="430" y="112" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e676" text-anchor="middle">✓ OK</text><text x="148" y="148" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff5252" text-anchor="middle">Red = out of safe range — assess first</text>'
-  },
-  {
-    icon:'📺', title:'Bedside monitor — 4 waveforms',
-    body:'The full ICU bedside monitor shows Pressure, Flow, Volume and SpO₂/Pleth waveforms simultaneously in real time. Alarm tags appear when values exceed safe limits. The right panel shows set vs measured parameters.',
-    svg:'<rect x="10" y="5" width="460" height="160" rx="5" fill="#050d12" stroke="#0d2535" stroke-width="1"/><rect x="10" y="5" width="460" height="18" rx="0" fill="#030a0f" stroke="#0d2535" stroke-width="1"/><text x="18" y="17" font-family="JetBrains Mono,monospace" font-size="8" fill="#00e5ff" font-weight="700" letter-spacing="2">BEDSIDE MONITOR</text><text x="400" y="17" font-family="JetBrains Mono,monospace" font-size="8" fill="#bcd" text-anchor="middle">09:42:16</text><rect x="10" y="23" width="350" height="36" rx="0" fill="#081520" stroke="#0d2535" stroke-width="1"/><text x="16" y="35" font-family="JetBrains Mono,monospace" font-size="8" fill="#00ff7f" font-weight="700">PRESSURE</text><polyline points="80,45 95,30 110,47 125,45 140,30 155,47 170,45 185,30 200,47 215,45 230,30 245,47 260,45 275,30 290,47 305,45 320,30 335,47 350,45" fill="none" stroke="#00ff7f" stroke-width="1.5"/><rect x="10" y="59" width="350" height="36" rx="0" fill="#081520" stroke="#0d2535" stroke-width="1"/><text x="16" y="71" font-family="JetBrains Mono,monospace" font-size="8" fill="#00e5ff" font-weight="700">FLOW</text><polyline points="80,77 100,62 115,77 135,87 150,77 170,62 185,77 205,87 220,77 240,62 255,77 275,87 290,77 310,62 325,77 345,87 360,77" fill="none" stroke="#00e5ff" stroke-width="1.5"/><rect x="10" y="95" width="350" height="36" rx="0" fill="#081520" stroke="#0d2535" stroke-width="1"/><text x="16" y="107" font-family="JetBrains Mono,monospace" font-size="8" fill="#ffdd00" font-weight="700">VOLUME</text><polyline points="80,125 95,115 110,107 125,108 140,118 155,125 170,115 185,107 200,108 215,118 230,125 245,115 260,107 275,108 290,118 305,125 320,115 335,107 350,108" fill="none" stroke="#ffdd00" stroke-width="1.5"/><rect x="10" y="131" width="350" height="36" rx="0" fill="#081520" stroke="#0d2535" stroke-width="1"/><text x="16" y="143" font-family="JetBrains Mono,monospace" font-size="8" fill="#ff8c00" font-weight="700">PLETH</text><polyline points="80,155 100,140 115,148 130,155 150,140 165,148 180,155 200,140 215,148 230,155 250,140 265,148 280,155 300,140 315,148 330,155 350,140" fill="none" stroke="#ff8c00" stroke-width="1.5"/><rect x="360" y="23" width="110" height="144" rx="0" fill="#030a10" stroke="#0d2535" stroke-width="1"/><text x="415" y="36" font-family="JetBrains Mono,monospace" font-size="14" fill="#00e5ff" text-anchor="middle" font-weight="700">SIMV</text><text x="368" y="52" font-family="JetBrains Mono,monospace" font-size="7" fill="#3a5a70">PIP</text><text x="466" y="52" font-family="JetBrains Mono,monospace" font-size="11" fill="#ff2244" text-anchor="end" font-weight="700">38</text><text x="368" y="66" font-family="JetBrains Mono,monospace" font-size="7" fill="#3a5a70">SpO₂</text><text x="466" y="66" font-family="JetBrains Mono,monospace" font-size="11" fill="#ff2244" text-anchor="end" font-weight="700">91%</text><text x="368" y="80" font-family="JetBrains Mono,monospace" font-size="7" fill="#3a5a70">HR</text><text x="466" y="80" font-family="JetBrains Mono,monospace" font-size="11" fill="#ff8c00" text-anchor="end" font-weight="700">104</text><text x="368" y="94" font-family="JetBrains Mono,monospace" font-size="7" fill="#ff2244">HIGH PIP</text><text x="368" y="106" font-family="JetBrains Mono,monospace" font-size="7" fill="#ff2244">LOW SpO₂</text><text x="240" y="178" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" text-anchor="middle">All 4 waveforms visible simultaneously</text>'
-  },
-  {
-    icon:'⚙️', title:'Ventilator settings',
-    body:'Current set and measured parameters: Mode, TV, PEEP, PIP, FiO₂, I:E and Plateau Pressure. Compare these values against clinical normal ranges.',
-    svg:'<text x="14" y="22" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" letter-spacing="1">SET PARAMETERS</text><rect x="10" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="45" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">MODE</text><text x="45" y="64" font-family="JetBrains Mono,monospace" font-size="11" fill="#82b1ff" text-anchor="middle" font-weight="700">SIMV</text><rect x="86" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="121" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">TV</text><text x="121" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#82b1ff" text-anchor="middle" font-weight="700">520</text><text x="121" y="73" font-family="JetBrains Mono,monospace" font-size="7" fill="#3a5a70" text-anchor="middle">mL</text><rect x="162" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="197" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">PEEP</text><text x="197" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#82b1ff" text-anchor="middle" font-weight="700">8</text><text x="197" y="73" font-family="JetBrains Mono,monospace" font-size="7" fill="#3a5a70" text-anchor="middle">cmH₂O</text><rect x="238" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#ff5252" stroke-width="1.5"/><text x="273" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">PIP</text><text x="273" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#ff5252" text-anchor="middle" font-weight="700">38</text><text x="273" y="73" font-family="JetBrains Mono,monospace" font-size="7" fill="#ff5252" text-anchor="middle">↑ HIGH</text><rect x="314" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="349" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">FiO₂</text><text x="349" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#82b1ff" text-anchor="middle" font-weight="700">45%</text><rect x="390" y="28" width="80" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="430" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">PLATEAU P</text><text x="430" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#82b1ff" text-anchor="middle" font-weight="700">28</text><text x="240" y="115" font-family="JetBrains Mono,monospace" font-size="10" fill="#ffd740" text-anchor="middle">Compare values against clinical normal ranges</text><text x="240" y="130" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">Red border = outside safe limit</text>'
-  },
-  {
-    icon:'📋', title:'Clinical history & handover',
-    body:'Patient background, diagnosis, and nursing handover notes. Read carefully — the clinical details here are essential for choosing the correct management decision.',
-    svg:'<rect x="10" y="10" width="460" height="130" rx="6" fill="#081520" stroke="#0e2a3f" stroke-width="1"/><text x="24" y="30" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" letter-spacing="1">CLINICAL HISTORY</text><line x1="14" y1="35" x2="466" y2="35" stroke="#0e2a3f" stroke-width="1"/><text x="24" y="52" font-family="Inter,sans-serif" font-size="10" fill="#e0f2f1" font-weight="600">58M admitted post CABG × 3. Day 2 ICU.</text><text x="24" y="68" font-family="Inter,sans-serif" font-size="10" fill="#90a4ae">Developed ARDS overnight. CXR: bilateral infiltrates.</text><text x="24" y="84" font-family="Inter,sans-serif" font-size="10" fill="#90a4ae">On SIMV, increasing pressure trend past 2 hours.</text><text x="24" y="100" font-family="Inter,sans-serif" font-size="10" fill="#90a4ae">SpO₂ declining despite FiO₂ 45%. Agitated ++.</text><text x="24" y="116" font-family="Inter,sans-serif" font-size="10" fill="#ffd740">⚠ Handover: Watch for dyssynchrony. ABG pending.</text><text x="240" y="158" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" text-anchor="middle">Read every line — details matter for decisions</text>'
-  },
-  {
-    icon:'⚡', title:'Clinical decision panel',
-    body:'At each decision point choose from 3–4 options. You cannot change your answer once submitted. Your choice directly affects patient outcome and your score.',
-    svg:'<text x="14" y="18" font-family="JetBrains Mono,monospace" font-size="9" fill="#ffd740" letter-spacing="1">⚡ CLINICAL DECISION REQUIRED</text><rect x="10" y="24" width="460" height="30" rx="5" fill="#081520" stroke="#1a3a55" stroke-width="1"/><text x="24" y="44" font-family="Inter,sans-serif" font-size="11" fill="#e0f2f1">A.  Suction airway and reassess ventilator synchrony</text><rect x="10" y="58" width="460" height="30" rx="5" fill="#081520" stroke="#1a3a55" stroke-width="1"/><text x="24" y="78" font-family="Inter,sans-serif" font-size="11" fill="#e0f2f1">B.  Increase FiO₂ to 60% and administer bronchodilator</text><rect x="10" y="92" width="460" height="30" rx="5" fill="#081520" stroke="#1a3a55" stroke-width="1"/><text x="24" y="112" font-family="Inter,sans-serif" font-size="11" fill="#e0f2f1">C.  Switch to Pressure Control and reduce RR</text><rect x="10" y="126" width="460" height="30" rx="5" fill="#081520" stroke="#1a3a55" stroke-width="1"/><text x="24" y="146" font-family="Inter,sans-serif" font-size="11" fill="#e0f2f1">D.  Increase PEEP to 10 and obtain ABG</text><text x="240" y="170" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">Cannot be changed once submitted</text>'
-  },
-  {
-    icon:'📊', title:'Clinical compass — reference panel',
-    body:'A collapsible panel below the decisions with three tabs: Compare (set vs measured values), Reference (normal ranges and guidelines), and Hints (contextual prompts). Use it any time.',
-    svg:'<rect x="10" y="8" width="460" height="28" rx="5" fill="rgba(0,229,255,.06)" stroke="rgba(0,229,255,.2)" stroke-width="1"/><text x="24" y="26" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" letter-spacing="1" font-weight="600">📊  CLINICAL COMPASS  ▼</text><rect x="10" y="40" width="460" height="24" rx="0" fill="#0a1a27" stroke="#0e2a3f" stroke-width="1"/><rect x="10" y="40" width="148" height="24" rx="0" fill="rgba(0,229,255,.08)" stroke="rgba(0,229,255,.3)" stroke-width="1"/><text x="84" y="56" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e5ff" text-anchor="middle">📊 Compare</text><text x="250" y="56" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">📖 Reference</text><text x="400" y="56" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">💡 Hints</text><rect x="10" y="66" width="460" height="80" rx="0" fill="#081520" stroke="#0e2a3f" stroke-width="1"/><text x="24" y="84" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a">PARAMETER</text><text x="240" y="84" font-family="JetBrains Mono,monospace" font-size="8" fill="#82b1ff" text-anchor="middle">SET</text><text x="400" y="84" font-family="JetBrains Mono,monospace" font-size="8" fill="#90a4ae" text-anchor="middle">MEASURED</text><line x1="14" y1="88" x2="466" y2="88" stroke="#0e2a3f" stroke-width="1"/><text x="24" y="102" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a9daa">PIP</text><text x="240" y="102" font-family="JetBrains Mono,monospace" font-size="9" fill="#82b1ff" text-anchor="middle">35 cmH₂O</text><text x="400" y="102" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">38 cmH₂O ↑</text><text x="24" y="118" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a9daa">RR</text><text x="240" y="118" font-family="JetBrains Mono,monospace" font-size="9" fill="#82b1ff" text-anchor="middle">14 br/min</text><text x="400" y="118" font-family="JetBrains Mono,monospace" font-size="9" fill="#ffd740" text-anchor="middle">22 br/min ↑</text><text x="24" y="134" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a9daa">SpO₂</text><text x="240" y="134" font-family="JetBrains Mono,monospace" font-size="9" fill="#82b1ff" text-anchor="middle">≥ 94%</text><text x="400" y="134" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">91% ↓</text><text x="240" y="162" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e5ff" text-anchor="middle">Click to expand — available any time</text>'
-  }
+var STEPS=[
+  {icon:'🏥',title:'Patient header',body:'Shows the current patient name, age, diagnosis and scenario number. Always read this first — it gives you the clinical context for every decision.',svg:'<rect x="10" y="20" width="460" height="50" rx="6" fill="#0f3460" stroke="#1a3a55" stroke-width="1"/><text x="24" y="42" font-family="Syne,sans-serif" font-size="13" fill="#e0f2f1" font-weight="700">Ahmad Al-Balushi · 58 yrs · Male</text><text x="24" y="60" font-family="JetBrains Mono,monospace" font-size="10" fill="#90a4ae">Post-cardiac surgery · ARDS · ICU-04</text><rect x="360" y="28" width="100" height="22" rx="4" fill="rgba(0,229,255,.1)" stroke="rgba(0,229,255,.3)" stroke-width="1"/><text x="410" y="43" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" text-anchor="middle">SCENARIO 1</text><text x="240" y="130" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" text-anchor="middle">Read this first</text>'},
+  {icon:'❤️',title:'Vital signs monitor',body:'Live SpO₂, HR, RR, BP, ETCO₂ and FiO₂. Values shown in red are outside safe limits — start your assessment here every time.',svg:'<rect x="10" y="10" width="460" height="120" rx="6" fill="#050d14" stroke="#0e2a3f" stroke-width="1"/><rect x="20" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#ff5252" stroke-width="1.5"/><text x="54" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">SpO₂</text><text x="54" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#ff5252" text-anchor="middle" font-weight="700">91%</text><rect x="172" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#ffd740" stroke-width="1.5"/><text x="206" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">RR</text><text x="206" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#ffd740" text-anchor="middle" font-weight="700">22</text><rect x="96" y="20" width="68" height="50" rx="4" fill="#081520" stroke="#ff5252" stroke-width="1.5"/><text x="130" y="38" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">HR</text><text x="130" y="56" font-family="JetBrains Mono,monospace" font-size="16" fill="#ff5252" text-anchor="middle" font-weight="700">118</text><text x="148" y="148" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff5252" text-anchor="middle">Red = out of safe range</text>'},
+  {icon:'📺',title:'Bedside monitor — 4 waveforms',body:'The full ICU bedside monitor shows Pressure, Flow, Volume and SpO₂/Pleth waveforms simultaneously in real time. Alarm tags appear when values exceed safe limits. The right panel shows set vs measured parameters.',svg:'<rect x="10" y="5" width="460" height="165" rx="5" fill="#050d12" stroke="#0d2535" stroke-width="1"/><rect x="10" y="5" width="460" height="18" fill="#030a0f" stroke="#0d2535" stroke-width="1"/><text x="18" y="17" font-family="JetBrains Mono,monospace" font-size="8" fill="#00e5ff" font-weight="700" letter-spacing="2">BEDSIDE MONITOR</text><rect x="10" y="23" width="348" height="35" fill="#081520" stroke="#0d2535" stroke-width="1"/><text x="16" y="35" font-family="JetBrains Mono,monospace" font-size="8" fill="#00ff7f" font-weight="700">PRESSURE</text><polyline points="80,45 100,30 115,46 135,45 155,30 170,46 190,45 210,30 225,46 245,45 265,30 280,46 300,45 320,30 335,46 355,45" fill="none" stroke="#00ff7f" stroke-width="1.5"/><rect x="10" y="58" width="348" height="35" fill="#081520" stroke="#0d2535" stroke-width="1"/><text x="16" y="70" font-family="JetBrains Mono,monospace" font-size="8" fill="#00e5ff" font-weight="700">FLOW</text><polyline points="80,76 100,61 115,76 135,86 150,76 170,61 185,76 205,86 220,76 240,61 255,76 275,86 290,76 310,61 325,76 345,86 358,76" fill="none" stroke="#00e5ff" stroke-width="1.5"/><rect x="10" y="93" width="348" height="35" fill="#081520" stroke="#0d2535" stroke-width="1"/><text x="16" y="105" font-family="JetBrains Mono,monospace" font-size="8" fill="#ffdd00" font-weight="700">VOLUME</text><polyline points="80,122 100,112 120,105 140,106 160,116 180,122 200,112 220,105 240,106 260,116 280,122 300,112 320,105 340,106 358,116" fill="none" stroke="#ffdd00" stroke-width="1.5"/><rect x="10" y="128" width="348" height="35" fill="#081520" stroke="#0d2535" stroke-width="1"/><text x="16" y="140" font-family="JetBrains Mono,monospace" font-size="8" fill="#ff8c00" font-weight="700">PLETH</text><polyline points="80,153 100,138 115,146 130,153 150,138 165,146 180,153 200,138 215,146 230,153 250,138 265,146 280,153 300,138 315,146 330,153 350,138" fill="none" stroke="#ff8c00" stroke-width="1.5"/><rect x="358" y="23" width="112" height="140" fill="#030a10" stroke="#0d2535" stroke-width="1"/><text x="414" y="36" font-family="JetBrains Mono,monospace" font-size="14" fill="#00e5ff" text-anchor="middle" font-weight="700">SIMV</text><text x="366" y="52" font-family="JetBrains Mono,monospace" font-size="7" fill="#3a5a70">PIP</text><text x="466" y="52" font-family="JetBrains Mono,monospace" font-size="11" fill="#ff2244" text-anchor="end">38</text><text x="366" y="66" font-family="JetBrains Mono,monospace" font-size="7" fill="#3a5a70">SpO₂</text><text x="466" y="66" font-family="JetBrains Mono,monospace" font-size="11" fill="#ff2244" text-anchor="end">91%</text><text x="240" y="178" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" text-anchor="middle">All 4 waveforms visible simultaneously</text>'},
+  {icon:'⚙️',title:'Ventilator settings',body:'Current set and measured parameters: Mode, TV, PEEP, PIP, FiO₂, I:E and Plateau Pressure. Compare these values against clinical normal ranges.',svg:'<rect x="10" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="45" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">MODE</text><text x="45" y="64" font-family="JetBrains Mono,monospace" font-size="11" fill="#82b1ff" text-anchor="middle" font-weight="700">SIMV</text><rect x="86" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="121" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">TV</text><text x="121" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#82b1ff" text-anchor="middle" font-weight="700">520</text><rect x="162" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#0d2535" stroke-width="1"/><text x="197" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">PEEP</text><text x="197" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#82b1ff" text-anchor="middle" font-weight="700">8</text><rect x="238" y="28" width="70" height="50" rx="4" fill="#050d14" stroke="#ff5252" stroke-width="1.5"/><text x="273" y="46" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" text-anchor="middle">PIP</text><text x="273" y="64" font-family="JetBrains Mono,monospace" font-size="14" fill="#ff5252" text-anchor="middle" font-weight="700">38</text><text x="240" y="115" font-family="JetBrains Mono,monospace" font-size="10" fill="#ffd740" text-anchor="middle">Red border = outside safe limit</text>'},
+  {icon:'📋',title:'Clinical history & handover',body:'Patient background, diagnosis, and nursing handover notes. Read carefully — the clinical details here are essential for choosing the correct management decision.',svg:'<rect x="10" y="10" width="460" height="130" rx="6" fill="#081520" stroke="#0e2a3f" stroke-width="1"/><text x="24" y="30" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a" letter-spacing="1">CLINICAL HISTORY</text><line x1="14" y1="35" x2="466" y2="35" stroke="#0e2a3f" stroke-width="1"/><text x="24" y="52" font-family="Inter,sans-serif" font-size="10" fill="#e0f2f1" font-weight="600">58M admitted post CABG × 3. Day 2 ICU.</text><text x="24" y="68" font-family="Inter,sans-serif" font-size="10" fill="#90a4ae">Developed ARDS overnight. CXR: bilateral infiltrates.</text><text x="24" y="84" font-family="Inter,sans-serif" font-size="10" fill="#90a4ae">On SIMV, increasing pressure trend past 2 hours.</text><text x="24" y="100" font-family="Inter,sans-serif" font-size="10" fill="#ffd740">⚠ Watch for dyssynchrony. ABG pending.</text><text x="240" y="158" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" text-anchor="middle">Read every line — details matter for decisions</text>'},
+  {icon:'⚡',title:'Clinical decision panel',body:'At each decision point choose from 3–4 options. You cannot change your answer once submitted. Your choice directly affects patient outcome and your score.',svg:'<text x="14" y="18" font-family="JetBrains Mono,monospace" font-size="9" fill="#ffd740" letter-spacing="1">⚡ CLINICAL DECISION REQUIRED</text><rect x="10" y="24" width="460" height="30" rx="5" fill="#081520" stroke="#1a3a55" stroke-width="1"/><text x="24" y="44" font-family="Inter,sans-serif" font-size="11" fill="#e0f2f1">A.  Suction airway and reassess ventilator synchrony</text><rect x="10" y="58" width="460" height="30" rx="5" fill="#081520" stroke="#1a3a55" stroke-width="1"/><text x="24" y="78" font-family="Inter,sans-serif" font-size="11" fill="#e0f2f1">B.  Increase FiO₂ to 60% and administer bronchodilator</text><rect x="10" y="92" width="460" height="30" rx="5" fill="#081520" stroke="#1a3a55" stroke-width="1"/><text x="24" y="112" font-family="Inter,sans-serif" font-size="11" fill="#e0f2f1">C.  Switch to Pressure Control and reduce RR</text><text x="240" y="170" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">Cannot be changed once submitted</text>'},
+  {icon:'📊',title:'Clinical compass — reference panel',body:'A collapsible panel with three tabs: Compare (set vs measured values), Reference (normal ranges and guidelines), and Hints (contextual prompts). Use it any time during the scenario.',svg:'<rect x="10" y="8" width="460" height="28" rx="5" fill="rgba(0,229,255,.06)" stroke="rgba(0,229,255,.2)" stroke-width="1"/><text x="24" y="26" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" letter-spacing="1" font-weight="600">📊  CLINICAL COMPASS  ▼</text><rect x="10" y="40" width="460" height="24" fill="#0a1a27" stroke="#0e2a3f" stroke-width="1"/><rect x="10" y="40" width="148" height="24" fill="rgba(0,229,255,.08)" stroke="rgba(0,229,255,.3)" stroke-width="1"/><text x="84" y="56" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e5ff" text-anchor="middle">📊 Compare</text><text x="250" y="56" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">📖 Reference</text><text x="400" y="56" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">💡 Hints</text><text x="240" y="162" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e5ff" text-anchor="middle">Click to expand — available any time</text>'}
 ];
-
-var cur = -1;
-function q(id){ return document.getElementById(id); }
+var cur=-1;
+function q(id){return document.getElementById(id);}
 function go(i){
-  if(i < 0 || i >= STEPS.length){ quit(); return; }
-  cur = i;
-  var s = STEPS[i];
-  q('ot-icon').textContent  = s.icon;
-  q('ot-title').textContent = s.title;
-  q('ot-body').textContent  = s.body;
-  q('ot-step-ctr').textContent = (i+1) + ' of ' + STEPS.length;
-  q('ot-next-btn').textContent = (i === STEPS.length-1) ? 'Done ✓' : 'Next ▶';
-  q('ot-back-btn').disabled   = (i === 0);
-  q('ot-pfill').style.width   = Math.round((i+1)/STEPS.length*100) + '%';
-  q('ot-diagram').innerHTML   = s.svg;
+  if(i<0||i>=STEPS.length){quit();return;}
+  cur=i;var s=STEPS[i];
+  q('ot-icon').textContent=s.icon;q('ot-title').textContent=s.title;q('ot-body').textContent=s.body;
+  q('ot-step-ctr').textContent=(i+1)+' of '+STEPS.length;
+  q('ot-next-btn').textContent=(i===STEPS.length-1)?'Done ✓':'Next ▶';
+  q('ot-back-btn').disabled=(i===0);
+  q('ot-pfill').style.width=Math.round((i+1)/STEPS.length*100)+'%';
+  q('ot-diagram').innerHTML=s.svg;
   q('ot-wrap').classList.add('on');
 }
-function quit(){
-  cur = -1;
-  q('ot-wrap').classList.remove('on');
-}
-q('ot-next-btn').addEventListener('click', function(){ go(cur+1); });
-q('ot-back-btn').addEventListener('click', function(){ if(cur>0) go(cur-1); });
-q('ot-skip-btn').addEventListener('click', quit);
-window.tour    = function(n){ go(typeof n==='number' ? n-1 : 0); };
-window.tourEnd = quit;
-
-// Wrap startSim after app loads to trigger tour automatically
-window.addEventListener('load', function(){
-  var _orig = window.startSim;
-  if(typeof _orig !== 'function') return;
-  window.startSim = function(){
-    _orig.apply(this, arguments);
-    if(!window._tourLaunched){
-      window._tourLaunched = true;
-      setTimeout(function(){ go(0); }, 1000);
-    }
-  };
+function quit(){cur=-1;q('ot-wrap').classList.remove('on');}
+q('ot-next-btn').addEventListener('click',function(){go(cur+1);});
+q('ot-back-btn').addEventListener('click',function(){if(cur>0)go(cur-1);});
+q('ot-skip-btn').addEventListener('click',quit);
+window.tour=function(n){go(typeof n==='number'?n-1:0);};
+window.tourEnd=quit;
+window.addEventListener('load',function(){
+  var _orig=window.startSim;
+  if(typeof _orig!=='function')return;
+  window.startSim=function(){_orig.apply(this,arguments);if(!window._tourLaunched){window._tourLaunched=true;setTimeout(function(){go(0);},1000);}};
 });
-
-if(new URLSearchParams(location.search).get('dev')==='1'){
-  console.log('%c VentSim Tour ','background:#00e5ff;color:#000;font-weight:bold;padding:2px 8px;border-radius:3px;',
-    '\n  tour()    start from step 1' +
-    '\n  tour(3)   jump to step 3' +
-    '\n  tourEnd() close');
-}
-
+if(new URLSearchParams(location.search).get('dev')==='1'){console.log('%c VentSim Tour ','background:#00e5ff;color:#000;font-weight:bold;padding:2px 8px;border-radius:3px;','
+  tour()  start
+  tourEnd() close');}
 })();
 </script>
 
 <script src="ventsim-control.js"></script>
 <script>
 (function(){
-  /* Dev: patch SKIP_MAP for demo-sc to fill fields before calling submitDemo */
-  window.addEventListener('load', function(){
-    if(new URLSearchParams(location.search).get('dev')!=='1') return;
-    var fills = {d1:'20–29 years',d2:'Male',d3:'Omani',d4:'Single',d5:'Bachelor of Nursing',d6:'Yes',d7:'Yes — formal course',d8:'Basic (1–2 sessions)',d9:'4–6 years',d10:'4–6 years',d11:'Staff Nurse',d12:'2 patients',d13:'Rotating shifts',d14:'Very comfortable',d15:'Use occasionally',d16:'3 — Moderately confident',d17:'1–2 times'};
-    var origDevSkip = window.devSkip;
-    if(typeof origDevSkip === 'function'){
-      window.devSkip = function(){
-        if(window.S && window.S.timing && window.S.timing.currentScreen === 'demo-sc'){
-          for(var id in fills){var el=document.getElementById(id);if(el&&el.value==='')el.value=fills[id];}
-        }
-        origDevSkip();
-      };
-    }
-  });
-
-  /* Dev: auto-fill demographics */
-  if(new URLSearchParams(location.search).get('dev')==='1'){
-    var demoSc=document.getElementById('demo-sc');
-    if(demoSc){
-      var dObs=new MutationObserver(function(muts){
-        muts.forEach(function(m){
-          if(m.attributeName==='class'&&demoSc.classList.contains('active')){
-            var fills={d1:'20–29 years',d2:'Male',d3:'Omani',d4:'Single',d5:'Bachelor of Nursing',d6:'Yes',d7:'Yes — formal course',d8:'Basic (1–2 sessions)',d9:'4–6 years',d10:'4–6 years',d11:'Staff Nurse',d12:'2 patients',d13:'Rotating shifts',d14:'Very comfortable',d15:'Use occasionally',d16:'3 — Moderately confident',d17:'1–2 times'};
-            for(var id in fills){var el=document.getElementById(id);if(el&&el.value==='')el.value=fills[id];}
-            console.log('%c [DEV] Demographics auto-filled ','background:#ffd740;color:#000;padding:2px 6px;border-radius:3px;');
-          }
-        });
-      });
-      dObs.observe(demoSc,{attributes:true,attributeFilter:['class']});
-    }
-  }
-
-  /* ICU Monitor clock */
+  /* Clock */
   var clkEl=document.getElementById('icu-clk');
-  if(clkEl) setInterval(function(){clkEl.textContent=new Date().toTimeString().slice(0,8);},1000);
+  if(clkEl)setInterval(function(){clkEl.textContent=new Date().toTimeString().slice(0,8);},1000);
 
-  /* Sync vitals from control app DOM into ICU param panel */
+  /* Sync vitals into ICU param panel */
   function syncParams(){
     function g(id){var e=document.getElementById(id);return e?e.textContent.trim():'';}
     function s(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
     var spo2=g('v-spo2'),hr=g('v-hr'),rr=g('v-rr'),bp=g('v-bp');
-    var pip=g('vs-pip'),peep=g('vs-peep'),tv=g('vs-tv'),rrs=g('vs-rr');
-    var mode=g('vs-mode'),fio2=g('v-fio2');
-    s('icu-spo2-val',spo2||'--');s('icu-spo2-p',spo2||'--');
-    s('icu-hr-p',hr||'--');s('icu-rr-tot',rr||'--');
-    s('icu-pip',pip||'--');s('icu-pip-p',pip||'--');
-    s('icu-peep',peep||'--');s('icu-tv',tv||'--');
-    s('icu-rr-set',rrs||'--');s('icu-tv-set',tv||'--');
-    s('icu-fio2',fio2||'--');s('icu-mode-val',mode||'--');s('icu-mode-top',mode||'--');
-    if(bp&&bp.indexOf('/')>-1){var p=bp.split('/');var map=Math.round((parseInt(p[0])+2*parseInt(p[1]))/3);s('icu-map-p',isNaN(map)?'--':map);}
+    var pip=g('vs-pip'),peep=g('vs-peep'),tv=g('vs-tv'),rrs=g('vs-rr'),mode=g('vs-mode'),fio2=g('v-fio2');
+    s('icu-spo2-val',spo2||'--');s('icu-spo2-p',spo2||'--');s('icu-hr-p',hr||'--');
+    s('icu-rr-tot',rr||'--');s('icu-pip',pip||'--');s('icu-pip-p',pip||'--');
+    s('icu-peep',peep||'--');s('icu-tv',tv||'--');s('icu-rr-set',rrs||'--');
+    s('icu-tv-set',tv||'--');s('icu-fio2',fio2||'--');
+    s('icu-mode-val',mode||'--');s('icu-mode-top',mode||'--');
+    if(bp&&bp.indexOf('/')>-1){var p=bp.split('/');var m=Math.round((parseInt(p[0])+2*parseInt(p[1]))/3);s('icu-map-p',isNaN(m)?'--':m);}
     var pipN=parseFloat(pip),spo2N=parseFloat(spo2),rrN=parseFloat(rr);
     var pt=document.getElementById('icu-pip-tag'),st=document.getElementById('icu-spo2-tag'),al=document.getElementById('icu-alm-list');
-    if(pt) pt.className='icu-atag'+(pipN>35?' on':'');
-    if(st) st.className='icu-atag'+(spo2N<94?' on':'');
+    if(pt)pt.className='icu-atag'+(pipN>35?' on':'');
+    if(st)st.className='icu-atag'+(spo2N<94?' on':'');
     var alms=[];
-    if(pipN>35) alms.push('HIGH PIP
-'+pip+' > 35 cmH2O');
-    if(rrN>20)  alms.push('HIGH RR
+    if(pipN>35)alms.push('HIGH PIP
+'+pip+' > 35');
+    if(rrN>20)alms.push('HIGH RR
 '+rr+' > 20');
-    if(spo2N<94) alms.push('LOW SpO2
+    if(spo2N<94)alms.push('LOW SpO2
 '+spo2+'% < 94%');
-    if(al) al.textContent=alms.length?alms.join('
+    if(al)al.textContent=alms.length?alms.join('
 
 '):'No active alarms';
   }
   setInterval(syncParams,500);
 
-  /* Waveform engine */
-  var WAVES={
-    pres:{id:'wc-pressure',color:'#00ff7f',min:0,max:60,T:function(){return 60/14;},fn:function(ph){var ti=1.2;return ph<ti?6+32*Math.min(ph/.28,1)*(1-.04*Math.sin(ph*14)):6+32*Math.exp(-4*(ph-ti));}},
-    flow:{id:'wc-flow',color:'#00e5ff',min:-60,max:60,T:function(){return 60/14;},fn:function(ph){var ti=1.2,te=60/14-ti;return ph<ti?38*Math.sin(Math.PI*ph/ti):-32*Math.exp(-2.5*(ph-ti))*Math.sin(Math.PI*(ph-ti)/te);}},
-    vol:{id:'wc-volume',color:'#ffdd00',min:0,max:800,T:function(){return 60/14;},fn:function(ph){var ti=1.2;return ph<ti?520*(1-Math.cos(Math.PI*ph/ti))/2:520*Math.exp(-3*(ph-ti));}},
-    spo2:{id:'wc-spo2',color:'#ff8c00',min:0,max:1,T:function(){return 60/104;},fn:function(ph){var n=ph/(60/104);return .5+.44*(Math.sin(2*Math.PI*n)+.18*Math.sin(4*Math.PI*n+.8));}}
-  };
-  var WS={};
-  for(var k in WAVES) WS[k]={t:0,last:null,hist:null,idx:0,W:0,H:0,ctx:null};
+  /* SpO2 waveform engine — control JS draws wc-pressure/flow/volume; we add wc-spo2 */
+  var WV={spo2:{id:'wc-spo2',color:'#ff8c00',min:0,max:1,T:function(){return 60/104;},fn:function(ph){var n=ph/(60/104);return .5+.44*(Math.sin(2*Math.PI*n)+.18*Math.sin(4*Math.PI*n+.8));}}};
+  var WS={spo2:{t:0,last:null,hist:null,idx:0,W:0,H:0,ctx:null}};
   var DPR=Math.min(window.devicePixelRatio||1,2);
-
-  function size(k){
-    var w=WAVES[k],s=WS[k],el=document.getElementById(w.id);
-    if(!el)return false;
-    var W=el.offsetWidth,H=el.offsetHeight;
-    if(W<4||H<4)return false;
-    if(s.W===W&&s.H===H)return true;
-    el.width=Math.round(W*DPR);el.height=Math.round(H*DPR);
-    s.ctx=el.getContext('2d');s.ctx.scale(DPR,DPR);
-    s.W=W;s.H=H;s.hist=new Float32Array(W);s.idx=0;
-    return true;
-  }
+  function size(k){var w=WV[k],s=WS[k],el=document.getElementById(w.id);if(!el)return false;var W=el.offsetWidth,H=el.offsetHeight;if(W<4||H<4)return false;if(s.W===W&&s.H===H)return true;el.width=Math.round(W*DPR);el.height=Math.round(H*DPR);s.ctx=el.getContext('2d');s.ctx.scale(DPR,DPR);s.W=W;s.H=H;s.hist=new Float32Array(W);s.idx=0;return true;}
   function mapY(v,mn,mx,H){return H-((v-mn)/(mx-mn))*H;}
-  function draw(k){
-    var w=WAVES[k],s=WS[k];if(!s.ctx||!s.W)return;
-    var ctx=s.ctx,W=s.W,H=s.H,hist=s.hist;
-    ctx.fillStyle='#081520';ctx.fillRect(0,0,W,H);
-    ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=.5;
-    for(var i=1;i<4;i++){var y=(i/4)*H;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-    for(var x=80;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
-    if(k==='flow'){ctx.strokeStyle='rgba(0,229,255,.1)';ctx.lineWidth=.8;var yz=mapY(0,-60,60,H);ctx.beginPath();ctx.moveTo(0,yz);ctx.lineTo(W,yz);ctx.stroke();}
-    ctx.strokeStyle=w.color;ctx.lineWidth=1.8;ctx.shadowColor=w.color;ctx.shadowBlur=3;
-    ctx.beginPath();var first=true,len=hist.length;
-    for(var j=0;j<len;j++){var px=(j/len)*W,py=mapY(hist[(s.idx+j)%len],w.min,w.max,H);if(first){ctx.moveTo(px,py);first=false;}else ctx.lineTo(px,py);}
-    ctx.stroke();ctx.shadowBlur=0;
-    var sx=(s.idx/len)*W;
-    ctx.fillStyle='#081520';ctx.fillRect(sx,0,10,H);
-    ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(sx,0);ctx.lineTo(sx,H);ctx.stroke();
-  }
+  function draw(k){var w=WV[k],s=WS[k];if(!s.ctx||!s.W)return;var ctx=s.ctx,W=s.W,H=s.H,hist=s.hist;ctx.fillStyle='#081520';ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=.5;for(var i=1;i<4;i++){var y=(i/4)*H;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}ctx.strokeStyle=w.color;ctx.lineWidth=1.8;ctx.shadowColor=w.color;ctx.shadowBlur=3;ctx.beginPath();var first=true,len=hist.length;for(var j=0;j<len;j++){var px=(j/len)*W,py=mapY(hist[(s.idx+j)%len],w.min,w.max,H);if(first){ctx.moveTo(px,py);first=false;}else ctx.lineTo(px,py);}ctx.stroke();ctx.shadowBlur=0;var sx=(s.idx/len)*W;ctx.fillStyle='#081520';ctx.fillRect(sx,0,10,H);ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(sx,0);ctx.lineTo(sx,H);ctx.stroke();}
   var animStarted=false;
-  function frame(ts){
-    for(var k in WAVES){size(k);var w=WAVES[k],s=WS[k];if(!s.W||!s.hist)continue;if(!s.last)s.last=ts;var dt=Math.min((ts-s.last)/1000,.05);s.last=ts;s.t+=dt;var ph=s.t%w.T();s.hist[s.idx]=w.fn(ph);s.idx=(s.idx+1)%s.hist.length;draw(k);}
-    requestAnimationFrame(frame);
-  }
-  function resetSizes(){for(var k in WAVES){WS[k].W=0;WS[k].H=0;}}
-  function tryStart(){
-    if(animStarted)return;
-    var ok=false;for(var k in WAVES)if(size(k))ok=true;
-    if(!ok){setTimeout(tryStart,150);return;}
-    animStarted=true;requestAnimationFrame(frame);
-  }
+  function frame(ts){size('spo2');var s=WS.spo2;if(s.W&&s.hist){if(!s.last)s.last=ts;var dt=Math.min((ts-s.last)/1000,.05);s.last=ts;s.t+=dt;var ph=s.t%WV.spo2.T();s.hist[s.idx]=WV.spo2.fn(ph);s.idx=(s.idx+1)%s.hist.length;draw('spo2');}requestAnimationFrame(frame);}
+  function resetSizes(){WS.spo2.W=0;WS.spo2.H=0;}
+  function tryStart(){if(animStarted)return;if(!size('spo2')){setTimeout(tryStart,150);return;}animStarted=true;requestAnimationFrame(frame);}
   window.addEventListener('resize',resetSizes);
   window.addEventListener('load',function(){setTimeout(tryStart,100);});
   setTimeout(tryStart,600);
   var simSc=document.getElementById('sim-sc');
-  if(simSc&&typeof MutationObserver!=='undefined'){
-    var obs=new MutationObserver(function(muts){
-      muts.forEach(function(m){
-        if(m.attributeName==='class'&&simSc.classList.contains('active')){resetSizes();setTimeout(tryStart,80);}
-      });
-    });
-    obs.observe(simSc,{attributes:true,attributeFilter:['class']});
-  }
+  if(simSc&&typeof MutationObserver!=='undefined'){var obs=new MutationObserver(function(muts){muts.forEach(function(m){if(m.attributeName==='class'&&simSc.classList.contains('active')){resetSizes();setTimeout(tryStart,80);}});});obs.observe(simSc,{attributes:true,attributeFilter:['class']});}
+
+  /* DEV: fix skip on demo-sc by pre-filling fields before devSkip runs */
+  window.addEventListener('load',function(){
+    if(new URLSearchParams(location.search).get('dev')!=='1')return;
+    var fills={d1:'20–29 years',d2:'Male',d3:'Omani',d4:'Single',d5:'Bachelor of Nursing',d6:'Yes',d7:'Yes — formal course',d8:'Basic (1–2 sessions)',d9:'4–6 years',d10:'4–6 years',d11:'Staff Nurse',d12:'2 patients',d13:'Rotating shifts',d14:'Very comfortable',d15:'Use occasionally',d16:'3 — Moderately confident',d17:'1–2 times'};
+    var origDevSkip=window.devSkip;
+    if(typeof origDevSkip==='function'){
+      window.devSkip=function(){
+        if(window.S&&window.S.timing&&window.S.timing.currentScreen==='demo-sc'){
+          for(var id in fills){var el=document.getElementById(id);if(el&&!el.value)el.value=fills[id];}
+          console.log('%c [DEV] Demographics filled ','background:#ffd740;color:#000;padding:2px 6px;border-radius:3px;');
+        }
+        origDevSkip();
+      };
+    }
+  });
 })();
 </script>
 </body>
