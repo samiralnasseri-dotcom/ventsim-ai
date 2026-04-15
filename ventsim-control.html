@@ -331,10 +331,10 @@ canvas.wc.active{display:block;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 /* ── ORIENTATION MODAL ── */
-#ot-wrap{display:none;position:fixed;inset:0;z-index:999999;background:rgba(5,13,20,.82);align-items:center;justify-content:center;}
+#ot-wrap{display:none;position:fixed;inset:0;z-index:999999;background:rgba(5,13,20,.85);align-items:center;justify-content:center;}
 #ot-wrap.on{display:flex;}
-#ot-modal{background:#0a1a27;border:1.5px solid #00e5ff;border-radius:12px;width:480px;max-width:92vw;overflow:hidden;animation:otIn .25s ease;}
-@keyframes otIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+#ot-modal{background:#0a1a27;border:1.5px solid #00e5ff;border-radius:12px;width:480px;max-width:92vw;overflow:hidden;animation:otIn .3s ease;}
+@keyframes otIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 #ot-label{background:rgba(0,229,255,.08);border-bottom:1px solid #0e2a3f;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;}
 #ot-label-left{display:flex;align-items:center;gap:10px;}
 #ot-icon{font-size:1.1rem;}
@@ -575,22 +575,19 @@ canvas.wc.active{display:block;}
   <div class="wrap"><div class="inner" style="max-width:560px;">
     <div class="badge">STEP 5 OF 8</div>
     <div class="stitle">Platform <span class="hl">Orientation</span></div>
-    <div class="ssub">A short interactive tour will guide you through the platform. Click <strong style="color:var(--cyan)">Begin Simulation</strong> to launch the tour — it takes approximately 2 minutes.</div>
+    <div class="ssub">A short interactive tour will guide you through the simulation interface. Click Begin Simulation to start the tour.</div>
     <div class="card" style="background:rgba(0,229,255,.04);border-color:rgba(0,229,255,.2);margin-bottom:20px;">
       <div style="font-size:.85rem;color:var(--text);line-height:1.9;">
-        ⏱ <strong>Total simulation time: approximately 40 minutes</strong><br>
-        🎯 <strong>Goal:</strong> Make safe, evidence-based clinical decisions for each patient.<br>
-        🤝 <strong>Important:</strong> Work independently. Do not consult others during the session.<br>
-        💾 <strong>Auto-save:</strong> Your progress saves automatically every 2 minutes.
+        &#9203; <strong>Total simulation time: approximately 40 minutes</strong><br>
+        &#127919; <strong>Goal:</strong> Make safe, evidence-based clinical decisions for each patient.<br>
+        &#129309; <strong>Important:</strong> Work independently. Do not consult others during the session.<br>
+        &#128190; <strong>Auto-save:</strong> Your progress saves automatically every 2 minutes.
       </div>
     </div>
-    <button class="btn btn-g btn-w" id="begin-sim-btn" onclick="window._startSimAndTour()">&#9654; BEGIN SIMULATION</button>
+    <button class="btn btn-g btn-w" onclick="startSim();setTimeout(function(){if(!window._tourLaunched){window._tourLaunched=true;window.tour(1);}},800);">&#9654; BEGIN SIMULATION</button>
   </div></div>
 </div>
 
-<!-- ═══════════════════════════════════
-     S8: SIMULATION
-═══════════════════════════════════ -->
 <div class="sc" id="sim-sc">
   <div class="hdr">
     <span class="hlogo">VentSim</span>
@@ -797,7 +794,6 @@ canvas.wc.active{display:block;}
       <div class="ty-sub">Your data has been saved. Thank you for contributing to nursing education research in Oman.</div>
       <div class="ty-info">
         <div class="ty-row"><span class="ty-row-lbl">PARTICIPANT</span><span class="ty-row-val" id="ty-pid">--</span></div>
-
         <div class="ty-row"><span class="ty-row-lbl">SESSION ID</span><span class="ty-row-val" id="ty-sid">--</span></div>
         <div class="ty-row"><span class="ty-row-lbl">STATUS</span><span class="ty-row-val" id="ty-st">Saved ✓</span></div>
       </div>
@@ -856,25 +852,31 @@ canvas.wc.active{display:block;}
 </div>
 
 
+
 <!-- ORIENTATION MODAL -->
 <div id="ot-wrap">
   <div id="ot-modal">
-    <div id="ot-label"><div id="ot-label-left"><span id="ot-icon"></span><span id="ot-title"></span></div><span id="ot-step-ctr"></span></div>
+    <div id="ot-label">
+      <div id="ot-label-left"><span id="ot-icon"></span><span id="ot-title"></span></div>
+      <span id="ot-step-ctr"></span>
+    </div>
     <div id="ot-img"><svg id="ot-diagram" viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg"></svg></div>
     <div id="ot-body"></div>
     <div id="ot-footer">
       <div id="ot-prog"><div id="ot-pfill" style="width:0%"></div></div>
       <div id="ot-nav">
         <button id="ot-skip-btn">Skip tour</button>
-        <div id="ot-btn-group"><button id="ot-back-btn" disabled>&#9664; Back</button><button id="ot-next-btn">Next &#9654;</button></div>
+        <div id="ot-btn-group">
+          <button id="ot-back-btn" disabled>&#9664; Back</button>
+          <button id="ot-next-btn">Next &#9654;</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
 <script>
 (function(){
-var STEPS = [
+var STEPS=var STEPS = [
   {
     icon:'🏥', title:'Patient header',
     body:'Shows the current patient name, age, diagnosis and scenario number. Always read this first — it gives you the clinical context for every decision.',
@@ -910,65 +912,42 @@ var STEPS = [
     body:'A collapsible panel below the chat with three tabs: Compare (set vs measured values), Reference (normal ranges and guidelines), and Hints (contextual prompts). Use it any time.',
     svg:'<rect x="10" y="8" width="460" height="28" rx="5" fill="rgba(0,229,255,.06)" stroke="rgba(0,229,255,.2)" stroke-width="1"/><text x="24" y="26" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff" letter-spacing="1" font-weight="600">📊  CLINICAL COMPASS  ▼</text><rect x="10" y="40" width="460" height="24" rx="0" fill="#0a1a27" stroke="#0e2a3f" stroke-width="1"/><rect x="10" y="40" width="148" height="24" rx="0" fill="rgba(0,229,255,.08)" stroke="rgba(0,229,255,.3)" stroke-width="1"/><text x="84" y="56" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e5ff" text-anchor="middle">📊 Compare</text><text x="250" y="56" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">📖 Reference</text><text x="400" y="56" font-family="JetBrains Mono,monospace" font-size="9" fill="#546e7a" text-anchor="middle">💡 Hints</text><rect x="10" y="66" width="460" height="80" rx="0" fill="#081520" stroke="#0e2a3f" stroke-width="1"/><text x="24" y="84" font-family="JetBrains Mono,monospace" font-size="8" fill="#546e7a">PARAMETER</text><text x="240" y="84" font-family="JetBrains Mono,monospace" font-size="8" fill="#82b1ff" text-anchor="middle">SET</text><text x="400" y="84" font-family="JetBrains Mono,monospace" font-size="8" fill="#90a4ae" text-anchor="middle">MEASURED</text><line x1="14" y1="88" x2="466" y2="88" stroke="#0e2a3f" stroke-width="1"/><text x="24" y="102" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a9daa">PIP</text><text x="240" y="102" font-family="JetBrains Mono,monospace" font-size="9" fill="#82b1ff" text-anchor="middle">35 cmH₂O</text><text x="400" y="102" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">38 cmH₂O ↑</text><text x="24" y="118" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a9daa">RR</text><text x="240" y="118" font-family="JetBrains Mono,monospace" font-size="9" fill="#82b1ff" text-anchor="middle">14 br/min</text><text x="400" y="118" font-family="JetBrains Mono,monospace" font-size="9" fill="#ffd740" text-anchor="middle">22 br/min ↑</text><text x="24" y="134" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a9daa">SpO₂</text><text x="240" y="134" font-family="JetBrains Mono,monospace" font-size="9" fill="#82b1ff" text-anchor="middle">≥ 94%</text><text x="400" y="134" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5252" text-anchor="middle">91% ↓</text><text x="240" y="162" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e5ff" text-anchor="middle">Click to expand — available any time</text>'
   }
-];
-
-var cur = -1;
-function q(id){ return document.getElementById(id); }
+];;
+var cur=-1;
+function q(id){return document.getElementById(id);}
 function go(i){
-  if(i < 0 || i >= STEPS.length){ quit(); return; }
-  cur = i; var s = STEPS[i];
-  q('ot-icon').textContent  = s.icon;
-  q('ot-title').textContent = s.title;
-  q('ot-body').textContent  = s.body;
-  q('ot-step-ctr').textContent = (i+1) + ' of ' + STEPS.length;
-  q('ot-next-btn').textContent = (i === STEPS.length-1) ? 'Done ✓' : 'Next ▶';
-  q('ot-back-btn').disabled   = (i === 0);
-  q('ot-pfill').style.width   = Math.round((i+1)/STEPS.length*100) + '%';
-  q('ot-diagram').innerHTML   = s.svg;
+  if(i<0||i>=STEPS.length){quit();return;}
+  cur=i;
+  var s=STEPS[i];
+  q('ot-icon').textContent=s.icon;
+  q('ot-title').textContent=s.title;
+  q('ot-body').textContent=s.body;
+  q('ot-step-ctr').textContent=(i+1)+' of '+STEPS.length;
+  q('ot-next-btn').textContent=(i===STEPS.length-1)?'Done ✓':'Next ▶';
+  q('ot-back-btn').disabled=(i===0);
+  q('ot-pfill').style.width=Math.round((i+1)/STEPS.length*100)+'%';
+  q('ot-diagram').innerHTML=s.svg;
   q('ot-wrap').classList.add('on');
 }
-function quit(){ cur = -1; q('ot-wrap').classList.remove('on'); }
-q('ot-next-btn').addEventListener('click', function(){ go(cur+1); });
-q('ot-back-btn').addEventListener('click', function(){ if(cur>0) go(cur-1); });
-q('ot-skip-btn').addEventListener('click', quit);
-window.tour    = function(n){ go(typeof n==='number' ? n-1 : 0); };
-window.tourEnd = quit;
+function quit(){cur=-1;q('ot-wrap').classList.remove('on');}
+q('ot-next-btn').addEventListener('click',function(){go(cur+1);});
+q('ot-back-btn').addEventListener('click',function(){if(cur>0)go(cur-1);});
+q('ot-skip-btn').addEventListener('click',quit);
+window.tour=function(n){go(typeof n==='number'?n-1:0);};
+window.tourEnd=quit;
 })();
 </script>
-
 <script src="ventsim-control.js"></script>
-
 <script>
 (function(){
-  /* _startSimAndTour: called by BEGIN SIMULATION button.
-     Calls startSim() then launches tour. No wrapping needed. */
-  window._startSimAndTour = function(){
-    if(typeof startSim === 'function') startSim();
-    if(!window._tourLaunched){
-      window._tourLaunched = true;
-      setTimeout(function(){ window.tour && window.tour(1); }, 800);
-    }
-  };
-
-  /* DEV: patch submitDemo to auto-fill demographics */
-  window.addEventListener('load', function(){
-    if(new URLSearchParams(location.search).get('dev') !== '1') return;
-    var fills = {
-      d1:'20–29 years', d2:'Male', d3:'Omani', d4:'Single',
-      d5:'Bachelor of Nursing', d6:'Yes', d7:'Yes — formal course',
-      d8:'Basic (1–2 sessions)', d9:'4–6 years', d10:'4–6 years',
-      d11:'Staff Nurse', d12:'2 patients', d13:'Rotating shifts',
-      d14:'Very comfortable', d15:'Use occasionally',
-      d16:'3 — Moderately confident', d17:'1–2 times'
-    };
-    var origSubmit = window.submitDemo;
-    if(typeof origSubmit === 'function'){
-      window.submitDemo = function(){
-        for(var id in fills){
-          var el = document.getElementById(id);
-          if(el && !el.value) el.value = fills[id];
-        }
-        origSubmit();
+  window.addEventListener('load',function(){
+    if(new URLSearchParams(location.search).get('dev')!=='1')return;
+    var fills={d1:'20–29 years',d2:'Male',d3:'Omani',d4:'Single',d5:'Bachelor of Nursing',d6:'Yes',d7:'Yes — formal course',d8:'Basic (1–2 sessions)',d9:'4–6 years',d10:'4–6 years',d11:'Staff Nurse',d12:'2 patients',d13:'Rotating shifts',d14:'Very comfortable',d15:'Use occasionally',d16:'3 — Moderately confident',d17:'1–2 times'};
+    var orig=window.submitDemo;
+    if(typeof orig==='function'){
+      window.submitDemo=function(){
+        for(var id in fills){var el=document.getElementById(id);if(el&&!el.value)el.value=fills[id];}
+        orig();
       };
     }
   });
