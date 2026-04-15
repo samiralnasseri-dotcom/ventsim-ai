@@ -575,7 +575,7 @@ canvas.wc.active{display:block;}
   <div class="wrap"><div class="inner" style="max-width:560px;">
     <div class="badge">STEP 5 OF 8</div>
     <div class="stitle">Platform <span class="hl">Orientation</span></div>
-    <div class="ssub">A short interactive tour will guide you through the simulation interface. Click <strong style="color:var(--cyan)">Begin Simulation</strong> to start the tour — it takes approximately 2 minutes.</div>
+    <div class="ssub">A short interactive tour will guide you through the platform. Click <strong style="color:var(--cyan)">Begin Simulation</strong> to launch the tour — it takes approximately 2 minutes.</div>
     <div class="card" style="background:rgba(0,229,255,.04);border-color:rgba(0,229,255,.2);margin-bottom:20px;">
       <div style="font-size:.85rem;color:var(--text);line-height:1.9;">
         ⏱ <strong>Total simulation time: approximately 40 minutes</strong><br>
@@ -584,7 +584,7 @@ canvas.wc.active{display:block;}
         💾 <strong>Auto-save:</strong> Your progress saves automatically every 2 minutes.
       </div>
     </div>
-    <button class="btn btn-g btn-w" onclick="window.startSim()">▶ BEGIN SIMULATION</button>
+    <button class="btn btn-g btn-w" id="begin-sim-btn" onclick="window._startSimAndTour()">&#9654; BEGIN SIMULATION</button>
   </div></div>
 </div>
 
@@ -797,7 +797,7 @@ canvas.wc.active{display:block;}
       <div class="ty-sub">Your data has been saved. Thank you for contributing to nursing education research in Oman.</div>
       <div class="ty-info">
         <div class="ty-row"><span class="ty-row-lbl">PARTICIPANT</span><span class="ty-row-val" id="ty-pid">--</span></div>
-        <div class="ty-row"><span class="ty-row-lbl">GROUP</span><span class="ty-row-val">Control Group</span></div>
+
         <div class="ty-row"><span class="ty-row-lbl">SESSION ID</span><span class="ty-row-val" id="ty-sid">--</span></div>
         <div class="ty-row"><span class="ty-row-lbl">STATUS</span><span class="ty-row-val" id="ty-st">Saved ✓</span></div>
       </div>
@@ -859,27 +859,18 @@ canvas.wc.active{display:block;}
 <!-- ORIENTATION MODAL -->
 <div id="ot-wrap">
   <div id="ot-modal">
-    <div id="ot-label">
-      <div id="ot-label-left"><span id="ot-icon"></span><span id="ot-title"></span></div>
-      <span id="ot-step-ctr"></span>
-    </div>
+    <div id="ot-label"><div id="ot-label-left"><span id="ot-icon"></span><span id="ot-title"></span></div><span id="ot-step-ctr"></span></div>
     <div id="ot-img"><svg id="ot-diagram" viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg"></svg></div>
     <div id="ot-body"></div>
     <div id="ot-footer">
       <div id="ot-prog"><div id="ot-pfill" style="width:0%"></div></div>
       <div id="ot-nav">
         <button id="ot-skip-btn">Skip tour</button>
-        <div id="ot-btn-group">
-          <button id="ot-back-btn" disabled>&#9664; Back</button>
-          <button id="ot-next-btn">Next &#9654;</button>
-        </div>
+        <div id="ot-btn-group"><button id="ot-back-btn" disabled>&#9664; Back</button><button id="ot-next-btn">Next &#9654;</button></div>
       </div>
     </div>
   </div>
 </div>
-
-
-<script src="ventsim-control.js"></script>
 
 <script>
 (function(){
@@ -942,21 +933,24 @@ q('ot-back-btn').addEventListener('click', function(){ if(cur>0) go(cur-1); });
 q('ot-skip-btn').addEventListener('click', quit);
 window.tour    = function(n){ go(typeof n==='number' ? n-1 : 0); };
 window.tourEnd = quit;
-/* startSim wrap removed — tour launched directly from button onclick */
-if(new URLSearchParams(location.search).get('dev')==='1'){
-  console.log('%c VentSim Tour ','background:#00e5ff;color:#000;font-weight:bold;padding:2px 8px;border-radius:3px;',
-    '
-  tour()    start from step 1
-  tour(3)   jump to step 3
-  tourEnd() close');
-}
 })();
 </script>
+
+<script src="ventsim-control.js"></script>
+
 <script>
 (function(){
-  /* DEV skip fix: patch submitDemo so fields are always filled before validation.
-     submitDemo is called by name inside SKIP_MAP closure — patching window.submitDemo
-     works because the function declaration IS window.submitDemo in global scope. */
+  /* _startSimAndTour: called by BEGIN SIMULATION button.
+     Calls startSim() then launches tour. No wrapping needed. */
+  window._startSimAndTour = function(){
+    if(typeof startSim === 'function') startSim();
+    if(!window._tourLaunched){
+      window._tourLaunched = true;
+      setTimeout(function(){ window.tour && window.tour(1); }, 800);
+    }
+  };
+
+  /* DEV: patch submitDemo to auto-fill demographics */
   window.addEventListener('load', function(){
     if(new URLSearchParams(location.search).get('dev') !== '1') return;
     var fills = {
@@ -976,7 +970,6 @@ if(new URLSearchParams(location.search).get('dev')==='1'){
         }
         origSubmit();
       };
-      console.log('%c [DEV] submitDemo patched — Step 3 will auto-fill and skip ','background:#ffd740;color:#000;padding:2px 6px;border-radius:3px;');
     }
   });
 })();
